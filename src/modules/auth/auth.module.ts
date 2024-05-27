@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AuthService } from './services/auth.service';
 import { AuthController } from './auth.controller';
 import { UserModule } from '../user/user.module';
@@ -15,9 +15,10 @@ import { ErrorSchema } from '../error/schemas/error.schema';
       { name: 'User', schema: UserSchema },
       { name: 'Error', schema: ErrorSchema },
     ]),
-    UserModule,
+    forwardRef(() => UserModule),
   ],
   providers: [AuthService, JwtService, ConfigService],
   controllers: [AuthController],
+  exports: [JwtService]
 })
 export class AuthModule {}

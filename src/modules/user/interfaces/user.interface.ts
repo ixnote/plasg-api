@@ -12,6 +12,7 @@ export interface User extends mongoose.Document {
   company_logo: string;
   is_suspended: boolean;
   is_deleted: boolean;
+  mdas?: any; 
   readonly createdAt: Date;
   updatedAt: Date;
 }

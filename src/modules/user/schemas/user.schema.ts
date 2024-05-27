@@ -76,5 +76,11 @@ export const UserSchema: Schema = new Schema<User>(
   },
 );
 
+UserSchema.virtual('mdas', {
+  ref: 'Mda',
+  localField: '_id',
+  foreignField: 'admin',
+  justOne: false,
+});
 
 export const UserModel = mongoose.model<User>('User', UserSchema);

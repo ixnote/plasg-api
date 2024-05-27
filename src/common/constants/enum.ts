@@ -7,6 +7,11 @@ export enum ComponentType {
   
 }
 
+export enum TagType {
+  TOPIC = "topic",
+  ITEM = "item"
+}
+
 export enum TokenTimeout {
   FIVE_MINS = 60 * 5,
   FIFTEEN_MINS = 60 * 15,

@@ -9,7 +9,8 @@ import { env } from './common/config/env.config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { MdaModule } from './modules/mda/mda.module';
 import { SeederModule } from './modules/seeder/seeder.module';
-import { FilesModule } from './modules/files/files.module';
+import { TagModule } from './modules/tag/tag.module';
+import { ResourceModule } from './modules/resource/resource.module';
 
 const { MONGO_URI } = env;
 
@@ -29,7 +30,8 @@ const { MONGO_URI } = env;
     ]),
     MdaModule,
     SeederModule,
-    FilesModule,
+    TagModule,
+    ResourceModule,
   ],
 })
 export class AppModule {}

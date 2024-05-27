@@ -19,6 +19,7 @@ import { ErrorSchema } from '../error/schemas/error.schema';
     UserModule
   ],
   providers: [MdaService, MongooseService, JwtService],
-  controllers: [MdaController]
+  controllers: [MdaController],
+  exports: [MdaService]
 })
 export class MdaModule {}

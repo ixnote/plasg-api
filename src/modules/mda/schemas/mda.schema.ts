@@ -50,4 +50,4 @@ export const MdaSchema: Schema = new Schema<Mda>(
 );
 
 
-export const UserModel = mongoose.model<Mda>('Mda', MdaSchema);
+export const MdaModel = mongoose.model<Mda>('Mda', MdaSchema);

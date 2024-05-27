@@ -1,0 +1,108 @@
+[
+    {
+        "name": "people",
+        "type": "topic",
+        "sub_tags": []
+    },
+    {
+        "name": "welfare",
+        "type": "topic",
+        "sub_tags": []
+    },
+    {
+        "name": "health",
+        "type": "topic",
+        "sub_tags": []
+    },
+    {
+        "name": "governance",
+        "type": "topic",
+        "sub_tags": [
+            {
+                "name": "investments",
+                "sub_tags": []
+            },
+            {
+                "name": "incentives",
+                "sub_tags": []
+            },
+            {
+                "name": "economic policies",
+                "sub_tags": []
+            },
+            {
+                "name": "reports",
+                "sub_tags": []
+            },
+            {
+                "name": "others",
+                "sub_tags": []
+            }
+        ]
+    },
+    {
+        "name": "resource",
+        "type": "item",
+        "sub_tags": [
+            {
+                "name": "public notice",
+                "sub_tags": []
+            },
+            {
+                "name": "press release",
+                "sub_tags": []
+            },
+            {
+                "name": "publication",
+                "sub_tags": []
+            },
+            {
+                "name": "guideline",
+                "sub_tags": []
+            },
+            {
+                "name": "event",
+                "sub_tags": []
+            },
+            {
+                "name": "update",
+                "sub_tags": []
+            },
+            {
+                "name": "statement",
+                "sub_tags": []
+            },
+            {
+                "name": "article",
+                "sub_tags": []
+            }
+        ]
+    },
+    {
+        "name": "document",
+        "type": "item",
+        "sub_tags": [
+            {
+                "name": "policy",
+                "sub_tags": []
+            },
+            {
+                "name": "record",
+                "sub_tags": []
+            },
+            {
+                "name": "report",
+                "sub_tags": []
+            },
+            {
+                "name": "form",
+                "sub_tags": []
+            }
+        ]
+    },
+    {
+        "name": "service",
+        "type": "item",
+        "sub_tags": []
+    }
+]

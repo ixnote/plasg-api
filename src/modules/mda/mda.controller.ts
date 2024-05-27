@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
 import { MdaService } from './services/mda.service';
 import { Mda } from './interfaces/mda.interface';
 import { CreateMdaDto } from './dtos/create-mda.dto';
@@ -29,7 +29,7 @@ export class MdaController {
         }
     }
 
-    @Put("/assign/:mda/:admin")
+    @Get("/assign/:mda/:admin")
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRoles.SUPER)
     @UseFilters(ExceptionsLoggerFilter)
@@ -41,12 +41,22 @@ export class MdaController {
         }
     }
 
-    @Put("/unassign/:mda")
+    @Get("/unassign/:mda")
     async removeAdmin(@Param() param: RemoveMdaDto){
         const message: string = await this.mdaService.removeUserFromMda(param)
         return {
             status: true,
             message
+        }
+    }
+
+    @Get('/')
+    async getMdas(){
+        const mdas: Mda[] = await this.mdaService.getMdas();
+        return {
+            status: true,
+            message: "Mdas fetched successfully",
+            data: mdas
         }
     }
 }

@@ -1,8 +1,8 @@
 import * as mongoose from 'mongoose';
 
 export interface Component extends mongoose.Document {
-    numberId: number;
-    dataFormat: any;
+  numberId: number;
+  dataFormat: any;
   name: string;
   url: string;
   type: string;

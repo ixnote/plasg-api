@@ -10,6 +10,7 @@ import { User } from '../interfaces/user.interface';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { MongooseService } from 'src/common/helpers/mongoose.helper';
 import * as argon2 from 'argon2';
+import { UserRoles } from 'src/common/constants/enum';
 
 @Injectable()
 export class UserService {
@@ -20,7 +21,10 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const hashedPassword: string = await this.hashData(createUserDto?.password);
-    const createdUser = new this.userModel({...createUserDto, password: hashedPassword});
+    const createdUser = new this.userModel({
+      ...createUserDto,
+      password: hashedPassword,
+    });
     return createdUser.save();
   }
 
@@ -33,7 +37,10 @@ export class UserService {
   }
 
   async findByEmail(email: string): Promise<User> {
-    return this.userModel.findOne({ email }).select('-otp -is_deleted -refreshToken').exec();
+    return this.userModel
+      .findOne({ email })
+      .select('-otp -is_deleted -refreshToken')
+      .exec();
   }
 
   async findPasswordByEmail(email: string): Promise<User> {
@@ -43,12 +50,20 @@ export class UserService {
       .exec();
   }
 
-  async registerUser(body: CreateUserDto): Promise<User>{
+  async getMdaUsers(): Promise<User[]> {
+    return await this.userModel
+      .find({ role: UserRoles.MDA })
+      .populate('mdas')
+      .exec();
+  }
+
+  async registerUser(body: CreateUserDto): Promise<User> {
     const user: User = await this.findByEmail(body.email);
-    if (user) throw new ForbiddenException({
-      status: false,
-      message: "User already exists"
-    })
+    if (user)
+      throw new ForbiddenException({
+        status: false,
+        message: 'User already exists',
+      });
     return await this.create(body);
   }
 

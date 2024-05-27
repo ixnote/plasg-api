@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -38,8 +39,15 @@ export class MdaService {
     return this.mdaModel.findOne({ name }).exec();
   }
 
+  async findByUser(admin: string): Promise<Mda> {
+    return this.mdaModel.findOne({ admin }).exec();
+  }
   async createMda(body: CreateMdaDto): Promise<Mda> {
     return await this.create(body);
+  }
+
+  async getMdas(): Promise<Mda[]>{
+    return await this.mdaModel.find().select('name admin').populate('admin', 'full_name email phone');
   }
 
   async assignAdminToMda(body: AssignMdaDto): Promise<string> {
@@ -64,6 +72,13 @@ export class MdaService {
     await this.mdaModel.findByIdAndUpdate(mda, {
       admin,
     });
+    const findIfUserIsConnectedToMda = await this.mdaModel.findOne({
+      user: user.id
+    })
+    if(findIfUserIsConnectedToMda) throw new BadRequestException({
+      status: false,
+      message: "User currently handles an Mda"
+    })
     return 'Mda assigned successfully.';
   }
 
