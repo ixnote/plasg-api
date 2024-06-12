@@ -9,7 +9,8 @@ export enum ComponentType {
 
 export enum TagType {
   TOPIC = "topic",
-  ITEM = "item"
+  ITEM = "item",
+  NEWS = "news"
 }
 
 export enum TokenTimeout {
