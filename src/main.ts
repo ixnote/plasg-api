@@ -11,18 +11,17 @@ const PORT = Number(process.env.PORT || 4002);
 async function bootstrap() {
   const logger = new Logger('Spikk-Server');
   const app = serveMain(await NestFactory.create(AppModule));
-  
 
   const seederService = app.get(SeederService);
-  await seederService.seed(); 
-  
+  await seederService.seed();
+
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.use(cookieParser());
 
   await app.listen(PORT, () =>
     logger.log(`
     ************************************************
-            Welcome to Spikk Mobile App. Server listening on port: ${PORT}   
+            Welcome to Plateau State Government Api. Server listening on port: ${PORT}   
     ************************************************
   `),
   );
