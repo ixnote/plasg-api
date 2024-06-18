@@ -4,15 +4,19 @@ import  { Model } from 'mongoose';
 import { User } from '../user/interfaces/user.interface';
 import * as argon2 from 'argon2';
 import * as tagsData from './data/tags.json';
+import * as mdaData from './data/mda.json';
 import { UserRoles } from 'src/common/constants/enum';
 import { Tag } from '../tag/interfaces/tag.interface';
 import { TagService } from '../tag/services/tag.service';
+import { Mda } from '../mda/interfaces/mda.interface';
+import { MdaService } from '../mda/services/mda.service';
 
 @Injectable()
 export class SeederService {
   constructor(
     @InjectModel('User') private readonly userModel: Model<User>,
-    private tagService: TagService
+    private tagService: TagService,
+    private mdaService: MdaService
 ){}
 
 async seed() {
@@ -32,7 +36,9 @@ async seed() {
       await admin.save()
       console.log('Database seeded with admin.');
     }
-    
+    for(const item of mdaData){
+      await this.mdaService.findOneAndUpdate(item)
+    }
     const tags = tagsData;
     for (const tag of tags) {
       const newTag: Tag = await this.tagService.findOneAndUpdate(
@@ -45,7 +51,6 @@ async seed() {
           tag.type,
           newTag.id
         );
-        console.log("🚀 ~ SeederService ~ seed ~ newSubTag:", newSubTag)
         await this.tagService.updateSubTag(newTag.id,  item.name)
       }
     }

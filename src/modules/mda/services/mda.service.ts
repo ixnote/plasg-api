@@ -50,6 +50,16 @@ export class MdaService {
     return await this.mdaModel.find().select('name admin').populate('admin', 'full_name email phone');
   }
 
+
+  async findOneAndUpdate(body: CreateMdaDto): Promise<Mda> {
+    const {name, contact, logo} = body
+    return await this.mdaModel.findOneAndUpdate(
+      { name },
+      { name, contact, logo },
+      { upsert: true, new: true, runValidators: true },
+    );
+  }
+
   async assignAdminToMda(body: AssignMdaDto): Promise<string> {
     const { admin, mda } = body;
     const user: User = await this.userService.findById(admin);
