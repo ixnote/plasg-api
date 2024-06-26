@@ -11,7 +11,7 @@ export const env = {
   JWT_REFRESH_SECRET: config.get<string>('JWT_REFRESH_SECRET'),
   MONGO_URI: config.get<string>('MONGO_URI'),
   PORT: config.get<number>('PORT'),
-  PLATEAU_KEY: config.get<string>('PORT'),
+  PLATEAU_KEY: config.get<string>('PLATEAU_KEY'),
 
   isDevelopment() {
     return this.NODE_ENV === Environments.DEVELOPMENT;

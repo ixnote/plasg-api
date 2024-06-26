@@ -32,7 +32,7 @@ export class NewsService {
 
   private async checkIfUserIsAuthorized(user: User): Promise<boolean>{
     const mda: Mda = await this.mdaService.findByUser(user.id);
-    if (mda.name !== 'News' && user.role !== UserRoles.SUPER)
+    if (mda?.name !== 'News' && user.role !== UserRoles.SUPER)
       throw new ForbiddenException({
         status: false,
         message: 'Forbidden',
