@@ -22,7 +22,7 @@ export class UpdateNewsDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
-  header: string;
+  headline: string;
 
   @ApiProperty()
   @IsArray()

@@ -1,3 +1,5 @@
 export interface CreateNews{
-    header: string,
+    reference?: string,
+    headline: string,
+    image?: string,
 }

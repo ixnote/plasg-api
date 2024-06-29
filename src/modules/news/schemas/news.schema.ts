@@ -8,9 +8,17 @@ function transformValue(doc, ret: { [key: string]: any }) {
 
 export const NewsSchema: Schema = new Schema<News>(
   {
-    header: {
+    reference: {
       type: String,
-      required: true,
+      required: false,
+    },
+    headline: {
+      type: String,
+      required: false,
+    },
+    image: {
+      type: String,
+      required: false,
     },
     newsSections: [
       {

@@ -8,19 +8,31 @@ function transformValue(doc, ret: { [key: string]: any }) {
 
 export const NewsSectionSchema: Schema = new Schema<NewsSection>(
   {
+    heading: {
+      type: String,
+      required: false,
+    },
+    highlight: {
+      type: String,
+      required: false,
+    },
+    text: {
+      type: String,
+      required: false,
+    },
     paragraph: {
       type: String,
       required: false,
     },
     image: {
-        type: String,
-        required: false,
-      },
+      type: String,
+      required: false,
+    },
     news: {
-        type: Schema.Types.ObjectId,
-        ref: 'News',
-        required: false,
-    }
+      type: Schema.Types.ObjectId,
+      ref: 'News',
+      required: false,
+    },
   },
   {
     timestamps: true,
@@ -37,5 +49,7 @@ export const NewsSectionSchema: Schema = new Schema<NewsSection>(
   },
 );
 
-
-export const MdaModel = mongoose.model<NewsSection>('NewsSchema', NewsSectionSchema);
+export const MdaModel = mongoose.model<NewsSection>(
+  'NewsSchema',
+  NewsSectionSchema,
+);

@@ -21,7 +21,17 @@ export class AddNewsSectionDto {
 
   @ApiProperty()
   @IsString()
-  header: string;
+  headline: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  reference: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  image: string;
 
   @ApiProperty()
   @IsArray()

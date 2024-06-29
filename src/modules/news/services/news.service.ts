@@ -212,7 +212,7 @@ export class NewsService {
   }
 
   async updateNews(body: UpdateNewsDto, user: User): Promise<News> {
-    const { header, tags, items } = body;
+    const { headline, tags, items } = body;
     const news: News = await this.newsModel.findById(body.tags);
     if (tags) {
       const newsTagsObjectIds = news.tags.map(
@@ -222,7 +222,7 @@ export class NewsService {
       const combinedArray = newsTagsObjectIds.concat(tagsObjectIds);
       news.tags = combinedArray
     }
-    if(header) news.header = header
+    if(headline) news.headline = headline
     if(items){
       let newsSectionIds: any[] = [];
       for (const item of items) {

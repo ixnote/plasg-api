@@ -5,14 +5,28 @@ import {
 } from 'class-validator';
 
 export class AddNewsSectionItemsDto {
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  heading: string
 
   @ApiProperty()
   @IsString()
   @IsOptional()
-  image: string
+  highlight: string
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  text: string
 
   @ApiProperty()
   @IsString()
   @IsOptional()
   paragraph: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  image: string;
 }
