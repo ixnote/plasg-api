@@ -13,9 +13,4 @@ export class SearchResourcesDto {
   @IsNumber()
   @IsOptional()
   pageSize?: number;
-  
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  name?: string;
 }

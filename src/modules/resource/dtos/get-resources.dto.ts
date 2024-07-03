@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsDateString,
   IsNumber,
+  IsNumberString,
   IsOptional,
   IsString,
   Validate,
@@ -20,11 +21,11 @@ export class GetResourcesDto {
   @IsOptional()
   to?: number;
 
-  @IsNumber()
+  @IsNumberString()
   @IsOptional()
   page?: number;
 
-  @IsNumber()
+  @IsNumberString()
   @IsOptional()
   pageSize?: number;
 

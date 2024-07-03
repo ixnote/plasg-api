@@ -10,6 +10,8 @@ import { UserRoles } from 'src/common/constants/enum';
 import { AuthGuard } from 'src/framework/guards/auth.guard';
 import { SearchResourcesDto } from './dtos/search-resource.dto';
 import { GetResourceDto } from './dtos/get-resource.dto';
+import { query } from 'express';
+import { GetResourcesDto } from './dtos/get-resources.dto';
 
 @Controller('resource')
 export class ResourceController {
@@ -33,9 +35,9 @@ export class ResourceController {
     };
   }
 
-  @Get('/')
-  async searchResources(@Query() query: SearchResourcesDto) {
-    const resources = await this.resourceService.searchResources(query);
+  @Get('/search/:name')
+  async searchResources(@Param() param: {name: string}, @Query() query: SearchResourcesDto) {
+    const resources = await this.resourceService.searchResources(param, query);
     return {
       status: true,
       message: 'Resources fetched successfully',
@@ -54,5 +56,12 @@ export class ResourceController {
   }
 
   @Get('/all')
-  async getResources() {}
+  async getResources(@Query() query: GetResourcesDto) {
+    const resources: Resource [] = await this.resourceService.getResources(query)
+    return {
+        status: true,
+        message: 'Resources fetched successfully',
+        data: resources,
+      };
+  }
 }

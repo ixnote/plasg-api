@@ -12,6 +12,7 @@ import { Tag } from 'src/modules/tag/interfaces/tag.interface';
 import { TagService } from 'src/modules/tag/services/tag.service';
 import { MiscClass } from 'src/common/services/misc.service';
 import { GetResourceDto } from '../dtos/get-resource.dto';
+import { GetResourcesDto } from '../dtos/get-resources.dto';
 
 @Injectable()
 export class ResourceService {
@@ -48,26 +49,24 @@ export class ResourceService {
     return await this.create({ ...body, mda: mda.id });
   }
 
-  async getResources() {}
-
   async getResourceById(body: GetResourceDto){
     const resource: Resource = await this.findById(body.resourceId)
     if(!resource) throw new NotFoundException({
       status: false,
-      message: "Resource not found"
+      message: "Ressource not found"
     })
     return resource
+
   }
 
-  async searchResources(body: SearchResourcesDto) {
-    const { name } = body;
+  async searchResources(param: {name: string}, body: SearchResourcesDto) {
+    const { name } = param;
     const { page = 1, pageSize = 10, ...rest } = body;
     const usePage: number = page < 1 ? 1 : page;
     const pagination = await this.miscService.paginate({
       page: usePage,
       pageSize,
     });
-    const options: any = await this.miscService.search(rest);
     const tag: Tag = await this.tagService.findOneUsingRegex(name);
     interface QueryConditions {
       name?: { $regex: string; $options: string };
@@ -102,6 +101,43 @@ export class ResourceService {
       .populate("main_topic_tag","name type")
       .populate("all_topic_tags", "name type")
       .exec();
+    const total = resources.length;
+    const totalPages = Math.ceil(total / pageSize);
+    const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
+    const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
+
+    return {
+      pagination: {
+        currentPage: Number(usePage),
+        totalPages,
+        nextPage,
+        prevPage,
+        total,
+        pageSize: Number(pageSize),
+      },
+      resources,
+    };
+  }
+
+  async getResources(body: GetResourcesDto): Promise<any>{
+    const { page = 1, pageSize = 10, ...rest } = body;
+    const usePage: number = page < 1 ? 1 : page;
+    const pagination = await this.miscService.paginate({
+      page: usePage,
+      pageSize,
+    });
+    const options: any = await this.miscService.search(rest);
+    const resources: Resource[] = await this.resourceModel
+    .find(options)
+    .skip(pagination.offset)
+    .limit(pagination.limit)
+    .sort({ createdAt: -1 })
+    .populate('main_type_tag', "name type")
+    .populate("sub_type_tag", "name type")
+    .populate("main_topic_tag","name type")
+    .populate("all_topic_tags", "name type")
+    .exec();
+
     const total = resources.length;
     const totalPages = Math.ceil(total / pageSize);
     const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
