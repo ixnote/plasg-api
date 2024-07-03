@@ -13,6 +13,9 @@ import { AssignMdaDto } from '../dtos/assign-mda.dto';
 import { User } from 'src/modules/user/interfaces/user.interface';
 import { UserService } from 'src/modules/user/services/user.service';
 import { RemoveMdaDto } from '../dtos/remove-mda.dto';
+import { GetMdaDto } from '../dtos/get-mda.dto';
+import { MdaPaginationDto } from '../dtos/mda-pagination.dto';
+import { MiscClass } from 'src/common/services/misc.service';
 
 @Injectable()
 export class MdaService {
@@ -20,6 +23,7 @@ export class MdaService {
     @InjectModel('Mda') private readonly mdaModel: Model<Mda>,
     private mongooseService: MongooseService,
     private userService: UserService,
+    private miscService: MiscClass,
   ) {}
 
   async create(body: CreateMdaDto): Promise<Mda> {
@@ -46,13 +50,62 @@ export class MdaService {
     return await this.create(body);
   }
 
-  async getMdas(): Promise<Mda[]>{
-    return await this.mdaModel.find().select('name admin').populate('admin', 'full_name email phone');
+  async getMdas(): Promise<Mda[]> {
+    return await this.mdaModel
+      .find()
+      .select('name admin')
+      .populate('admin', 'full_name email phone');
   }
 
+  async getMda(body: GetMdaDto): Promise<Mda> {
+    const mda: Mda = await this.findById(body.mdaId);
+    if (!mda)
+      throw new NotFoundException({
+        status: false,
+        message: 'Mda not found!',
+      });
+    return mda;
+  }
+
+  async fetchMdas(body: MdaPaginationDto): Promise<any> {
+    const { page = 1, pageSize = 10, ...rest } = body;
+    const usePage: number = page < 1 ? 1 : page;
+    const pagination = await this.miscService.paginate({
+      page: usePage,
+      pageSize,
+    });
+    const options: any = await this.miscService.search(rest);
+    options.is_suspended = false
+    options.is_deleted = false
+    const mdasTotal: Mda[] = await this.mdaModel.find(options);
+    const totalMdasCount = mdasTotal.length;
+    const totalPages = Math.ceil(totalMdasCount / pageSize);
+    const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
+    const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
+
+    const mdas: Mda[] = await this.mdaModel
+      .find(options)
+      .select('name admin')
+      .populate('admin', 'full_name email phone')
+      .skip(pagination.offset)
+      .limit(pagination.limit)
+      .sort({ createdAt: -1 });
+
+    return {
+      pagination: {
+        currentPage: Number(usePage),
+        totalPages,
+        nextPage,
+        prevPage,
+        totalNews: totalMdasCount,
+        pageSize: Number(pageSize),
+      },
+      mdas,
+    };
+  }
 
   async findOneAndUpdate(body: CreateMdaDto): Promise<Mda> {
-    const {name, contact, logo} = body
+    const { name, contact, logo } = body;
     return await this.mdaModel.findOneAndUpdate(
       { name },
       { name, contact, logo },
@@ -83,12 +136,13 @@ export class MdaService {
       admin,
     });
     const findIfUserIsConnectedToMda = await this.mdaModel.findOne({
-      user: user.id
-    })
-    if(findIfUserIsConnectedToMda) throw new BadRequestException({
-      status: false,
-      message: "User currently handles an Mda"
-    })
+      user: user.id,
+    });
+    if (findIfUserIsConnectedToMda)
+      throw new BadRequestException({
+        status: false,
+        message: 'User currently handles an Mda',
+      });
     return 'Mda assigned successfully.';
   }
 

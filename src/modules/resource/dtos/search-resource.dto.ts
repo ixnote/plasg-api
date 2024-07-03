@@ -16,5 +16,6 @@ export class SearchResourcesDto {
   
   @ApiProperty()
   @IsString()
-  name: string;
+  @IsOptional()
+  name?: string;
 }

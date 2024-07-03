@@ -8,6 +8,7 @@ import { UserModule } from '../user/user.module';
 import { JwtService } from '@nestjs/jwt';
 import { UserSchema } from '../user/schemas/user.schema';
 import { ErrorSchema } from '../error/schemas/error.schema';
+import { MiscClass } from 'src/common/services/misc.service';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { ErrorSchema } from '../error/schemas/error.schema';
     ]),
     UserModule
   ],
-  providers: [MdaService, MongooseService, JwtService],
+  providers: [MdaService, MongooseService, JwtService, MiscClass],
   controllers: [MdaController],
   exports: [MdaService]
 })

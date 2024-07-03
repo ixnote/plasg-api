@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseFilters, UseGuards } from '@nestjs/common';
 import { MdaService } from './services/mda.service';
 import { Mda } from './interfaces/mda.interface';
 import { CreateMdaDto } from './dtos/create-mda.dto';
@@ -9,6 +9,8 @@ import { UserRoles } from 'src/common/constants/enum';
 import { ExceptionsLoggerFilter } from 'src/framework/exceptions/exceptionLogger.filter';
 import { AssignMdaDto } from './dtos/assign-mda.dto';
 import { RemoveMdaDto } from './dtos/remove-mda.dto';
+import { GetMdaDto } from './dtos/get-mda.dto';
+import { MdaPaginationDto } from './dtos/mda-pagination.dto';
 
 @Controller('mda')
 export class MdaController {
@@ -51,12 +53,22 @@ export class MdaController {
     }
 
     @Get('/')
-    async getMdas(){
-        const mdas: Mda[] = await this.mdaService.getMdas();
+    async getMdas(@Query() query: MdaPaginationDto){
+        const mdas: Mda[] = await this.mdaService.fetchMdas(query);
         return {
             status: true,
             message: "Mdas fetched successfully",
             data: mdas
+        }
+    }
+
+    @Get('/single/:mdaId')
+    async getMda(@Param() param: GetMdaDto){
+        const mda: Mda = await this.mdaService.getMda(param);
+        return {
+            status: true,
+            message: "Mda fetched successfully",
+            data: mda
         }
     }
 }

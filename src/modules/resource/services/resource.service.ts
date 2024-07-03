@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Resource } from '../interfaces/resource.interface';
@@ -11,6 +11,7 @@ import { SearchResourcesDto } from '../dtos/search-resource.dto';
 import { Tag } from 'src/modules/tag/interfaces/tag.interface';
 import { TagService } from 'src/modules/tag/services/tag.service';
 import { MiscClass } from 'src/common/services/misc.service';
+import { GetResourceDto } from '../dtos/get-resource.dto';
 
 @Injectable()
 export class ResourceService {
@@ -48,6 +49,15 @@ export class ResourceService {
   }
 
   async getResources() {}
+
+  async getResourceById(body: GetResourceDto){
+    const resource: Resource = await this.findById(body.resourceId)
+    if(!resource) throw new NotFoundException({
+      status: false,
+      message: "Resource not found"
+    })
+    return resource
+  }
 
   async searchResources(body: SearchResourcesDto) {
     const { name } = body;
