@@ -1,16 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsNumber,
+  IsNumberString,
   IsOptional,
   IsString,
 } from 'class-validator';
 
 export class SearchResourcesDto {
-  @IsNumber()
+  @IsNumberString()
   @IsOptional()
   page?: number;
 
-  @IsNumber()
+  @IsNumberString()
   @IsOptional()
   pageSize?: number;
 }
