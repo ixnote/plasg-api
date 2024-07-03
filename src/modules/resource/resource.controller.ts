@@ -19,7 +19,7 @@ export class ResourceController {
 
   @Post('/create')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles(UserRoles.MDA, UserRoles.SUPER)
+  @Roles(UserRoles.MDA)
   async createResource(
     @Body() body: CreateResourceDto,
     @UserGuard() user: User,
