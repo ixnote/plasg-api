@@ -38,6 +38,17 @@ export class TagService {
       });
   }
 
+  async getTypeTags(): Promise<Tag[]> {
+    return await this.tagModel
+      .find({ type: TagType.ITEM, parent: null, deleted: false })
+      .select('-deleted -createdAt -updatedAt')
+      .populate({
+        path: 'sub_tags',
+        match: { deleted: false },
+        select: 'name type',
+      });
+  }
+
   async addTag(body: AddTagDto): Promise<Tag> {
     const findTag: Tag = await this.tagModel.findOne({
       name: body.name.toLowerCase(),
