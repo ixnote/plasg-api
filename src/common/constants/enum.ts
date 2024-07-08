@@ -3,6 +3,14 @@ export enum UserRoles {
   MDA = 'mda-admin',
 }
 
+export enum DestinationTypes {
+  LANDMARK = 'landmark',
+  PARK = 'park',
+  Gallery = 'gallery',
+  STAY = "stay",
+  EAT = "eat"
+}
+
 export enum ComponentType {
   
 }

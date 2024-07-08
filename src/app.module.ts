@@ -12,6 +12,7 @@ import { SeederModule } from './modules/seeder/seeder.module';
 import { TagModule } from './modules/tag/tag.module';
 import { ResourceModule } from './modules/resource/resource.module';
 import { NewsModule } from './modules/news/news.module';
+import { StaticsModule } from './statics/statics.module';
 
 const { MONGO_URI } = env;
 
@@ -34,6 +35,7 @@ const { MONGO_URI } = env;
     TagModule,
     ResourceModule,
     NewsModule,
+    StaticsModule,
   ],
 })
 export class AppModule {}

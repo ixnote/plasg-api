@@ -12,6 +12,10 @@ export const env = {
   MONGO_URI: config.get<string>('MONGO_URI'),
   PORT: config.get<number>('PORT'),
   PLATEAU_KEY: config.get<string>('PLATEAU_KEY'),
+  CLOUDINARY: config.get<string>('PLATEAU_KEY'),
+  CLOUDINARY_NAME: config.get<string>('CLOUDINARY_NAME'),
+  CLOUDINARY_API_KEY: config.get<string>('CLOUDINARY_API_KEY'),
+  CLOUDINARY_API_SECRET: config.get<string>('CLOUDINARY_API_SECRET'),
 
   isDevelopment() {
     return this.NODE_ENV === Environments.DEVELOPMENT;

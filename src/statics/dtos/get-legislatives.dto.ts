@@ -4,7 +4,7 @@ import {
   IsOptional,
 } from 'class-validator';
 
-export class SearchResourcesDto {
+export class GetLegislativesDto {
 
   @ApiProperty()
   @IsNumberString()
