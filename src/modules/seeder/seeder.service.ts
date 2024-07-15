@@ -8,7 +8,6 @@ import * as mdaData from './data/mda.json';
 import { UserRoles } from 'src/common/constants/enum';
 import { Tag } from '../tag/interfaces/tag.interface';
 import { TagService } from '../tag/services/tag.service';
-import { Mda } from '../mda/interfaces/mda.interface';
 import { MdaService } from '../mda/services/mda.service';
 
 @Injectable()
@@ -36,9 +35,9 @@ async seed() {
       await admin.save()
       console.log('Database seeded with admin.');
     }
-    for(const item of mdaData){
-      await this.mdaService.findOneAndUpdate(item)
-    }
+    // for(const item of mdaData){
+    //   await this.mdaService.findOneAndUpdate(item)
+    // }
     const tags = tagsData;
     for (const tag of tags) {
       const newTag: Tag = await this.tagService.findOneAndUpdate(

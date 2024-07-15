@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Resource } from '../interfaces/resource.interface';
 import { CreateResourceDto } from '../dtos/create-resource.dto';
 import { ResourceData } from '../interfaces/create-resource.interface';
@@ -120,15 +120,34 @@ export class ResourceService {
   }
 
   async getResources(body: GetResourcesDto): Promise<any>{
-    const { page = 1, pageSize = 10, ...rest } = body;
+    const { page = 1, pageSize = 10, main_type_tag, main_topic_tag, sub_type_tag, all_topic_tag, ...rest } = body;
+    const extraQuery: any = {};
+
+    if (body.main_type_tag) {
+      extraQuery.main_type_tag = main_type_tag;
+    }
+    if (body.main_topic_tag) {
+      extraQuery.main_topic_tag = main_topic_tag;
+    }
+    
+    if (body.sub_type_tag) {
+      extraQuery.sub_type_tag = sub_type_tag
+    }
+
+    if (all_topic_tag) {
+      extraQuery.all_topic_tags = { $in: [all_topic_tag] };
+    }
+
     const usePage: number = page < 1 ? 1 : page;
     const pagination = await this.miscService.paginate({
       page: usePage,
       pageSize,
     });
     const options: any = await this.miscService.search(rest);
+    const query = { ...options, ...extraQuery };
+    console.log("🚀 ~ ResourceService ~ getResources ~ query:", query)
     const resources: Resource[] = await this.resourceModel
-    .find(options)
+    .find(query)
     .skip(pagination.offset)
     .limit(pagination.limit)
     .sort({ createdAt: -1 })

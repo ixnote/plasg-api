@@ -16,6 +16,7 @@ import { RemoveMdaDto } from '../dtos/remove-mda.dto';
 import { GetMdaDto } from '../dtos/get-mda.dto';
 import { MdaPaginationDto } from '../dtos/mda-pagination.dto';
 import { MiscClass } from 'src/common/services/misc.service';
+import { CloudinaryService } from 'src/common/services/cloudinary/cloudinary.service';
 
 @Injectable()
 export class MdaService {
@@ -24,6 +25,7 @@ export class MdaService {
     private mongooseService: MongooseService,
     private userService: UserService,
     private miscService: MiscClass,
+    private cloudinaryService: CloudinaryService,
   ) {}
 
   async create(body: CreateMdaDto): Promise<Mda> {
@@ -46,7 +48,76 @@ export class MdaService {
   async findByUser(admin: string): Promise<Mda> {
     return this.mdaModel.findOne({ admin }).exec();
   }
-  async createMda(body: CreateMdaDto): Promise<Mda> {
+  async createMda(body: CreateMdaDto, files: any): Promise<Mda> {
+    const { name, team, about, director, hero } = body;
+    const mda: Mda = await this.findByName(name);
+    if(mda) throw new BadRequestException({
+      status: false,
+      message: "Mda already exists"
+    })
+    if (team.length !== files.files.length)
+      throw new BadRequestException({
+        status: false,
+        message: 'team images must match number of team members',
+      });
+    if (files.about_image) {
+      const response = await this.cloudinaryService.uploadFile(
+        files.about_image[0],
+      );
+      if (!response)
+        throw new NotFoundException({
+          status: 'error',
+          message: 'Invalid File',
+        });
+      about.image = response.url;
+      about.public_id = response.public_id;
+    }
+    if (files.logo_image) {
+      const response = await this.cloudinaryService.uploadFile(
+        files.logo_image[0],
+      );
+      if (!response)
+        throw new NotFoundException({
+          status: 'error',
+          message: 'Invalid File',
+        });
+      hero.logo = response.url;
+      hero.logo_public_id = response.public_id;
+    }
+    if (files.hero_image) {
+      const response = await this.cloudinaryService.uploadFile(
+        files.hero_image[0],
+      );
+      if (!response)
+        throw new NotFoundException({
+          status: 'error',
+          message: 'Invalid File',
+        });
+      hero.image = response.url;
+      hero.image_public_id = response.public_id;
+    }
+    if (files.director_image) {
+      const response = await this.cloudinaryService.uploadFile(
+        files.director_image[0],
+      );
+      if (!response)
+        throw new NotFoundException({
+          status: 'error',
+          message: 'Invalid File',
+        });
+      director.image = response.url;
+      director.public_id = response.public_id;
+    }
+    for (let i = 0; i < files.files.length; i++) {
+      const response = await this.cloudinaryService.uploadFile(files.files[i]);
+      if (!response)
+        throw new NotFoundException({
+          status: 'error',
+          message: 'Invalid File',
+        });
+      team[i].image = response.url;
+      team[i].public_id = response.public_id;
+    }
     return await this.create(body);
   }
 
@@ -75,8 +146,8 @@ export class MdaService {
       pageSize,
     });
     const options: any = await this.miscService.search(rest);
-    options.is_suspended = false
-    options.is_deleted = false
+    options.is_suspended = false;
+    options.is_deleted = false;
     const mdasTotal: Mda[] = await this.mdaModel.find(options);
     const totalMdasCount = mdasTotal.length;
     const totalPages = Math.ceil(totalMdasCount / pageSize);
@@ -85,7 +156,6 @@ export class MdaService {
 
     const mdas: Mda[] = await this.mdaModel
       .find(options)
-      .select('name admin')
       .populate('admin', 'full_name email phone')
       .skip(pagination.offset)
       .limit(pagination.limit)
@@ -105,10 +175,10 @@ export class MdaService {
   }
 
   async findOneAndUpdate(body: CreateMdaDto): Promise<Mda> {
-    const { name, contact, logo } = body;
+    const { name, contact } = body;
     return await this.mdaModel.findOneAndUpdate(
       { name },
-      { name, contact, logo },
+      { name, contact },
       { upsert: true, new: true, runValidators: true },
     );
   }

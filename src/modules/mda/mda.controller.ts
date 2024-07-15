@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UploadedFiles, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
 import { MdaService } from './services/mda.service';
 import { Mda } from './interfaces/mda.interface';
 import { CreateMdaDto } from './dtos/create-mda.dto';
@@ -11,6 +11,8 @@ import { AssignMdaDto } from './dtos/assign-mda.dto';
 import { RemoveMdaDto } from './dtos/remove-mda.dto';
 import { GetMdaDto } from './dtos/get-mda.dto';
 import { MdaPaginationDto } from './dtos/mda-pagination.dto';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { ApiConsumes } from '@nestjs/swagger';
 
 @Controller('mda')
 export class MdaController {
@@ -21,9 +23,17 @@ export class MdaController {
     @Post('/add')
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRoles.SUPER)
+    @UseInterceptors(FileFieldsInterceptor([
+        { name: 'about_image', maxCount: 1 },
+        { name: 'logo_image', maxCount: 1 },
+        { name: 'hero_image', maxCount: 1 },
+        { name: 'director_image', maxCount: 1 },
+        { name: 'files', maxCount: 30 },
+      ]))
+    @ApiConsumes('multipart/form-data')
     @UseFilters(ExceptionsLoggerFilter)
-    async addMda(@Body() body: CreateMdaDto){
-        const mda: Mda = await this.mdaService.createMda(body);
+    async addMda(@UploadedFiles() files, @Body() body: CreateMdaDto){
+        const mda: Mda = await this.mdaService.createMda(body, files);
         return {
             status: true,
             message: "Mda added successfully.",

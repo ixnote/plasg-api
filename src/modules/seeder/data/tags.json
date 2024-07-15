@@ -102,6 +102,11 @@
   },
   {
     "name": "service",
+    "type": "item",
+    "sub_tags": []
+  },
+  {
+    "name": "service",
     "type": "news",
     "sub_tags": []
   },
