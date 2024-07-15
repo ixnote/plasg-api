@@ -21,6 +21,10 @@ export class TagService {
     return this.tagModel.findById(id).populate('sub_tags');
   }
 
+  async findByIdAndType(id: string, type: string): Promise<Tag> {
+    return this.tagModel.findOne({_id: id, type}).populate('sub_tags');
+  }
+
   async getTagByName() {}
 
   async getTags() {

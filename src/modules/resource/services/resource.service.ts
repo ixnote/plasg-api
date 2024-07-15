@@ -13,6 +13,7 @@ import { TagService } from 'src/modules/tag/services/tag.service';
 import { MiscClass } from 'src/common/services/misc.service';
 import { GetResourceDto } from '../dtos/get-resource.dto';
 import { GetResourcesDto } from '../dtos/get-resources.dto';
+import { TagType } from 'src/common/constants/enum';
 
 @Injectable()
 export class ResourceService {
@@ -46,6 +47,41 @@ export class ResourceService {
         status: false,
         message: "User isn't assigned to any Mda",
       });
+    if(body.main_topic_tag){
+      const findTag: Tag = await this.tagService.findByIdAndType(body.main_topic_tag, TagType.TOPIC)
+      if(!findTag) throw new NotFoundException({
+        status: false,
+        message: "Main topic tag not found"
+      })
+    }
+    if(body.sub_topic_tag){
+      const findTag: Tag = await this.tagService.findByIdAndType(body.sub_topic_tag, TagType.TOPIC)
+      if(!findTag) throw new NotFoundException({
+        status: false,
+        message: "Sub topic tag not found"
+      })
+    }
+    if(body.main_type_tag){
+      const findTag: Tag = await this.tagService.findByIdAndType(body.main_type_tag, TagType.ITEM)
+      if(!findTag) throw new NotFoundException({
+        status: false,
+        message: "Main type tag not found"
+      })
+    }
+    if(body.sub_type_tag){
+      const findTag: Tag = await this.tagService.findByIdAndType(body.sub_type_tag, TagType.ITEM)
+      if(!findTag) throw new NotFoundException({
+        status: false,
+        message: "Sub type tag not found"
+      })
+    }
+    for(let i = 0; i < body.all_topic_tags.length; i++){
+      const findTag: Tag = await this.tagService.findByIdAndType(body.all_topic_tags[i], TagType.TOPIC)
+      if(!findTag) throw new NotFoundException({
+        status: false,
+        message: `Topic Tag in position ${i} of All topic tags not found`
+      })
+    }
     return await this.create({ ...body, mda: mda.id });
   }
 
