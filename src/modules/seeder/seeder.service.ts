@@ -59,6 +59,7 @@ async seed() {
         subTags.push(newSubTag.id)
         await this.tagService.updateSubTag(newTag.id, newSubTag.name)
       }
+      console.log("🚀 ~ SeederService ~ seed ~ subTags:", subTags)
       newTag.sub_tags = subTags
       await newTag.save()
 

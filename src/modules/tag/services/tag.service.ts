@@ -100,7 +100,7 @@ export class TagService {
     parent?: string,
   ): Promise<Tag> {
     return await this.tagModel.findOneAndUpdate(
-      { name },
+      { name, type },
       { name, type, parent },
       { upsert: true, new: true, runValidators: true },
     );
