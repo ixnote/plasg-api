@@ -48,6 +48,17 @@ export class StaticsService {
     return await legislative.save();
   }
 
+  async updateLegislatives(body: AddLegislativeDto): Promise<Legislative> {
+    let data: any = { ...body };
+    const updatedDestination: Legislative = await this.legislativeModel.findOneAndUpdate(
+      { name: data.name }, 
+      { $set: data },
+      { new: true, upsert: true } 
+    ).exec();
+
+    return updatedDestination;
+  }
+
   async deleteLegislative(body: GetLegislativeDto): Promise<Legislative>{
     const legislative: Legislative = await this.legislativeModel.findById(
       body.legislativeId,
@@ -121,6 +132,17 @@ export class StaticsService {
     }
     const destination = new this.destinationModel(data);
     return await destination.save();
+  }
+
+  async updateDestinations(body: AddDestinationDto): Promise<Destination> {
+    let data: any = { ...body };
+    const updatedDestination: Destination = await this.destinationModel.findOneAndUpdate(
+      { name: data.name }, 
+      { $set: data },
+      { new: true, upsert: true } 
+    ).exec();
+
+    return updatedDestination;
   }
 
   async deleteDestination(param: GetDestinationDto) {

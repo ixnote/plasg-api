@@ -12,7 +12,7 @@ export class AddLegislativeDto {
 
   @ApiProperty()
   @IsString()
-  role: string;
+  role?: string;
 
   @ApiProperty()
   @IsString()
@@ -29,5 +29,5 @@ export class AddLegislativeDto {
   email: string;
 
   @ApiProperty()
-  file: any;
+  file?: any;
 }
