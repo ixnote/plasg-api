@@ -25,6 +25,7 @@ import { UserSchema } from 'src/modules/user/schemas/user.schema';
     AuthModule
   ],
   controllers: [StaticsController],
-  providers: [StaticsService, MiscClass]
+  providers: [StaticsService, MiscClass],
+  exports: [StaticsService]
 })
 export class StaticsModule {}

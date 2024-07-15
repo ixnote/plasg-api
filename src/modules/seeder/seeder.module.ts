@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from '../user/schemas/user.schema';
 import { TagModule } from '../tag/tag.module';
 import { MdaModule } from '../mda/mda.module';
+import { StaticsModule } from 'src/statics/statics.module';
 
 @Module({
   imports: [
@@ -11,7 +12,8 @@ import { MdaModule } from '../mda/mda.module';
       { name: 'User', schema: UserSchema },
     ]),
     TagModule,
-    MdaModule
+    MdaModule,
+    StaticsModule
   ],
   providers: [SeederService],
   exports: [SeederService],
