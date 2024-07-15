@@ -1,21 +1,11 @@
 [
   {
-    "name": "people",
-    "type": "topic",
-    "sub_tags": []
-  },
-  {
-    "name": "welfare",
-    "type": "topic",
-    "sub_tags": []
-  },
-  {
-    "name": "health",
-    "type": "topic",
-    "sub_tags": []
-  },
-  {
     "name": "governance",
+    "type": "topic",
+    "sub_tags": []
+  },
+  {
+    "name": "business",
     "type": "topic",
     "sub_tags": [
       {
@@ -40,6 +30,24 @@
       }
     ]
   },
+  {
+    "name": "health",
+    "type": "topic",
+    "sub_tags": []
+  },
+  {
+    "name": "welfare",
+    "type": "topic",
+    "sub_tags": []
+  },
+  {
+    "name": "tourism",
+    "type": "topic",
+    "sub_tags": []
+  },
+
+
+
   {
     "name": "resource",
     "type": "item",
@@ -105,6 +113,14 @@
     "type": "item",
     "sub_tags": []
   },
+
+
+
+
+
+
+
+  
   {
     "name": "service",
     "type": "news",
