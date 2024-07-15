@@ -45,6 +45,11 @@ export const ResourceSchema: Schema = new Schema<Resource>(
       ref: 'Tag',
       required: true,
     },
+    sub_topic_tag: {
+      type: Schema.Types.ObjectId,
+      ref: 'Tag',
+      required: true,
+    },
     all_topic_tags: {
       type: [Schema.Types.ObjectId],
       ref: 'Tag',

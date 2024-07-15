@@ -30,6 +30,11 @@ export class CreateResourceDto {
   main_topic_tag: string;
 
   @ApiProperty()
+  @IsString()
+  @IsMongoId()
+  sub_topic_tag: string;
+
+  @ApiProperty()
   @IsArray()
   @ValidateIf((object, value) => value && value.length > 0)
   // isValidMongooseId(value: string): boolean {

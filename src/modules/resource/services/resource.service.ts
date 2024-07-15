@@ -75,6 +75,7 @@ export class ResourceService {
       main_type_tag?: { $eq: string };
       sub_type_tag?: { $eq: string };
       main_topic_tag?: { $eq: string };
+      sub_topic_tag?: { $eq: string };
     }
 
     const query: QueryConditions = {
@@ -120,7 +121,7 @@ export class ResourceService {
   }
 
   async getResources(body: GetResourcesDto): Promise<any>{
-    const { page = 1, pageSize = 10, main_type_tag, main_topic_tag, sub_type_tag, all_topic_tag, ...rest } = body;
+    const { page = 1, pageSize = 10, main_type_tag, main_topic_tag, sub_type_tag, sub_topic_tag, all_topic_tag, ...rest } = body;
     const extraQuery: any = {};
 
     if (body.main_type_tag) {
@@ -128,6 +129,10 @@ export class ResourceService {
     }
     if (body.main_topic_tag) {
       extraQuery.main_topic_tag = main_topic_tag;
+    }
+
+    if (body.sub_topic_tag) {
+      extraQuery.sub_topic_tag = sub_topic_tag;
     }
     
     if (body.sub_type_tag) {
@@ -145,7 +150,6 @@ export class ResourceService {
     });
     const options: any = await this.miscService.search(rest);
     const query = { ...options, ...extraQuery };
-    console.log("🚀 ~ ResourceService ~ getResources ~ query:", query)
     const resources: Resource[] = await this.resourceModel
     .find(query)
     .skip(pagination.offset)
