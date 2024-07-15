@@ -22,6 +22,7 @@ export class CreateResourceDto {
 
   @ApiProperty()
   @IsMongoId()
+  @IsOptional()
   sub_type_tag: string;
 
   @ApiProperty()
