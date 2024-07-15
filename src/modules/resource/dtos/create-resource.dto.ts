@@ -33,6 +33,7 @@ export class CreateResourceDto {
   @ApiProperty()
   @IsString()
   @IsMongoId()
+  @IsOptional()
   sub_topic_tag: string;
 
   @ApiProperty()

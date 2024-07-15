@@ -4,7 +4,6 @@ import { StaticsService } from './services/statics.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from 'src/modules/user/user.module';
 import { DestinationSchema } from './schemas/destination.schema';
-import { MdaSchema } from 'src/modules/mda/schemas/mda.schema';
 import { ErrorSchema } from 'src/modules/error/schemas/error.schema';
 import { LegislativeSchema } from './schemas/legislative.schema';
 import { MiscClass } from 'src/common/services/misc.service';

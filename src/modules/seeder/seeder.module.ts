@@ -4,7 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from '../user/schemas/user.schema';
 import { TagModule } from '../tag/tag.module';
 import { MdaModule } from '../mda/mda.module';
-import { StaticsModule } from 'src/statics/statics.module';
+import { StaticsModule } from 'src/modules/statics/statics.module';
 
 @Module({
   imports: [

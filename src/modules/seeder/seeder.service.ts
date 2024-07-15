@@ -10,9 +10,9 @@ import { UserRoles } from 'src/common/constants/enum';
 import { Tag } from '../tag/interfaces/tag.interface';
 import { TagService } from '../tag/services/tag.service';
 import { MdaService } from '../mda/services/mda.service';
-import { StaticsService } from 'src/statics/services/statics.service';
-import { Destination } from 'src/statics/interfaces/destination.interface';
-import { Legislative } from 'src/statics/interfaces/legislative.interface';
+import { StaticsService } from 'src/modules/statics/services/statics.service';
+import { Destination } from 'src/modules/statics/interfaces/destination.interface';
+import { Legislative } from 'src/modules/statics/interfaces/legislative.interface';
 
 @Injectable()
 export class SeederService {
