@@ -5,11 +5,17 @@ import mongoose from 'mongoose';
 export class CreateResourceDto {
   @ApiProperty()
   @IsString()
+  @IsOptional()
+  title: string;
+
+  @ApiProperty()
+  @IsString()
   name: string;
 
   @ApiProperty()
   @IsString()
   @IsUrl()
+  @IsOptional()
   link: string;
 
   @ApiProperty()
@@ -43,4 +49,7 @@ export class CreateResourceDto {
   //   return mongoose.Types.ObjectId.isValid(value);
   // }
   all_topic_tags: string[];
+
+  @ApiProperty()
+  file: any
 }

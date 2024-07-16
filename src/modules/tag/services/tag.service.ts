@@ -99,11 +99,13 @@ export class TagService {
   async findOneAndUpdate(
     name: string,
     type: string,
+    title: string,
+    description: string,
     parent?: string,
   ): Promise<Tag> {
     const tag: Tag = await this.tagModel.findOneAndUpdate(
       { name, type },
-      { name, type, parent },
+      { name, type, parent, title, description },
       { upsert: true, new: true, runValidators: true },
     );
     return tag

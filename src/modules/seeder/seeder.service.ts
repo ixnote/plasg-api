@@ -48,12 +48,16 @@ async seed() {
       const newTag: Tag = await this.tagService.findOneAndUpdate(
         tag.name,
         tag.type,
+        tag.title,
+        tag.description
       );
       let subTags: any[] = []
       for(const item of tag.sub_tags){
         const newSubTag: Tag = await this.tagService.findOneAndUpdate(
           item.name,
           tag.type,
+          tag.title,
+          tag.description,
           newTag.id
         );
         subTags.push(newSubTag.id)

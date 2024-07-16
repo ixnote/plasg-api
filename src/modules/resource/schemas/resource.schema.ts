@@ -17,9 +17,13 @@ export const ResourceSchema: Schema = new Schema<Resource>(
       type: String,
       required: true,
     },
+    title: {
+      type: String,
+      required: false,
+    },
     link: {
       type: String,
-      required: true,
+      required: false,
     },
     mda: {
       type: Schema.Types.ObjectId,
@@ -29,6 +33,14 @@ export const ResourceSchema: Schema = new Schema<Resource>(
     description: {
       type: String,
       required: true,
+    },
+    image: {
+      type: String,
+      required: false,
+    },
+    public_id: {
+      type: String,
+      required: false,
     },
     main_type_tag: {
       type: Schema.Types.ObjectId,

@@ -26,7 +26,7 @@ export class StaticsController {
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRoles.SUPER)
     @UseInterceptors(FileInterceptor('file'))
-    async addLegislative(@Body() body: AddLegislativeDto,  @UploadedFile() file: Express.Multer.File,){
+    async addLegislative(@Body() body: AddLegislativeDto,  @UploadedFile() file: Express.Multer.File){
         if(file){
             body.file = file
         }
