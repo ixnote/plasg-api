@@ -25,7 +25,9 @@ export class TagService {
     return this.tagModel.findOne({_id: id, type}).populate('sub_tags');
   }
 
-  async getTagByName() {}
+  async getTagByName(name: string) {
+    return this.tagModel.findOne({name}).populate('sub_tags');
+  }
 
   async getTags() {
     return await this.tagModel.find().populate('sub_tags');
@@ -99,11 +101,12 @@ export class TagService {
     type: string,
     parent?: string,
   ): Promise<Tag> {
-    return await this.tagModel.findOneAndUpdate(
+    const tag: Tag = await this.tagModel.findOneAndUpdate(
       { name, type },
       { name, type, parent },
       { upsert: true, new: true, runValidators: true },
     );
+    return tag
   }
 
   async findOneUsingRegex(name: string): Promise<Tag> {

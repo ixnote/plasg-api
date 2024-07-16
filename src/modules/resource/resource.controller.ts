@@ -12,6 +12,7 @@ import { SearchResourcesDto } from './dtos/search-resource.dto';
 import { GetResourceDto } from './dtos/get-resource.dto';
 import { query } from 'express';
 import { GetResourcesDto } from './dtos/get-resources.dto';
+import { GetResourcesByNameDto } from './dtos/get-resources-by-name.dto';
 
 @Controller('resource')
 export class ResourceController {
@@ -63,5 +64,15 @@ export class ResourceController {
         message: 'Resources fetched successfully',
         data: resources,
       };
+  }
+
+  @Get('/category/:name')
+  async getResourcesByCategory(@Param() param: {name: string}, @Query() query: GetResourcesByNameDto){
+    const results = await this.resourceService.getResourcesByCategory(param.name, query)
+    return {
+      status: true,
+      message: 'Resources fetched successfully',
+      data: results,
+    };
   }
 }

@@ -214,4 +214,48 @@ export class ResourceService {
       resources,
     };
   }
+
+  async getResourcesByCategory(name: string, body: GetResourcesDto): Promise<any>{
+    const { page = 1, pageSize = 10, ...rest } = body;
+    const tag: Tag = await this.tagService.getTagByName(name)
+    if(!tag) throw new NotFoundException({
+      status: false,
+      message: "Tag not found"
+    })
+    const usePage: number = page < 1 ? 1 : page;
+    const pagination = await this.miscService.paginate({
+      page: usePage,
+      pageSize,
+    });
+    const options: any = await this.miscService.search(rest);
+    const query = { ...options };
+    query.main_topic_tag = tag.id
+    const resources: Resource[] = await this.resourceModel
+    .find(query)
+    .skip(pagination.offset)
+    .limit(pagination.limit)
+    .sort({ createdAt: -1 })
+    .populate('main_type_tag', "name type")
+    .populate("sub_type_tag", "name type")
+    .populate("main_topic_tag","name type")
+    .populate("all_topic_tags", "name type")
+    .exec();
+
+    const total = resources.length;
+    const totalPages = Math.ceil(total / pageSize);
+    const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
+    const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
+
+    return {
+      pagination: {
+        currentPage: Number(usePage),
+        totalPages,
+        nextPage,
+        prevPage,
+        total,
+        pageSize: Number(pageSize),
+      },
+      resources,
+    };
+  }
 }
