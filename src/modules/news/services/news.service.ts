@@ -41,6 +41,13 @@ export class NewsService {
   }
 
   async create(body: CreateNews, user: User): Promise<News> {
+    for(const tag of body.tags){
+      const findTag: Tag = await this.tagService.findById(tag.toString())
+      if(!findTag) throw new NotFoundException({
+        status: true, 
+        message: "Invalid tag"
+      })
+    }
     const mda: Mda = await this.mdaService.findByUser(user.id);
     if (!mda)
       throw new ForbiddenException({
