@@ -7,6 +7,9 @@ import { User } from '../user/interfaces/user.interface';
 import { NewsPaginationDto } from './dtos/news-pagination.dto';
 import { AuthGuard } from 'src/framework/guards/auth.guard';
 import { UpdateNewsDto } from './dtos/updat-news.dto';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { RolesGuard } from 'src/framework/guards/roles.guard';
+import { UserRoles } from 'src/common/constants/enum';
 
 @Controller('news')
 export class NewsController {
@@ -14,8 +17,18 @@ export class NewsController {
         private newsService: NewsService
     ){}
    
-    @Get('/')
+    @Get('/articles')
     async getNews(@Query() query: NewsPaginationDto){
+        const results = await this.newsService.findMdaArticles(query);
+        return {
+            status: true,
+            message: "News fetched successfully",
+            data: results
+        }
+    }
+
+    @Get('/newsMda')
+    async getNewsFromNewsMda(@Query() query: NewsPaginationDto){
         const results = await this.newsService.findNews(query);
         return {
             status: true,
@@ -35,9 +48,10 @@ export class NewsController {
     }
     
     @Post('/add')
-    @UseGuards(AuthGuard)
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles(UserRoles.MDA)
     async addNews(@Body() body: AddNewsSectionDto, @UserGuard() user: User){
-        const newNews: News = await this.newsService.create(body)
+        const newNews: News = await this.newsService.create(body, user)
         body.newsId = newNews.id
         const news: News = await this.newsService.addNewsSections(body, user)
         return {

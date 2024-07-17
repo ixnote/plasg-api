@@ -38,6 +38,11 @@ export const NewsSchema: Schema = new Schema<News>(
         required: false,
       },
     ],
+    mda: {
+      type: Schema.Types.ObjectId,
+      ref: 'Mda',
+      required: true,
+    }
   },
   {
     timestamps: true,

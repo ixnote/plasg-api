@@ -40,7 +40,7 @@ export class TagService {
       .populate({
         path: 'sub_tags',
         match: { deleted: false },
-        select: 'name type',
+        select: '-deleted -createdAt -updatedAt',
       });
   }
 
@@ -51,7 +51,7 @@ export class TagService {
       .populate({
         path: 'sub_tags',
         match: { deleted: false },
-        select: 'name type',
+        select: '-deleted -createdAt -updatedAt',
       });
   }
 

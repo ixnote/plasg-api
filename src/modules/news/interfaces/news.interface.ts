@@ -6,5 +6,6 @@ export interface News extends mongoose.Document {
   image: string,
   newsSections: mongoose.Types.ObjectId[];
   tags: mongoose.Types.ObjectId[];
+  mda: mongoose.Types.ObjectId
   is_posted: boolean;
 }

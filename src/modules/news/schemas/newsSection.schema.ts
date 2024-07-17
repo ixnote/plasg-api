@@ -24,6 +24,10 @@ export const NewsSectionSchema: Schema = new Schema<NewsSection>(
       type: String,
       required: false,
     },
+    bullet: {
+      type: String,
+      required: false,
+    },
     image: {
       type: String,
       required: false,
