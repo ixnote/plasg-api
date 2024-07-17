@@ -130,7 +130,7 @@ export class NewsService {
     await this.newsModel.findByIdAndDelete(body.newsId);
   }
 
-  async findMdaArticles(body: NewsPaginationDto): Promise<any> {
+  async findMdaArticles(body: NewsPaginationDto, param: {mda: string}): Promise<any> {
     const { page = 1, pageSize = 10, ...rest } = body;
     const usePage: number = page < 1 ? 1 : page;
     const pagination = await this.miscService.paginate({
@@ -156,7 +156,7 @@ export class NewsService {
     const totalPages = Math.ceil(totalNewsCount / pageSize);
     const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
     const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
-
+    options.mda = param.mda
     const news: News[] = await this.newsModel
       .find(options)
       .populate('newsSections')

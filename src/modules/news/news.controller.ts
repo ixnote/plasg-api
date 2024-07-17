@@ -17,9 +17,9 @@ export class NewsController {
         private newsService: NewsService
     ){}
    
-    @Get('/articles')
-    async getNews(@Query() query: NewsPaginationDto){
-        const results = await this.newsService.findMdaArticles(query);
+    @Get('/articles/:mda')
+    async getNews(@Query() query: NewsPaginationDto, @Param() param: {mda: string}){
+        const results = await this.newsService.findMdaArticles(query, param);
         return {
             status: true,
             message: "News fetched successfully",
