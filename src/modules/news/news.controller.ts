@@ -27,7 +27,7 @@ export class NewsController {
         }
     }
 
-    @Get('/newsMda')
+    @Get('/')
     async getNewsFromNewsMda(@Query() query: NewsPaginationDto){
         const results = await this.newsService.findNews(query);
         return {
