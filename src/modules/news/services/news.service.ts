@@ -90,7 +90,7 @@ export class NewsService {
   }
 
   async addNewsSections(body: AddNewsSectionDto, user: User): Promise<News> {
-    await this.checkIfUserIsAuthorized(user);
+    // await this.checkIfUserIsAuthorized(user);
     const news: News = await this.findById(body.newsId);
     if (!news)
       throw new NotFoundException({
@@ -131,7 +131,7 @@ export class NewsService {
     await this.newsModel.findByIdAndDelete(body.newsId);
   }
 
-  async findMdaArticles(body: NewsPaginationDto, param: GetArticlesMdaDto): Promise<any> {
+  async findMdaArticles(body: NewsPaginationDto, param: {mda: string}): Promise<any> {
     const { page = 1, pageSize = 10, ...rest } = body;
     const usePage: number = page < 1 ? 1 : page;
     const pagination = await this.miscService.paginate({
@@ -157,9 +157,8 @@ export class NewsService {
     const totalPages = Math.ceil(totalNewsCount / pageSize);
     const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
     const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
-    options.mda = param.mdaId
     const news: News[] = await this.newsModel
-      .find(options)
+      .find({...options, mda: param.mda})
       .populate('newsSections')
       .populate('tags')
       .skip(pagination.offset)

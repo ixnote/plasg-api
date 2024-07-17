@@ -19,7 +19,8 @@ export class NewsController {
     ){}
    
     @Get('/articles/:mda')
-    async getNews(@Query() query: NewsPaginationDto, @Param() param: GetArticlesMdaDto){
+    async getNews(@Query() query: NewsPaginationDto, @Param() param: {mda: string}){
+        console.log("🚀 ~ NewsController ~ getNews ~ param:", param)
         const results = await this.newsService.findMdaArticles(query, param);
         return {
             status: true,
