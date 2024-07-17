@@ -4,5 +4,6 @@ export interface CreateNews{
     reference?: string,
     headline: string,
     image?: string,
-    tags: string[]
+    tags: string[],
+    mda?: string
 }

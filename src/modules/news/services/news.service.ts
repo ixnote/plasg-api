@@ -41,19 +41,21 @@ export class NewsService {
   }
 
   async create(body: CreateNews, user: User): Promise<News> {
-    for(const tag of body.tags){
-      const findTag: Tag = await this.tagService.findById(tag.toString())
-      if(!findTag) throw new NotFoundException({
-        status: true, 
-        message: "Invalid tag"
-      })
+    for (const tag of body.tags) {
+      const findTag: Tag = await this.tagService.findById(tag.toString());
+      if (!findTag)
+        throw new NotFoundException({
+          status: true,
+          message: 'Invalid tag',
+        });
     }
-    const mda: Mda = await this.mdaService.findByUser(user.id);
-    if (!mda)
+    const findMda: Mda = await this.mdaService.findByUser(user.id);
+    if (!findMda)
       throw new ForbiddenException({
         status: false,
         message: 'Not Authorized',
       });
+      body.mda = findMda.id
     const createdNews = new this.newsModel(body);
     return createdNews.save();
   }
