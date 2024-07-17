@@ -10,6 +10,7 @@ import { UpdateNewsDto } from './dtos/updat-news.dto';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { RolesGuard } from 'src/framework/guards/roles.guard';
 import { UserRoles } from 'src/common/constants/enum';
+import { GetArticlesMdaDto } from './dtos/get-articles-param.dto';
 
 @Controller('news')
 export class NewsController {
@@ -18,7 +19,7 @@ export class NewsController {
     ){}
    
     @Get('/articles/:mda')
-    async getNews(@Query() query: NewsPaginationDto, @Param() param: {mda: string}){
+    async getNews(@Query() query: NewsPaginationDto, @Param() param: GetArticlesMdaDto){
         const results = await this.newsService.findMdaArticles(query, param);
         return {
             status: true,

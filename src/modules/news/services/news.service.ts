@@ -19,6 +19,7 @@ import { TagService } from 'src/modules/tag/services/tag.service';
 import { Tag } from 'src/modules/tag/interfaces/tag.interface';
 import { UpdateNewsDto } from '../dtos/updat-news.dto';
 import { UserRoles } from 'src/common/constants/enum';
+import { GetArticlesMdaDto } from '../dtos/get-articles-param.dto';
 
 @Injectable()
 export class NewsService {
@@ -130,7 +131,7 @@ export class NewsService {
     await this.newsModel.findByIdAndDelete(body.newsId);
   }
 
-  async findMdaArticles(body: NewsPaginationDto, param: {mda: string}): Promise<any> {
+  async findMdaArticles(body: NewsPaginationDto, param: GetArticlesMdaDto): Promise<any> {
     const { page = 1, pageSize = 10, ...rest } = body;
     const usePage: number = page < 1 ? 1 : page;
     const pagination = await this.miscService.paginate({
@@ -156,7 +157,7 @@ export class NewsService {
     const totalPages = Math.ceil(totalNewsCount / pageSize);
     const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
     const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
-    options.mda = param.mda
+    options.mda = param.mdaId
     const news: News[] = await this.newsModel
       .find(options)
       .populate('newsSections')
