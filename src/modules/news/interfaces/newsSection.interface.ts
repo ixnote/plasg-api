@@ -5,8 +5,11 @@ export interface NewsSection extends mongoose.Document {
   highlight: string;
   text: string;
   paragraph: string,
+  video: string,
+  hyperlink: string;
   image: string,
   bullet: string,
+  sub_heading: string,
   news: mongoose.Types.ObjectId;
   readonly createdAt: Date;
   updatedAt: Date;

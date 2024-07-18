@@ -8,21 +8,22 @@ import {
 export class AddDirectorDto {
   @ApiProperty()
   @IsString()
+  @IsOptional()
   position: string;
 
   @ApiProperty()
   @IsString()
+  @IsOptional()
   title: string;
 
-  @ApiProperty({ type: 'string', format: 'binary' })
+  @ApiProperty()
+  @IsUrl()
+  @IsString()
   @IsOptional()
   image: string;
 
   @ApiProperty()
   @IsString()
-  name: string;
-
-  @IsString()
   @IsOptional()
-  public_id: string;
+  name: string;
 }

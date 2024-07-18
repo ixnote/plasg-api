@@ -4,27 +4,18 @@ import { Hero } from '../interfaces/hero.interface';
 export const HeroSchema = new Schema<Hero>({
   title: {
     type: String,
-    required: true,
+    required: false,
   },
   description: {
     type: String,
-    required: true,
+    required: false,
   },
   image: {
     type: String,
-    required: true,
+    required: false,
   },
   logo: {
     type: String,
-    required: true,
-  },
-
-  logo_public_id: {
-    type: String,
-    required: true,
-  },
-    image_public_id: {
-    type: String,
-    required: true,
+    required: false,
   },
 });

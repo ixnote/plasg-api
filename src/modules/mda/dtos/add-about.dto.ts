@@ -8,25 +8,27 @@ import {
 export class AddAboutDto {
   @ApiProperty()
   @IsString()
+  @IsOptional()
   title: string;
 
   @ApiProperty()
   @IsString()
+  @IsOptional()
   description: string;
 
   @ApiProperty()
   @IsString()
+  @IsOptional()
   vision: string;
 
   @ApiProperty()
   @IsString()
+  @IsOptional()
   mission: string;
 
-  @ApiProperty({ type: 'string', format: 'binary' })
-  @IsOptional()
-  image: string;
-
+  @ApiProperty()
+  @IsUrl()
   @IsString()
   @IsOptional()
-  public_id: string;
+  image: string;
 }

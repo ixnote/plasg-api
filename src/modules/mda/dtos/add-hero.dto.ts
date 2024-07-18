@@ -8,25 +8,23 @@ import {
 export class AddHeroDto {
   @ApiProperty()
   @IsString()
+  @IsOptional()
   title: string;
 
   @ApiProperty()
   @IsString()
+  @IsOptional()
   description: string;
 
-  @ApiProperty({ type: 'string', format: 'binary' })
+  @ApiProperty()
+  @IsUrl()
+  @IsString()
   @IsOptional()
   image: string;
 
-  @ApiProperty({ type: 'string', format: 'binary' })
+  @ApiProperty()
+  @IsUrl()
+  @IsString()
   @IsOptional()
   logo: string;
-
-  @IsString()
-  @IsOptional()
-  logo_public_id: string;
-
-  @IsString()
-  @IsOptional()
-  image_public_id: string;
 }

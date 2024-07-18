@@ -42,6 +42,10 @@ export const MdaSchema: Schema = new Schema<Mda>(
       type: HeroSchema,
       required: false
     },
+    published: {
+      type: Boolean,
+      default: false
+    },
     is_suspended: {
       type: Boolean,
       default: false,

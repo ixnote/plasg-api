@@ -2,20 +2,21 @@ import { Schema } from 'mongoose';
 import { Contact } from '../interfaces/contact.interface';
 
 export const ContactSchema = new Schema<Contact>({
-  name: {
-    type: String,
-    required: true,
-  },
+
   location: {
     type: String,
-    required: true,
+    required: false,
   },
-  phone: {
+  phone_number_1: {
     type: String,
-    required: true,
+    required: false,
+  },
+  phone_number_2: {
+    type: String,
+    required: false,
   },
   email: {
     type: String,
-    required: true,
+    required: false,
   }
 });

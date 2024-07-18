@@ -32,6 +32,18 @@ export const NewsSectionSchema: Schema = new Schema<NewsSection>(
       type: String,
       required: false,
     },
+    hyperlink: {
+      type: String,
+      required: false,
+    },
+    video: {
+      type: String,
+      required: false,
+    },
+    sub_heading: {
+      type: String,
+      required: false,
+    },
     news: {
       type: Schema.Types.ObjectId,
       ref: 'News',

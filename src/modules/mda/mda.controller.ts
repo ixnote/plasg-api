@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UploadedFiles, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UploadedFiles, UseFilters, UseGuards, UseInterceptors } from '@nestjs/common';
 import { MdaService } from './services/mda.service';
 import { Mda } from './interfaces/mda.interface';
 import { CreateMdaDto } from './dtos/create-mda.dto';
@@ -13,6 +13,7 @@ import { GetMdaDto } from './dtos/get-mda.dto';
 import { MdaPaginationDto } from './dtos/mda-pagination.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes } from '@nestjs/swagger';
+import { UpdateMdaDto } from './dtos/update-mda.dto';
 
 @Controller('mda')
 export class MdaController {
@@ -23,20 +24,25 @@ export class MdaController {
     @Post('/add')
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRoles.SUPER)
-    @UseInterceptors(FileFieldsInterceptor([
-        { name: 'about_image', maxCount: 1 },
-        { name: 'logo_image', maxCount: 1 },
-        { name: 'hero_image', maxCount: 1 },
-        { name: 'director_image', maxCount: 1 },
-        { name: 'files', maxCount: 30 },
-      ]))
-    @ApiConsumes('multipart/form-data')
     @UseFilters(ExceptionsLoggerFilter)
-    async addMda(@UploadedFiles() files, @Body() body: CreateMdaDto){
-        const mda: Mda = await this.mdaService.createMda(body, files);
+    async addMda(@Body() body: CreateMdaDto){
+        const mda: Mda = await this.mdaService.createMda(body);
         return {
             status: true,
             message: "Mda added successfully.",
+            data: mda
+        }
+    }
+
+    @Patch('/update/:mdaId')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles(UserRoles.SUPER)
+    @UseFilters(ExceptionsLoggerFilter)
+    async updateMda(@Body() body: UpdateMdaDto, @Param() param: GetMdaDto){
+        const mda: Mda = await this.mdaService.updateMda(param, body);
+        return {
+            status: true,
+            message: "Mda updated successfully.",
             data: mda
         }
     }

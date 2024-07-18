@@ -4,25 +4,21 @@ import { About } from '../interfaces/about.interface';
 export const AboutSchema = new Schema<About>({
   title: {
     type: String,
-    required: true,
+    required: false,
   },
   description: {
     type: String,
-    required: true,
+    required: false,
   },
   vision: {
     type: String,
-    required: true,
+    required: false,
   },
   mission: {
     type: String,
-    required: true,
-  },
-  image: {
-    type: String,
     required: false,
   },
-  public_id: {
+  image: {
     type: String,
     required: false,
   },

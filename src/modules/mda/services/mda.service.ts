@@ -17,6 +17,7 @@ import { GetMdaDto } from '../dtos/get-mda.dto';
 import { MdaPaginationDto } from '../dtos/mda-pagination.dto';
 import { MiscClass } from 'src/common/services/misc.service';
 import { CloudinaryService } from 'src/common/services/cloudinary/cloudinary.service';
+import { UpdateMdaDto } from '../dtos/update-mda.dto';
 
 @Injectable()
 export class MdaService {
@@ -48,77 +49,25 @@ export class MdaService {
   async findByUser(admin: string): Promise<Mda> {
     return this.mdaModel.findOne({ admin }).exec();
   }
-  async createMda(body: CreateMdaDto, files: any): Promise<Mda> {
-    const { name, team, about, director, hero } = body;
+  async createMda(body: CreateMdaDto): Promise<Mda> {
+    const { name } = body;
     const mda: Mda = await this.findByName(name);
-    if(mda) throw new BadRequestException({
-      status: false,
-      message: "Mda already exists"
-    })
-    if (team.length !== files.files.length)
+    if (mda)
       throw new BadRequestException({
         status: false,
-        message: 'team images must match number of team members',
+        message: 'Mda already exists',
       });
-    if (files.about_image) {
-      const response = await this.cloudinaryService.uploadFile(
-        files.about_image[0],
-      );
-      if (!response)
-        throw new NotFoundException({
-          status: 'error',
-          message: 'Invalid File',
-        });
-      about.image = response.url;
-      about.public_id = response.public_id;
-    }
-    if (files.logo_image) {
-      const response = await this.cloudinaryService.uploadFile(
-        files.logo_image[0],
-      );
-      if (!response)
-        throw new NotFoundException({
-          status: 'error',
-          message: 'Invalid File',
-        });
-      hero.logo = response.url;
-      hero.logo_public_id = response.public_id;
-    }
-    if (files.hero_image) {
-      const response = await this.cloudinaryService.uploadFile(
-        files.hero_image[0],
-      );
-      if (!response)
-        throw new NotFoundException({
-          status: 'error',
-          message: 'Invalid File',
-        });
-      hero.image = response.url;
-      hero.image_public_id = response.public_id;
-    }
-    if (files.director_image) {
-      const response = await this.cloudinaryService.uploadFile(
-        files.director_image[0],
-      );
-      if (!response)
-        throw new NotFoundException({
-          status: 'error',
-          message: 'Invalid File',
-        });
-      director.image = response.url;
-      director.public_id = response.public_id;
-    }
-    for (let i = 0; i < files.files.length; i++) {
-      const response = await this.cloudinaryService.uploadFile(files.files[i]);
-      if (!response)
-        throw new NotFoundException({
-          status: 'error',
-          message: 'Invalid File',
-        });
-      team[i].image = response.url;
-      team[i].public_id = response.public_id;
-    }
     return await this.create(body);
+  }
+
+  async updateMda(param: GetMdaDto, body: UpdateMdaDto): Promise<Mda> {
+    const mda: Mda = await this.findById(param.mdaId);
+    if (!mda)
+      throw new NotFoundException({
+        status: false,
+        message: 'Mda not found',
+      });
+    return await this.mdaModel.findByIdAndUpdate(param.mdaId, body, { new: true });
   }
 
   async getMdas(): Promise<Mda[]> {
@@ -175,10 +124,10 @@ export class MdaService {
   }
 
   async findOneAndUpdate(body: CreateMdaDto): Promise<Mda> {
-    const { name, contact } = body;
+    const { name } = body;
     return await this.mdaModel.findOneAndUpdate(
       { name },
-      { name, contact },
+      { name },
       { upsert: true, new: true, runValidators: true },
     );
   }
@@ -221,5 +170,15 @@ export class MdaService {
       admin: null,
     });
     return 'Admin unassigned successfully.';
+  }
+
+
+  // Team
+  async addMdaTeamMember(){
+
+  }
+
+  async removeMdaTeamMember(){
+    
   }
 }

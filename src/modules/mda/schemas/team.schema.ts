@@ -4,18 +4,14 @@ import { Team } from '../interfaces/team.interface';
 export const TeamSchema = new Schema<Team>({
   name: {
     type: String,
-    required: true,
+    required: false,
   },
   image: {
     type: String,
-    required: true,
+    required: false,
   },
   role: {
     type: String,
-    required: true,
+    required: false,
   },
-  public_id: {
-    type: String,
-    required: true,
-  }
 });

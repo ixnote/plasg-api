@@ -14,7 +14,7 @@ export const NewsSchema: Schema = new Schema<News>(
     },
     headline: {
       type: String,
-      required: false,
+      required: true,
     },
     image: {
       type: String,

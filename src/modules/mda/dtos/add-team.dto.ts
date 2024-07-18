@@ -8,17 +8,17 @@ import {
 export class AddTeamMembersDto {
   @ApiProperty()
   @IsString()
+  @IsOptional()
   name: string;
 
-  @ApiProperty({ type: 'string', format: 'binary' })
+  @ApiProperty()
+  @IsUrl()
+  @IsString()
   @IsOptional()
   image: string;
 
-  @IsString()
-  @IsOptional()
-  public_id: string;
-
   @ApiProperty()
   @IsString()
+  @IsOptional()
   role: string;
 }
