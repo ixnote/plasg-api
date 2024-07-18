@@ -97,6 +97,7 @@ export class MdaService {
     const options: any = await this.miscService.search(rest);
     options.is_suspended = false;
     options.is_deleted = false;
+    options.published = true;
     const mdasTotal: Mda[] = await this.mdaModel.find(options);
     const totalMdasCount = mdasTotal.length;
     const totalPages = Math.ceil(totalMdasCount / pageSize);
@@ -123,6 +124,41 @@ export class MdaService {
     };
   }
 
+  async fetchMdasAdmin(body: MdaPaginationDto): Promise<any> {
+    const { page = 1, pageSize = 10, ...rest } = body;
+    const usePage: number = page < 1 ? 1 : page;
+    const pagination = await this.miscService.paginate({
+      page: usePage,
+      pageSize,
+    });
+    const options: any = await this.miscService.search(rest);
+    options.is_suspended = false;
+    options.is_deleted = false;
+    const mdasTotal: Mda[] = await this.mdaModel.find(options);
+    const totalMdasCount = mdasTotal.length;
+    const totalPages = Math.ceil(totalMdasCount / pageSize);
+    const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
+    const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
+
+    const mdas: Mda[] = await this.mdaModel
+      .find(options)
+      .populate('admin', 'full_name email phone')
+      .skip(pagination.offset)
+      .limit(pagination.limit)
+      .sort({ createdAt: -1 });
+
+    return {
+      pagination: {
+        currentPage: Number(usePage),
+        totalPages,
+        nextPage,
+        prevPage,
+        totalNews: totalMdasCount,
+        pageSize: Number(pageSize),
+      },
+      mdas,
+    };
+  }
   async findOneAndUpdate(body: CreateMdaDto): Promise<Mda> {
     const { name } = body;
     return await this.mdaModel.findOneAndUpdate(

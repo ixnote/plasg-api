@@ -78,6 +78,16 @@ export class MdaController {
         }
     }
 
+    @Get('/admin')
+    async getMdasAdmin(@Query() query: MdaPaginationDto){
+        const mdas: Mda[] = await this.mdaService.fetchMdas(query);
+        return {
+            status: true,
+            message: "Mdas fetched successfully",
+            data: mdas
+        }
+    }
+
     @Get('/single/:mdaId')
     async getMda(@Param() param: GetMdaDto){
         const mda: Mda = await this.mdaService.getMda(param);

@@ -28,5 +28,25 @@ export class AddNewsSectionItemsDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
+  video: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  bullet: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  hyperlink: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  sub_heading: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
   image: string;
 }

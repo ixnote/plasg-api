@@ -66,11 +66,18 @@ export class NewsService {
   }
 
   async findById(id: string): Promise<News> {
+    if(! await this.newsModel
+      .findById(id)) throw new NotFoundException({
+        status: false,
+        message: "Mda not found"
+      })
     return (
       await this.newsModel
         .findById(id)
         .populate('newsSections', 'paragraph image')
-    ).populate('tags', 'name type description');
+        .populate('mda', 'name logo')
+        .populate('tags', 'name type description')
+    );
   }
 
   async createNewsSections(
