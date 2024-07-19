@@ -18,6 +18,9 @@ import { MdaPaginationDto } from '../dtos/mda-pagination.dto';
 import { MiscClass } from 'src/common/services/misc.service';
 import { CloudinaryService } from 'src/common/services/cloudinary/cloudinary.service';
 import { UpdateMdaDto } from '../dtos/update-mda.dto';
+import { AddTeamMembersDto } from '../dtos/add-team.dto';
+import { Team } from '../interfaces/team.interface';
+import { GetTeamDto } from '../dtos/get-team.dto';
 
 @Injectable()
 export class MdaService {
@@ -67,7 +70,9 @@ export class MdaService {
         status: false,
         message: 'Mda not found',
       });
-    return await this.mdaModel.findByIdAndUpdate(param.mdaId, body, { new: true });
+    return await this.mdaModel.findByIdAndUpdate(param.mdaId, body, {
+      new: true,
+    });
   }
 
   async getMdas(): Promise<Mda[]> {
@@ -208,13 +213,29 @@ export class MdaService {
     return 'Admin unassigned successfully.';
   }
 
-
   // Team
-  async addMdaTeamMember(){
-
+  async addMdaTeamMember(param: GetMdaDto, body: AddTeamMembersDto): Promise<Mda> {
+    const mda: Mda = await this.findById(param.mdaId);
+    if (!mda)
+      throw new NotFoundException({
+        status: false,
+        message: 'Mda not found',
+      });
+      const team: any [] = mda.team
+      team.push({...body})
+    
+    console.log("🚀 ~ MdaService ~ addMdaTeamMember ~ team:", team)
+    return await this.mdaModel.findByIdAndUpdate(mda.id, { team }, { new: true });
   }
 
-  async removeMdaTeamMember(){
-    
+  async removeMdaTeamMember(param: GetTeamDto): Promise<Mda> {
+    const mda: Mda = await this.findById(param.mdaId);
+    if (!mda)
+      throw new NotFoundException({
+        status: false,
+        message: 'Mda not found',
+      });
+      mda.team = mda.team.filter(teamMember => teamMember.name !== param.name);
+      return await mda.save();
   }
 }

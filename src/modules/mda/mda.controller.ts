@@ -14,6 +14,8 @@ import { MdaPaginationDto } from './dtos/mda-pagination.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes } from '@nestjs/swagger';
 import { UpdateMdaDto } from './dtos/update-mda.dto';
+import { AddTeamMembersDto } from './dtos/add-team.dto';
+import { GetTeamDto } from './dtos/get-team.dto';
 
 @Controller('mda')
 export class MdaController {
@@ -94,6 +96,28 @@ export class MdaController {
         return {
             status: true,
             message: "Mda fetched successfully",
+            data: mda
+        }
+    }
+
+    @Put('/admin/team-member/:mdaId')
+    @UseGuards(AuthGuard)
+    async addMdaTeamMember(@Param() param: GetMdaDto, @Body() body: AddTeamMembersDto){
+        const mda: Mda = await this.mdaService.addMdaTeamMember(param, body)
+        return {
+            status: true,
+            message: "Mda updated successfully",
+            data: mda
+        }
+    }
+
+    @Delete('/admin/team-member/:mdaId/:name')
+    @UseGuards(AuthGuard)
+    async removeMdaTeamMember(@Param() param: GetTeamDto){
+        const mda: Mda = await this.mdaService.removeMdaTeamMember(param)
+        return {
+            status: true,
+            message: "Mda updated successfully",
             data: mda
         }
     }
