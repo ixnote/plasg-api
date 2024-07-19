@@ -1,5 +1,5 @@
 import {
-  ForbiddenException,
+  BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -60,7 +60,7 @@ export class UserService {
   async registerUser(body: CreateUserDto): Promise<User> {
     const user: User = await this.findByEmail(body.email);
     if (user)
-      throw new ForbiddenException({
+      throw new BadRequestException({
         status: false,
         message: 'User already exists',
       });

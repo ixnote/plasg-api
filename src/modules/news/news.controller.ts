@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { AddNewsSectionDto } from './dtos/add-news-section.dto';
 import { NewsService } from './services/news.service';
 import { News } from './interfaces/news.interface';
@@ -11,6 +11,12 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { RolesGuard } from 'src/framework/guards/roles.guard';
 import { UserRoles } from 'src/common/constants/enum';
 import { GetArticlesMdaDto } from './dtos/get-articles-param.dto';
+import { RemoveTagDto } from './dtos/remove-news-tag.dto';
+import { AddNewsTagsDto } from './dtos/add-news-tags.dto';
+import { AddNewsDto } from './dtos/add-news.dto';
+import { GetNewsDto } from './dtos/get-news.dto';
+import { AddNewsSectionItemsDto } from './dtos/add-news-section-item.dto';
+import { GetSectionDto } from './dtos/get-section.dto';
 
 @Controller('news')
 export class NewsController {
@@ -52,13 +58,79 @@ export class NewsController {
     @Post('/add')
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRoles.MDA)
-    async addNews(@Body() body: AddNewsSectionDto, @UserGuard() user: User){
-        const newNews: News = await this.newsService.create(body, user)
-        body.newsId = newNews.id
-        const news: News = await this.newsService.addNewsSections(body, user)
+    async addNews(@Body() body: AddNewsDto, @UserGuard() user: User){
+        const news: News = await this.newsService.create(body, user)
         return {
             status: true,
             message: "News added successfully",
+            data: news
+        }
+    }
+
+
+    @Put('/update/:newsId')
+    @UseGuards(AuthGuard)
+    async updateNews(@Param() param: {newsId: string}, @Body() body: UpdateNewsDto, @UserGuard() user: User){
+        const news: News = await this.newsService.updateNews(param.newsId, body)
+        return {
+            status: true,
+            message: "News updated successfully",
+            data: news
+        }
+    }
+
+    @Put('/section/add/:newsId')
+    async addNewsSections(@Param() param: GetNewsDto, @Body() body: AddNewsSectionDto){
+        body.newsId = param.newsId
+        const news: News = await this.newsService.addNewsSections(body)
+        return {
+            status: true,
+            message: "News sections added successfully",
+            data: news
+        }
+    }
+
+    @Patch('/section/update/:sectionId')
+    async updateNewsSection(@Param() param: GetSectionDto, body: AddNewsSectionItemsDto, @UserGuard() user: User){
+        await this.newsService.updateSection(body, param.sectionId, user)
+        return {
+            status: true,
+            message: "News sections updated successfully"
+        }
+    }
+
+    @Delete('/section/delete/:sectionId')
+    async deleteNewsSection(@Param() param: GetSectionDto, @UserGuard() user: User){
+        const news: News = await this.newsService.removeSection(param.sectionId, user)
+        return {
+            status: true,
+            message: "News section removed successfully",
+            data: news
+        }
+    }
+    // @Put('/update')
+    // @UseGuards(AuthGuard, RolesGuard)
+    // @Roles(UserRoles.MDA)
+    // async updateNews(@Body() body: AddNewsSectionDto, @UserGuard() user: User){
+    //     const newNews: News = await this.newsService.create(body, user)
+    //     body.newsId = newNews.id
+    //     const news: News = await this.newsService.addNewsSections(body, user)
+    //     return {
+    //         status: true,
+    //         message: "News added successfully",
+    //         data: news
+    //     }
+    // }
+
+
+    @Post('/add-news-tags/:newsId')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles(UserRoles.MDA)
+    async addNewsTags(@Param() param: {newsId: string}, @Body() body: AddNewsTagsDto, @UserGuard() user: User){
+        const news: News = await this.newsService.addNewsTags(param.newsId, body)
+        return {
+            status: true,
+            message: "News tags added successfully",
             data: news
         }
     }
@@ -83,6 +155,17 @@ export class NewsController {
         }
     }
 
+    @Delete('/remove/:newsId/:tagId')
+    @UseGuards(AuthGuard)
+    @Roles(UserRoles.MDA)
+    async removeNewsTag(@Param() param: RemoveTagDto){
+        await this.newsService.removeNewsTag(param)
+        return {
+            status: true,
+            message: "News tag removed successfully"
+        }
+    }
+
     @Put('/detach-tag/:newsId/:tagId')
     @UseGuards(AuthGuard)
     async detachTag(@Param() param: {newsId: string, tagId: string}, @UserGuard() user: User){
@@ -94,16 +177,6 @@ export class NewsController {
         }
     }
 
-    @Put('/update/:newsId')
-    @UseGuards(AuthGuard)
-    async updateNews(@Body() body: UpdateNewsDto, @UserGuard() user: User){
-        const news: News = await this.newsService.updateNews(body, user)
-        return {
-            status: true,
-            message: "News updated successfully",
-            data: news
-        }
-    }
 
     @Put('/post/:newsId')
     @UseGuards(AuthGuard)

@@ -4,11 +4,11 @@ import {
   IsString,
 } from 'class-validator';
 
-export class GetArticlesMdaDto {
+export class GetNewsDto {
   @ApiProperty()
-//   @IsString()
-//   @IsMongoId()
-  mdaId: string
+  @IsString()
+  @IsMongoId()
+  newsId: string
 }
 
 // if (tags) {

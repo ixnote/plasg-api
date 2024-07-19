@@ -16,26 +16,6 @@ export class AddNewsSectionDto {
 
   @ApiProperty()
   @IsArray()
-  @IsMongoId({ each: true }) 
-  @IsOptional()
-  tags: string[];
-
-  @ApiProperty()
-  @IsString()
-  headline: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  reference: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  image: string;
-
-  @ApiProperty()
-  @IsArray()
   items: AddNewsSectionItemsDto[];
 
 }

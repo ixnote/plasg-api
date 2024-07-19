@@ -1,7 +1,7 @@
 import {
-  ForbiddenException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AddNewsSectionDto } from '../dtos/add-news-section.dto';
 import { NewsSection } from '../interfaces/newsSection.interface';
@@ -19,7 +19,9 @@ import { TagService } from 'src/modules/tag/services/tag.service';
 import { Tag } from 'src/modules/tag/interfaces/tag.interface';
 import { UpdateNewsDto } from '../dtos/updat-news.dto';
 import { UserRoles } from 'src/common/constants/enum';
-import { GetArticlesMdaDto } from '../dtos/get-articles-param.dto';
+import { AddNewsTagsDto } from '../dtos/add-news-tags.dto';
+import { RemoveTagDto } from '../dtos/remove-news-tag.dto';
+import { AddNewsDto } from '../dtos/add-news.dto';
 
 @Injectable()
 export class NewsService {
@@ -33,56 +35,80 @@ export class NewsService {
 
   private async checkIfUserIsAuthorized(user: User): Promise<boolean> {
     const mda: Mda = await this.mdaService.findByUser(user.id);
-    if (mda?.name !== 'News' && user.role !== UserRoles.SUPER)
-      throw new ForbiddenException({
+    if (!mda && user.role !== UserRoles.SUPER)
+      throw new UnauthorizedException({
         status: false,
-        message: 'Forbidden',
+        message: 'Unauthorized',
       });
     return true;
   }
 
-  async create(body: CreateNews, user: User): Promise<News> {
+  async create(body: AddNewsDto, user: User): Promise<News> {
     const findMda: Mda = await this.mdaService.findByUser(user.id);
     if (!findMda)
-      throw new ForbiddenException({
+      throw new UnauthorizedException({
         status: false,
         message: 'Not Authorized',
       });
-      body.mda = findMda.id
-    const createdNews = new this.newsModel(body);
+    const createdNews = new this.newsModel({ ...body, mda: findMda.id });
     return createdNews.save();
   }
 
-  // async addNewsTags(): Promise<News> {
-  //   const findTag: Tag = await this.tagService.findById(tag.toString());
-  //   //   if (!findTag)
-  //   //     throw new NotFoundException({
-  //   //       status: true,
-  //   //       message: 'Invalid tag',
-  //   //     });
-  // }
+  async addNewsTags(newsId: string, body: AddNewsTagsDto): Promise<News> {
+    const news: News = await this.newsModel.findById(newsId);
+    for (let i = 0; i < body.tags.length; i++) {
+      const existingTagIndex = news.tags.findIndex(
+        (tag) => tag.id.toString() === body.tags[i],
+      );
+      const tagId = new mongoose.Types.ObjectId(body.tags[i]);
+      if (existingTagIndex !== -1) {
+        news.tags[existingTagIndex] = tagId;
+      } else {
+        news.tags.push(tagId);
+      }
+    }
+    await news.save();
+    return news;
+  }
 
-  // async removeNewsTag(): Promise<News>{
+  async removeNewsTag(body: RemoveTagDto): Promise<News> {
+    const news: News = await this.findById(body.newsId);
+    if (!news) {
+      throw new NotFoundException({
+        status: false,
+        message: 'Mda not found',
+      });
+    }
 
-  // }
+    if (!news.tags) {
+      throw new NotFoundException({
+        status: false,
+        message: 'No tags to remove',
+      });
+    }
+
+    news.tags = news.tags.filter((tag) => tag.id.toString() !== body.tagId);
+
+    await news.save();
+
+    return news;
+  }
 
   async findAll(): Promise<News[]> {
     return this.newsModel.find().populate('newsSections').exec();
   }
 
   async findById(id: string): Promise<News> {
-    if(! await this.newsModel
-      .findById(id)) throw new NotFoundException({
+    if (!(await this.newsModel.findById(id)))
+      throw new NotFoundException({
         status: false,
-        message: "Mda not found"
-      })
-    return (
-      await this.newsModel
-        .findById(id)
-        .populate('newsSections', 'paragraph image')
-        .populate('mda', 'name logo')
-        .populate('tags', 'name type description')
-    );
+        message: 'Mda not found',
+      });
+    return await this.newsModel
+      .findById(id)
+      .populate('newsSections', 'paragraph image')
+      .populate('mda', 'name logo')
+      .populate('tags', 'name type description');
   }
 
   async createNewsSections(
@@ -101,7 +127,7 @@ export class NewsService {
     return await this.newsSectionModel.findByIdAndDelete();
   }
 
-  async addNewsSections(body: AddNewsSectionDto, user: User): Promise<News> {
+  async addNewsSections(body: AddNewsSectionDto): Promise<News> {
     // await this.checkIfUserIsAuthorized(user);
     const news: News = await this.findById(body.newsId);
     if (!news)
@@ -116,6 +142,25 @@ export class NewsService {
     }
     news.newsSections = news.newsSections.concat(...newsSectionIds);
     return await news.save();
+  }
+
+  async updateSection(
+    body: AddNewsSectionItemsDto,
+    sectionId: string,
+    user: User,
+  ) {
+    await this.checkIfUserIsAuthorized(user);
+    const section: NewsSection = await this.findNewsSectionById(sectionId);
+    if (!section)
+      throw new NotFoundException({
+        status: false,
+        message: 'Section not found',
+      });
+    if (!body.image) delete body.image;
+    if (!body.paragraph) delete body.paragraph;
+    return await this.newsSectionModel.findByIdAndUpdate(section.id, body, {
+      new: true,
+    });
   }
 
   async removeSection(sectionId: string, user: User): Promise<News> {
@@ -143,7 +188,10 @@ export class NewsService {
     await this.newsModel.findByIdAndDelete(body.newsId);
   }
 
-  async findMdaArticles(body: NewsPaginationDto, param: {mda: string}): Promise<any> {
+  async findMdaArticles(
+    body: NewsPaginationDto,
+    param: { mda: string },
+  ): Promise<any> {
     const { page = 1, pageSize = 10, ...rest } = body;
     const usePage: number = page < 1 ? 1 : page;
     const pagination = await this.miscService.paginate({
@@ -170,7 +218,7 @@ export class NewsService {
     const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
     const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
     const news: News[] = await this.newsModel
-      .find({...options, mda: param.mda})
+      .find({ ...options, mda: param.mda })
       .populate('newsSections')
       .populate('tags')
       .skip(pagination.offset)
@@ -246,24 +294,7 @@ export class NewsService {
     return news;
   }
 
-  async updateSection(
-    body: AddNewsSectionItemsDto,
-    sectionId: string,
-    user: User,
-  ) {
-    await this.checkIfUserIsAuthorized(user);
-    const section: NewsSection = await this.findNewsSectionById(sectionId);
-    if (!section)
-      throw new NotFoundException({
-        status: false,
-        message: 'Section not found',
-      });
-    if (!body.image) delete body.image;
-    if (!body.paragraph) delete body.paragraph;
-    return await this.newsSectionModel.findByIdAndUpdate(section.id, body, {
-      new: true,
-    });
-  }
+
 
   async postNews(newsId: string, user: User) {
     await this.checkIfUserIsAuthorized(user);
@@ -289,27 +320,14 @@ export class NewsService {
     return await news.save();
   }
 
-  async updateNews(body: UpdateNewsDto, user: User): Promise<News> {
-    const { headline, tags, items } = body;
-    const news: News = await this.newsModel.findById(body.tags);
-    if (tags) {
-      const newsTagsObjectIds = news.tags.map(
-        (tag) => new mongoose.Types.ObjectId(tag),
-      );
-      const tagsObjectIds = tags.map((tag) => new mongoose.Types.ObjectId(tag));
-      const combinedArray = newsTagsObjectIds.concat(tagsObjectIds);
-      news.tags = combinedArray;
-    }
-    if (headline) news.headline = headline;
-    if (items) {
-      let newsSectionIds: any[] = [];
-      for (const item of items) {
-        const newsSections = await this.createNewsSections(news.id, item);
-        newsSectionIds.push(newsSections.id);
-      }
-      news.newsSections = news.newsSections.concat(...newsSectionIds);
-    }
-    return await news.save();
+  async updateNews(newsId: string, body: UpdateNewsDto): Promise<News> {
+    const news: News = await this.newsModel.findById(newsId);
+    if (!news)
+      throw new NotFoundException({
+        status: true,
+        message: 'News not found',
+      });
+    return await this.newsModel.findByIdAndUpdate(newsId, body, { new: true });
   }
 
   async detachTag(body: { tagId: string; newsId: string }, user: User) {
