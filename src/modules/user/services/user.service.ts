@@ -36,6 +36,11 @@ export class UserService {
     return this.userModel.findById(id);
   }
 
+  async getTotalNumberOfUsers(): Promise<number>{
+    const users: User[] = await this.userModel.find()
+    return users.length
+  }
+
   async findByEmail(email: string): Promise<User> {
     return this.userModel
       .findOne({ email })

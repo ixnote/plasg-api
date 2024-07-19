@@ -1,3 +1,16 @@
+export enum NewsSectionTypes{
+  HEADING = 'heading',
+  HIGHLIGHT = 'highlight',
+  TEXT = 'text',
+  PARAGRAPH = 'paragraph',
+  VIDEO = 'video',
+  HYPERLINK = 'hyperlink',
+  IMAGE = 'image',
+  bullet = 'bullet',
+  SUB_HEADING = 'sub_heading',
+  SECTION_TITLE = 'section_title'
+}
+
 export enum UserRoles {
   SUPER = 'super',
   MDA = 'mda-admin',

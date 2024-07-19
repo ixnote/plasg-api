@@ -21,6 +21,18 @@ export class StaticsController {
         private staticsService: StaticsService
     ){}
 
+    @Get('/admin/dashboard')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles(UserRoles.SUPER)
+    async superAdminDashboard(){
+        const results = await this.staticsService.adminDashboard()
+        return {
+            status: true,
+            message: "Results fetched successfully",
+            results
+        }
+    }
+
     // Legislative
     @Post('/legislatives/add')
     @UseGuards(AuthGuard, RolesGuard)

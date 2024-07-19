@@ -8,41 +8,17 @@ function transformValue(doc, ret: { [key: string]: any }) {
 
 export const NewsSectionSchema: Schema = new Schema<NewsSection>(
   {
-    heading: {
+    type: {
       type: String,
-      required: false,
+      required: true,
     },
-    highlight: {
-      type: String,
-      required: false,
+    position: {
+      type: Number,
+      required: true,
     },
-    text: {
-      type: String,
-      required: false,
-    },
-    paragraph: {
-      type: String,
-      required: false,
-    },
-    bullet: {
-      type: String,
-      required: false,
-    },
-    image: {
-      type: String,
-      required: false,
-    },
-    hyperlink: {
-      type: String,
-      required: false,
-    },
-    video: {
-      type: String,
-      required: false,
-    },
-    sub_heading: {
-      type: String,
-      required: false,
+    value: {
+      type: Schema.Types.Mixed, 
+      required: true
     },
     news: {
       type: Schema.Types.ObjectId,

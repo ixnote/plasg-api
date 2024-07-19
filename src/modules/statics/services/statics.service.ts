@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Get, Injectable, NotFoundException, UseGuards } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Destination } from '../interfaces/destination.interface';
 import { Model } from 'mongoose';
@@ -11,6 +11,14 @@ import { GetLegislativeDto } from '../dtos/get-legislative.dto';
 import { GetLegislativesDto } from '../dtos/get-legislatives.dto';
 import { AddDestinationDto } from '../dtos/add-destination.dto';
 import { CloudinaryService } from 'src/common/services/cloudinary/cloudinary.service';
+import { AuthGuard } from '@nestjs/passport';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { RolesGuard } from 'src/framework/guards/roles.guard';
+import { UserRoles } from 'src/common/constants/enum';
+import { User } from 'src/modules/user/interfaces/user.interface';
+import { UserService } from 'src/modules/user/services/user.service';
+import { MdaService } from 'src/modules/mda/services/mda.service';
+import { NewsService } from 'src/modules/news/services/news.service';
 
 @Injectable()
 export class StaticsService {
@@ -21,7 +29,22 @@ export class StaticsService {
     private readonly legislativeModel: Model<Legislative>,
     private miscService: MiscClass,
     private cloudinaryService: CloudinaryService,
+    private userService: UserService,
+    private mdaService: MdaService,
+    private newsService: NewsService
   ) {}
+
+
+async adminDashboard(){
+  const totalUsers: number = await this.userService.getTotalNumberOfUsers();
+  const totalMdas: number = await this.mdaService.totalNumberOfMdas();
+  const totalNews: number = await this.newsService.totalNumberOfNews();
+  return {
+    users: totalUsers,
+    mdas: totalMdas,
+    news: totalNews
+  }
+}
 
   async addLegislative(body: AddLegislativeDto): Promise<Legislative> {
     const findLegislative: Legislative = await this.legislativeModel.findOne({

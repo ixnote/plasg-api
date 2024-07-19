@@ -10,6 +10,9 @@ import { MiscClass } from 'src/common/services/misc.service';
 import { CloudinaryModule } from 'src/common/services/cloudinary/cloudinary.module';
 import { AuthModule } from 'src/modules/auth/auth.module';
 import { UserSchema } from 'src/modules/user/schemas/user.schema';
+import { MdaModule } from '../mda/mda.module';
+import { NewsModule } from '../news/news.module';
+import { NewsSchema } from '../news/schemas/news.schema';
 
 @Module({
   imports: [
@@ -21,7 +24,9 @@ import { UserSchema } from 'src/modules/user/schemas/user.schema';
     ]),
     UserModule,
     CloudinaryModule,
-    AuthModule
+    AuthModule,
+    MdaModule,
+    NewsModule
   ],
   controllers: [StaticsController],
   providers: [StaticsService, MiscClass],

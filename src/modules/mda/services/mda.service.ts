@@ -52,6 +52,7 @@ export class MdaService {
   async findByUser(admin: string): Promise<Mda> {
     return this.mdaModel.findOne({ admin }).exec();
   }
+
   async createMda(body: CreateMdaDto): Promise<Mda> {
     const { name } = body;
     const mda: Mda = await this.findByName(name);
@@ -63,6 +64,10 @@ export class MdaService {
     return await this.create(body);
   }
 
+  async totalNumberOfMdas(): Promise<number>{
+    const totalMdas: Mda[] = await this.mdaModel.find()
+    return totalMdas.length
+  }
   async updateMda(param: GetMdaDto, body: UpdateMdaDto): Promise<Mda> {
     const mda: Mda = await this.findById(param.mdaId);
     if (!mda)

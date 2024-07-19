@@ -26,8 +26,19 @@ export class NewsController {
    
     @Get('/articles/:mda')
     async getNews(@Query() query: NewsPaginationDto, @Param() param: {mda: string}){
-        console.log("🚀 ~ NewsController ~ getNews ~ param:", param)
         const results = await this.newsService.findMdaArticles(query, param);
+        return {
+            status: true,
+            message: "News fetched successfully",
+            data: results
+        }
+    }
+
+    @Get('/admin/articles')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles(UserRoles.MDA)
+    async getNewsAdmin(@Query() query: NewsPaginationDto, @UserGuard() user: User){
+        const results = await this.newsService.findMdaArticlesAdmin(query, user);
         return {
             status: true,
             message: "News fetched successfully",

@@ -94,6 +94,10 @@ export class NewsService {
     return news;
   }
 
+  async totalNumberOfNews(): Promise<number>{
+    const news: News[] = await this.newsModel.find()
+    return news.length
+  }
   async findAll(): Promise<News[]> {
     return this.newsModel.find().populate('newsSections').exec();
   }
@@ -156,8 +160,6 @@ export class NewsService {
         status: false,
         message: 'Section not found',
       });
-    if (!body.image) delete body.image;
-    if (!body.paragraph) delete body.paragraph;
     return await this.newsSectionModel.findByIdAndUpdate(section.id, body, {
       new: true,
     });
@@ -213,13 +215,73 @@ export class NewsService {
         });
       options.tags = { $in: [tag] };
     }
+    options.published = true
     const totalNewsCount = newsTotal.length;
     const totalPages = Math.ceil(totalNewsCount / pageSize);
     const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
     const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
     const news: News[] = await this.newsModel
       .find({ ...options, mda: param.mda })
-      .populate('newsSections')
+      .populate({
+        path: 'newsSections',
+        options: { sort: { position: 1 } }
+      })
+      .populate('tags')
+      .skip(pagination.offset)
+      .limit(pagination.limit)
+      .sort({ createdAt: -1 });
+    return {
+      pagination: {
+        currentPage: Number(usePage),
+        totalPages,
+        nextPage,
+        prevPage,
+        totalNews: totalNewsCount,
+        pageSize: Number(pageSize),
+      },
+      news,
+    };
+  }
+
+  async findMdaArticlesAdmin(
+    body: NewsPaginationDto,
+    user: User
+  ): Promise<any> {
+    const { page = 1, pageSize = 10, ...rest } = body;
+    const usePage: number = page < 1 ? 1 : page;
+    const pagination = await this.miscService.paginate({
+      page: usePage,
+      pageSize,
+    });
+    const tag = rest.tag;
+    const mda: Mda = await this.mdaService.findByUser(user.id)
+    if(!mda) throw new UnauthorizedException({
+      status: false,
+      message: "User is not assigned to any mda"
+    })
+    delete rest.tag;
+    const options: any = await this.miscService.search(rest);
+    const newsTotal: News[] = await this.newsModel.find(options);
+
+    if (tag) {
+      const tag: Tag = await this.tagService.findById(body.tag);
+      if (!tag)
+        throw new NotFoundException({
+          status: false,
+          message: 'Tag not found',
+        });
+      options.tags = { $in: [tag] };
+    }
+    const totalNewsCount = newsTotal.length;
+    const totalPages = Math.ceil(totalNewsCount / pageSize);
+    const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
+    const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
+    const news: News[] = await this.newsModel
+      .find({ ...options, mda: mda.id })
+      .populate({
+        path: 'newsSections',
+        options: { sort: { position: 1 } }
+      })
       .populate('tags')
       .skip(pagination.offset)
       .limit(pagination.limit)
@@ -267,7 +329,10 @@ export class NewsService {
 
     const news: News[] = await this.newsModel
       .find(options, { mda: mda.id })
-      .populate('newsSections')
+      .populate({
+        path: 'newsSections',
+        options: { sort: { position: 1 } }
+      })
       .populate('tags')
       .skip(pagination.offset)
       .limit(pagination.limit)
@@ -284,6 +349,7 @@ export class NewsService {
       news,
     };
   }
+
   async getSingle(body: { newsId: string }): Promise<News> {
     const news: News = await this.findById(body.newsId);
     if (!news)
