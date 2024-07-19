@@ -82,7 +82,7 @@ export class MdaController {
 
     @Get('/admin')
     async getMdasAdmin(@Query() query: MdaPaginationDto){
-        const mdas: Mda[] = await this.mdaService.fetchMdas(query);
+        const mdas: Mda[] = await this.mdaService.fetchMdasAdmin(query);
         return {
             status: true,
             message: "Mdas fetched successfully",

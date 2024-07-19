@@ -42,14 +42,6 @@ export class NewsService {
   }
 
   async create(body: CreateNews, user: User): Promise<News> {
-    for (const tag of body.tags) {
-      const findTag: Tag = await this.tagService.findById(tag.toString());
-      if (!findTag)
-        throw new NotFoundException({
-          status: true,
-          message: 'Invalid tag',
-        });
-    }
     const findMda: Mda = await this.mdaService.findByUser(user.id);
     if (!findMda)
       throw new ForbiddenException({
@@ -60,6 +52,19 @@ export class NewsService {
     const createdNews = new this.newsModel(body);
     return createdNews.save();
   }
+
+  // async addNewsTags(): Promise<News> {
+  //   const findTag: Tag = await this.tagService.findById(tag.toString());
+  //   //   if (!findTag)
+  //   //     throw new NotFoundException({
+  //   //       status: true,
+  //   //       message: 'Invalid tag',
+  //   //     });
+  // }
+
+  // async removeNewsTag(): Promise<News>{
+
+  // }
 
   async findAll(): Promise<News[]> {
     return this.newsModel.find().populate('newsSections').exec();

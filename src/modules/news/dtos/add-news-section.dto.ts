@@ -16,7 +16,8 @@ export class AddNewsSectionDto {
 
   @ApiProperty()
   @IsArray()
-  @IsMongoId({ each: true }) // Validate each element in the array as a MongoDB ObjectId
+  @IsMongoId({ each: true }) 
+  @IsOptional()
   tags: string[];
 
   @ApiProperty()
