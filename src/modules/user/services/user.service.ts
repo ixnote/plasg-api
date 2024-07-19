@@ -39,7 +39,7 @@ export class UserService {
   async findByEmail(email: string): Promise<User> {
     return this.userModel
       .findOne({ email })
-      .select('-otp -is_deleted -refreshToken')
+      .select('-otp -is_deleted -refreshToken -password')
       .exec();
   }
 

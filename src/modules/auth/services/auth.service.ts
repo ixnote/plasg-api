@@ -23,6 +23,10 @@ export class AuthService {
     return await this.userService.registerUser(body);
   }
 
+  async getProfile(user: User): Promise<User> {
+    return await this.userService.findByEmail(user.email);
+  }
+
   async signIn(data: SignInDto) {
     const user: User = await this.userService.findPasswordByEmail(data.email);
     if (!user)
