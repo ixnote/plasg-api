@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Patch, Post, UseFilters, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { ExceptionsLoggerFilter } from 'src/framework/exceptions/exceptionLogger.filter';
 import { AuthService } from './services/auth.service';
@@ -51,4 +51,5 @@ export class AuthController {
       data: profile,
     };
   }
+
 }

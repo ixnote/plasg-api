@@ -52,6 +52,10 @@ export const UserSchema: Schema = new Schema<User>(
       type: String,
       required: false,
     },
+    password_updated: {
+      type: Boolean,
+      default: false,
+    },
     is_suspended: {
       type: Boolean,
       default: false,

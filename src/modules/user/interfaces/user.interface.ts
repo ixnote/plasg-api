@@ -10,6 +10,7 @@ export interface User extends mongoose.Document {
   password: string;
   address: string;
   company_logo: string;
+  password_updated: boolean;
   is_suspended: boolean;
   is_deleted: boolean;
   mda?: any; 

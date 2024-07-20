@@ -11,6 +11,7 @@ import { UpdateUserDto } from '../dtos/update-user.dto';
 import { MongooseService } from 'src/common/helpers/mongoose.helper';
 import * as argon2 from 'argon2';
 import { UserRoles } from 'src/common/constants/enum';
+import { UpdatePassword } from '../dtos/update-password.dto';
 
 @Injectable()
 export class UserService {
@@ -89,6 +90,14 @@ export class UserService {
       .findByIdAndUpdate(id, updateUserDto, { new: true })
       .select('-refreshToken -is_confirmed')
       .exec();
+  }
+
+  async updatePassword(body: UpdatePassword, user: User): Promise<void>{
+    const hashedPassword: string = await this.hashData(body.password);
+    await this.userModel.findByIdAndUpdate(user.id, {
+      password: hashedPassword,
+      password_updated: true
+    })
   }
 
   async updateUser(body: {
