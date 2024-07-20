@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, UseFilters, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Query, UseFilters, UseGuards } from '@nestjs/common';
 import { UserRoles } from 'src/common/constants/enum';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { AuthGuard } from 'src/framework/guards/auth.guard';
@@ -8,6 +8,7 @@ import { User } from './interfaces/user.interface';
 import { ExceptionsLoggerFilter } from 'src/framework/exceptions/exceptionLogger.filter';
 import { UpdatePassword } from './dtos/update-password.dto';
 import { UserGuard } from 'src/framework/guards/user.guard';
+import { GetUsersDto } from './dtos/get-users.dto';
 
 @Controller('user')
 export class UserController {
@@ -18,8 +19,8 @@ export class UserController {
     @Get('/')
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRoles.SUPER)
-    async getUsers(){
-        const users: User[] = await this.userService.getMdaUsers();
+    async getUsers(@Query() query: GetUsersDto){
+        const users: User[] = await this.userService.getMdaUsers(query);
         return {
             status: true,
             message: "Users fetched successfully",

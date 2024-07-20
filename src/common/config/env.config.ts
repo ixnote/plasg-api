@@ -16,6 +16,11 @@ export const env = {
   CLOUDINARY_NAME: config.get<string>('CLOUDINARY_NAME'),
   CLOUDINARY_API_KEY: config.get<string>('CLOUDINARY_API_KEY'),
   CLOUDINARY_API_SECRET: config.get<string>('CLOUDINARY_API_SECRET'),
+  SMTP_HOST: config.get<string>('SMTP_HOST'),
+  SMTP_NAME: config.get<string>('SMTP_NAME'),
+  SMTP_PASS: config.get<string>('SMTP_PASS'),
+  SMTP_PORT: config.get<number>('SMTP_PORT'),
+  SMTP_USER:config.get<string>('SMTP_USER'),
 
   isDevelopment() {
     return this.NODE_ENV === Environments.DEVELOPMENT;

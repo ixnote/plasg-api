@@ -38,13 +38,15 @@ export class AuthGuard implements CanActivate {
           message: 'Please Login',
         });
       const user: User = await this.userModel.findById(payload.sub);
-      const url: string = request.protocol + '://' + request.get('host') + request.originalUrl;
-      const urlArray: string[] = url.split('/')
-   if(!(urlArray[urlArray.length - 1] == "update-password")){
-        if (!user.password_updated) throw new UnauthorizedException({
-          status: false,
-          message: "Please update your password to continue"
-        })
+      const url: string =
+        request.protocol + '://' + request.get('host') + request.originalUrl;
+      const urlArray: string[] = url.split('/');
+      if (!(urlArray[urlArray.length - 1] == 'update-password')) {
+        if (!user.password_updated)
+          throw new UnauthorizedException({
+            status: false,
+            message: 'Please update your password to continue',
+          });
       }
       if (!user || user.is_suspended || user.is_deleted)
         throw new UnauthorizedException();

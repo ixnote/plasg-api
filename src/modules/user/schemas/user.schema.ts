@@ -3,6 +3,7 @@ import * as argon2 from 'argon2';
 import * as mongoose from 'mongoose';
 import { User } from '../interfaces/user.interface';
 import { UserRoles } from 'src/common/constants/enum';
+import { UserCodeSchema } from './user-code.schema';
 
 export interface Point {
   type: string;
@@ -55,6 +56,10 @@ export const UserSchema: Schema = new Schema<User>(
     password_updated: {
       type: Boolean,
       default: false,
+    }, 
+    otp: {
+      type: UserCodeSchema,
+      required: false,
     },
     is_suspended: {
       type: Boolean,

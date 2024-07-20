@@ -7,6 +7,7 @@ import { UserSchema } from '../user/schemas/user.schema';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ErrorSchema } from '../error/schemas/error.schema';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ErrorSchema } from '../error/schemas/error.schema';
       { name: 'Error', schema: ErrorSchema },
     ]),
     forwardRef(() => UserModule),
+    MailModule
   ],
   providers: [AuthService, JwtService, ConfigService],
   controllers: [AuthController],

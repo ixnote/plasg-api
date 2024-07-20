@@ -12,12 +12,15 @@ import { MongooseService } from 'src/common/helpers/mongoose.helper';
 import * as argon2 from 'argon2';
 import { UserRoles } from 'src/common/constants/enum';
 import { UpdatePassword } from '../dtos/update-password.dto';
+import { GetUsersDto } from '../dtos/get-users.dto';
+import { MiscClass } from 'src/common/services/misc.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel('User') private readonly userModel: Model<User>,
     private mongooseService: MongooseService,
+    private miscService: MiscClass
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -49,18 +52,52 @@ export class UserService {
       .exec();
   }
 
-  async findPasswordByEmail(email: string): Promise<User> {
+  async findByEmailWithOtp(email: string): Promise<User> {
     return this.userModel
       .findOne({ email })
-      .select('password is_confirmed role')
+      .select(' -is_deleted -refreshToken -password')
       .exec();
   }
 
-  async getMdaUsers(): Promise<User[]> {
-    return await this.userModel
-      .find({ role: UserRoles.MDA })
-      .populate('mdas')
+  async findPasswordByEmail(email: string): Promise<User> {
+    return this.userModel
+      .findOne({ email })
+      .select('password is_confirmed role password_updated')
       .exec();
+  }
+
+  async getMdaUsers(body: GetUsersDto): Promise<any> {
+    const { page = 1, pageSize = 10, ...rest } = body;
+    const usePage: number = page < 1 ? 1 : page;
+    const pagination = await this.miscService.paginate({
+      page: usePage,
+      pageSize,
+    });
+    const options: any = await this.miscService.search(rest);
+    const usersTotal: User[] = await this.userModel.find(options);
+
+    const totalNewsCount = usersTotal.length;
+    const totalPages = Math.ceil(totalNewsCount / pageSize);
+    const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
+    const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
+    const users: User[] = await this.userModel
+      .find(options)
+      .populate('mdas')
+      .skip(pagination.offset)
+      .limit(pagination.limit)
+      .sort({ createdAt: -1 });
+
+      return {
+        pagination: {
+          currentPage: Number(usePage),
+          totalPages,
+          nextPage,
+          prevPage,
+          totalNews: totalNewsCount,
+          pageSize: Number(pageSize),
+        },
+        users,
+      };
   }
 
   async registerUser(body: CreateUserDto): Promise<User> {

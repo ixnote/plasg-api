@@ -7,6 +7,7 @@ import { MongooseService } from 'src/common/helpers/mongoose.helper';
 import { AuthModule } from '../auth/auth.module';
 import { ErrorModule } from '../error/error.module';
 import { ErrorSchema } from '../error/schemas/error.schema';
+import { MiscClass } from 'src/common/services/misc.service';
 
 @Module({
   imports: [
@@ -15,10 +16,10 @@ import { ErrorSchema } from '../error/schemas/error.schema';
       { name: 'Error', schema: ErrorSchema },
     ]),
     forwardRef(() => AuthModule),
-    ErrorModule
+    ErrorModule,
   ],
-  providers: [UserService, MongooseService],
+  providers: [UserService, MongooseService, MiscClass],
   controllers: [UserController],
-  exports: [UserService]
+  exports: [UserService],
 })
 export class UserModule {}
