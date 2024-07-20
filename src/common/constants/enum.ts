@@ -6,7 +6,7 @@ export enum NewsSectionTypes{
   VIDEO = 'video',
   HYPERLINK = 'hyperlink',
   IMAGE = 'image',
-  bullet = 'bullet',
+  BULLET = 'bullet',
   SUB_HEADING = 'sub_heading',
   SECTION_TITLE = 'section_title'
 }
