@@ -57,16 +57,20 @@ export class NewsService {
   async addNewsTags(newsId: string, body: AddNewsTagsDto): Promise<News> {
     const news: News = await this.newsModel.findById(newsId);
     for (let i = 0; i < body.tags.length; i++) {
-      const existingTagIndex = news.tags.findIndex(
-        (tag) => tag.id.toString() === body.tags[i],
-      );
       const tagId = new mongoose.Types.ObjectId(body.tags[i]);
-      if (existingTagIndex !== -1) {
+      let existingTagIndex = -1
+      for(const tag of news.tags){
+        if(tag.toString() === tagId.toString()){
+          existingTagIndex = 1
+        }
+      }
+     if (existingTagIndex !== -1) {
         news.tags[existingTagIndex] = tagId;
       } else {
         news.tags.push(tagId);
       }
     }
+    
     await news.save();
     return news;
   }
