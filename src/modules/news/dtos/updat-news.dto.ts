@@ -24,5 +24,4 @@ export class UpdateNewsDto {
   @ApiProperty()
   @IsOptional()
   tags: string[];
-
 }
