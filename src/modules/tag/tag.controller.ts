@@ -45,6 +45,16 @@ export class TagController {
         }
     }
 
+    @Get('/news')
+    async getNewsTags(){
+        const tags: Tag[] = await this.tagService.getNewsTags()
+        return {
+            status: true,
+            message: "News tags fetched successfully",
+            data: tags
+        }
+    }
+
     @Delete('/delete/:tagId')
     async deleteTag(@Param() param: {tagId: string}){
         const message: string = await this.tagService.deleteTag(param.tagId)

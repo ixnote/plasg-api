@@ -44,6 +44,17 @@ export class TagService {
       });
   }
 
+  async getNewsTags(): Promise<Tag[]> {
+    return await this.tagModel
+      .find({ type: TagType.NEWS, parent: null, deleted: false })
+      .select('-deleted -createdAt -updatedAt')
+      .populate({
+        path: 'sub_tags',
+        match: { deleted: false },
+        select: '-deleted -createdAt -updatedAt',
+      });
+  }
+
   async getTypeTags(): Promise<Tag[]> {
     return await this.tagModel
       .find({ type: TagType.ITEM, parent: null, deleted: false })
