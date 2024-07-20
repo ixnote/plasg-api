@@ -21,4 +21,8 @@ export class UpdateNewsDto {
   @IsOptional()
   headline: string;
 
+  @ApiProperty()
+  @IsOptional()
+  tags: string[];
+
 }
