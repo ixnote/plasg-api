@@ -34,6 +34,17 @@ export class NewsController {
         }
     }
 
+    @Get('/aggregated')
+    @UseGuards(AuthGuard)
+    async getAggregatedNewsPerMda(){
+        const results = await this.newsService.getAggregatedNewsPerMda()
+        return {
+            status: true,
+            message: "Dara fetched successfully",
+            data: results
+        }
+    }
+
     @Get('/admin/articles')
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRoles.MDA)

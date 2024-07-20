@@ -215,7 +215,7 @@ export class NewsService {
         });
       options.tags = { $in: [tag] };
     }
-    options.published = true
+    options.is_posted = true
     const totalNewsCount = newsTotal.length;
     const totalPages = Math.ceil(totalNewsCount / pageSize);
     const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
@@ -297,6 +297,67 @@ export class NewsService {
       },
       news,
     };
+  }
+
+  async getAggregatedNewsPerMda() {
+    const aggregatedNews = await this.newsModel.aggregate([
+      {
+        $project: {
+          mda: 1,
+          year: { $year: "$createdAt" },
+          month: { $month: "$createdAt" },
+        },
+      },
+      {
+        $group: {
+          _id: { mda: "$mda", year: "$year", month: "$month" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: {
+          "_id.year": 1,
+          "_id.month": 1,
+        },
+      },
+      {
+        $lookup: {
+          from: 'mdas', // The collection name of MDAs
+          localField: '_id.mda',
+          foreignField: '_id',
+          as: 'mdaDetails',
+        },
+      },
+      {
+        $unwind: '$mdaDetails',
+      },
+      {
+        $group: {
+          _id: "$mdaDetails",
+          newsByMonth: {
+            $push: {
+              year: "$_id.year",
+              month: "$_id.month",
+              count: "$count"
+            }
+          }
+        },
+      },
+      {
+        $project: {
+          mda: "$_id",
+          newsByMonth: 1,
+          _id: 0,
+        },
+      },
+      {
+        $sort: {
+          "mda.name": 1, // Assuming MDA has a name field, adjust accordingly
+        },
+      },
+    ]).exec();
+
+    return aggregatedNews;
   }
 
   async findNews(body: NewsPaginationDto): Promise<any> {
