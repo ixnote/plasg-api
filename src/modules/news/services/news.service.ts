@@ -143,12 +143,12 @@ export class NewsService {
         status: false,
         message: 'News not found',
       });
-    let newsSectionIds: any[] = [];
+    const newsSectionIds: any[] = [];
     for (const item of body.items) {
       const newsSections = await this.createNewsSections(news.id, item);
       newsSectionIds.push(newsSections.id);
     }
-    news.newsSections = news.newsSections.concat(...newsSectionIds);
+    news.newsSections = news.newsSections.concat(newsSectionIds);
     return await news.save();
   }
 
@@ -454,8 +454,8 @@ export class NewsService {
 
   async updateNews(newsId: string, body: UpdateNewsDto): Promise<News> {
     const news: News = await this.newsModel.findById(newsId);
-    let tags = []
-    tags = news.tags
+    let tags = [];
+    tags = news.tags;
     if (news.tags) {
       for (let i = 0; i < body.tags.length; i++) {
         const tagId = new mongoose.Types.ObjectId(body.tags[i]);
@@ -473,7 +473,7 @@ export class NewsService {
         }
       }
     }
-    body.tags = tags
+    body.tags = tags;
     if (!news)
       throw new NotFoundException({
         status: true,
