@@ -38,10 +38,6 @@ export const ResourceSchema: Schema = new Schema<Resource>(
       type: String,
       required: false,
     },
-    public_id: {
-      type: String,
-      required: false,
-    },
     main_type_tag: {
       type: Schema.Types.ObjectId,
       ref: 'Tag',

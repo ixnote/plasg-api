@@ -1,6 +1,7 @@
 export interface ResourceData{
   name: string;
   link: string;
+  image: string;
   description: string;
   mda: string;
   main_type_tag: string;

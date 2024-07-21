@@ -19,6 +19,7 @@ import { GetResourceDto } from '../dtos/get-resource.dto';
 import { GetResourcesDto } from '../dtos/get-resources.dto';
 import { TagType } from 'src/common/constants/enum';
 import { CloudinaryService } from 'src/common/services/cloudinary/cloudinary.service';
+import { UpdateResourceDto } from '../dtos/update-resource.dto';
 
 @Injectable()
 export class ResourceService {
@@ -108,18 +109,80 @@ export class ResourceService {
           message: `Topic Tag in position ${i} of All topic tags not found`,
         });
     }
-    let data: any = {};
-    if (body.file) {
-      const response = await this.cloudinaryService.uploadFile(body.file);
-      if (!response)
+    return await this.create({ ...body, mda: mda.id });
+  }
+
+  async updateResource(
+    resourceId: string,
+    body:UpdateResourceDto,
+    user: User,
+  ) {
+    const mda: Mda = await this.mdaService.findByUser(user.id);
+    if (!mda)
+      throw new UnauthorizedException({
+        status: false,
+        message: "User isn't assigned to any Mda",
+      });
+    if (body.main_topic_tag) {
+      const findTag: Tag = await this.tagService.findByIdAndType(
+        body.main_topic_tag,
+        TagType.TOPIC,
+      );
+      if (!findTag)
         throw new NotFoundException({
-          status: 'error',
-          message: 'Invalid File',
+          status: false,
+          message: 'Main topic tag not found',
         });
-      data.image = response.url;
-      data.public_id = response.public_id;
     }
-    return await this.create({ ...body, mda: mda.id, ...data });
+    if (body.sub_topic_tag) {
+      const findTag: Tag = await this.tagService.findByIdAndType(
+        body.sub_topic_tag,
+        TagType.TOPIC,
+      );
+      if (!findTag)
+        throw new NotFoundException({
+          status: false,
+          message: 'Sub topic tag not found',
+        });
+    }
+    if (body.main_type_tag) {
+      const findTag: Tag = await this.tagService.findByIdAndType(
+        body.main_type_tag,
+        TagType.ITEM,
+      );
+      if (!findTag)
+        throw new NotFoundException({
+          status: false,
+          message: 'Main type tag not found',
+        });
+    }
+    if (body.sub_type_tag) {
+      const findTag: Tag = await this.tagService.findByIdAndType(
+        body.sub_type_tag,
+        TagType.ITEM,
+      );
+      if (!findTag)
+        throw new NotFoundException({
+          status: false,
+          message: 'Sub type tag not found',
+        });
+    }
+    if(body.all_topic_tags){
+      for (let i = 0; i < body.all_topic_tags.length; i++) {
+        const findTag: Tag = await this.tagService.findByIdAndType(
+          body.all_topic_tags[i],
+          TagType.TOPIC,
+        );
+        if (!findTag)
+          throw new NotFoundException({
+            status: false,
+            message: `Topic Tag in position ${i} of All topic tags not found`,
+          });
+      }
+    }
+    return await this.resourceModel.findByIdAndUpdate(resourceId, body, {
+      new: true,
+    });
   }
 
   async getResourceById(body: GetResourceDto) {
@@ -175,8 +238,21 @@ export class ResourceService {
       .populate('main_topic_tag', 'name type')
       .populate('all_topic_tags', 'name type')
       .exec();
-    const total = resources.length;
-    const totalPages = Math.ceil(total / pageSize);
+
+    const totalResources: Resource[] = await this.resourceModel
+      .find({
+        $or: queryArray,
+      })
+      .skip(pagination.offset)
+      .limit(pagination.limit)
+      .sort({ createdAt: -1 })
+      .populate('main_type_tag', 'name type')
+      .populate('sub_type_tag', 'name type')
+      .populate('main_topic_tag', 'name type')
+      .populate('all_topic_tags', 'name type')
+      .exec();
+    const total = totalResources.length;
+    const totalPages = Math.ceil(totalResources.length / pageSize);
     const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
     const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
 
@@ -243,7 +319,7 @@ export class ResourceService {
       .populate('all_topic_tags', 'name type')
       .exec();
 
-      const totalResources: Resource[] = await this.resourceModel
+    const totalResources: Resource[] = await this.resourceModel
       .find(query)
       .sort({ createdAt: -1 })
       .populate('main_type_tag', 'name type')
@@ -252,8 +328,8 @@ export class ResourceService {
       .populate('all_topic_tags', 'name type')
       .exec();
 
-    const total = resources.length;
-    const totalPages = Math.ceil(totalResources.length / pageSize);
+    const total = totalResources.length;
+    const totalPages = Math.ceil(total / pageSize);
     const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
     const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
 

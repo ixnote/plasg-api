@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Put, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ResourceService } from './services/resource.service';
 import { CreateResourceDto } from './dtos/create-resource.dto';
 import { Resource } from './interfaces/resource.interface';
@@ -14,6 +14,7 @@ import { query } from 'express';
 import { GetResourcesDto } from './dtos/get-resources.dto';
 import { GetResourcesByNameDto } from './dtos/get-resources-by-name.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { UpdateResourceDto } from './dtos/update-resource.dto';
 
 @Controller('resource')
 export class ResourceController {
@@ -22,15 +23,10 @@ export class ResourceController {
   @Post('/create')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(UserRoles.MDA)
-  @UseInterceptors(FileInterceptor('file'))
   async createResource(
     @Body() body: CreateResourceDto,
     @UserGuard() user: User,
-    @UploadedFile() file: Express.Multer.File
   ) {
-    if(file){
-      body.file = file
-  }
     const resource: Resource = await this.resourceService.createResource(
       body,
       user,
@@ -38,6 +34,18 @@ export class ResourceController {
     return {
       status: true,
       message: 'Resource created successfully',
+      data: resource,
+    };
+  }
+
+  @Patch('/update/:resourceId')
+  @UseGuards(AuthGuard)
+  @Roles(UserRoles.MDA)
+  async updateResource(@Param() param: {resourceId: string}, @Body() body: UpdateResourceDto, @UserGuard() user: User){
+    const resource: Resource = await this.resourceService.updateResource(param.resourceId, body, user)
+    return {
+      status: true,
+      message: 'Resource updated successfully',
       data: resource,
     };
   }
