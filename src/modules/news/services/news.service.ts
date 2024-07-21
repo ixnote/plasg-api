@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -137,19 +138,23 @@ export class NewsService {
 
   async addNewsSections(body: AddNewsSectionDto): Promise<News> {
     // await this.checkIfUserIsAuthorized(user);
-    const news: News = await this.findById(body.newsId);
-    if (!news)
-      throw new NotFoundException({
-        status: false,
-        message: 'News not found',
-      });
-    const newsSectionIds: any[] = [];
-    for (const item of body.items) {
-      const newsSections = await this.createNewsSections(news.id, item);
-      newsSectionIds.push(newsSections.id);
+    try {
+      const news: News = await this.findById(body.newsId);
+      if (!news)
+        throw new NotFoundException({
+          status: false,
+          message: 'News not found',
+        });
+      const newsSectionIds: any[] = [];
+      for (const item of body.items) {
+        const newsSections = await this.createNewsSections(news.id, item);
+        newsSectionIds.push(newsSections.id);
+      }
+      news.newsSections = news.newsSections.concat(newsSectionIds);
+      return await news.save();
+    } catch (error) {
+      throw new BadRequestException(error);
     }
-    news.newsSections = news.newsSections.concat(newsSectionIds);
-    return await news.save();
   }
 
   async updateSection(

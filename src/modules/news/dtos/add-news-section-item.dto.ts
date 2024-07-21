@@ -1,21 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsEnum,
-  IsNumber,
-  IsString,
-} from 'class-validator';
+import { IsEnum, IsNumber, IsString } from 'class-validator';
 import { NewsSectionTypes } from 'src/common/constants/enum';
 
 export class AddNewsSectionItemsDto {
   @ApiProperty()
   @IsString()
   @IsEnum(NewsSectionTypes)
-  type: string
+  type: string;
 
   @ApiProperty()
   @IsNumber()
-  position: number
+  position: number;
 
   @ApiProperty()
-  value: any
+  value: any;
 }
