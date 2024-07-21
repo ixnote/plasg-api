@@ -115,7 +115,7 @@ export class NewsService {
       });
     return await this.newsModel
       .findById(id)
-      .populate('newsSections', 'paragraph image')
+      .populate('newsSections', 'type value')
       .populate('mda', 'name logo')
       .populate('tags', 'name type description');
   }
