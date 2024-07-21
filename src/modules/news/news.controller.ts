@@ -102,7 +102,7 @@ export class NewsController {
     }
 
     @Put('/section/add/:newsId')
-    async addNewsSections(@Param() param: GetNewsDto, @Body() body: AddNewsSectionDto){
+    async addNewsSections(@Param() param: {newsId: string}, @Body() body: AddNewsSectionDto){
         body.newsId = param.newsId
         const news: News = await this.newsService.addNewsSections(body)
         return {
