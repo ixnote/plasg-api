@@ -243,8 +243,17 @@ export class ResourceService {
       .populate('all_topic_tags', 'name type')
       .exec();
 
+      const totalResources: Resource[] = await this.resourceModel
+      .find(query)
+      .sort({ createdAt: -1 })
+      .populate('main_type_tag', 'name type')
+      .populate('sub_type_tag', 'name type')
+      .populate('main_topic_tag', 'name type')
+      .populate('all_topic_tags', 'name type')
+      .exec();
+
     const total = resources.length;
-    const totalPages = Math.ceil(total / pageSize);
+    const totalPages = Math.ceil(totalResources.length / pageSize);
     const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
     const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
 
