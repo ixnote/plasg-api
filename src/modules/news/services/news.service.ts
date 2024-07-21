@@ -58,19 +58,19 @@ export class NewsService {
     const news: News = await this.newsModel.findById(newsId);
     for (let i = 0; i < body.tags.length; i++) {
       const tagId = new mongoose.Types.ObjectId(body.tags[i]);
-      let existingTagIndex = -1
-      for(const tag of news.tags){
-        if(tag.toString() === tagId.toString()){
-          existingTagIndex = 1
+      let existingTagIndex = -1;
+      for (const tag of news.tags) {
+        if (tag.toString() === tagId.toString()) {
+          existingTagIndex = 1;
         }
       }
-     if (existingTagIndex !== -1) {
+      if (existingTagIndex !== -1) {
         news.tags[existingTagIndex] = tagId;
       } else {
         news.tags.push(tagId);
       }
     }
-    
+
     await news.save();
     return news;
   }
@@ -98,9 +98,9 @@ export class NewsService {
     return news;
   }
 
-  async totalNumberOfNews(): Promise<number>{
-    const news: News[] = await this.newsModel.find()
-    return news.length
+  async totalNumberOfNews(): Promise<number> {
+    const news: News[] = await this.newsModel.find();
+    return news.length;
   }
   async findAll(): Promise<News[]> {
     return this.newsModel.find().populate('newsSections').exec();
@@ -219,7 +219,7 @@ export class NewsService {
         });
       options.tags = { $in: [tag] };
     }
-    options.is_posted = true
+    options.is_posted = true;
     const totalNewsCount = newsTotal.length;
     const totalPages = Math.ceil(totalNewsCount / pageSize);
     const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
@@ -228,7 +228,7 @@ export class NewsService {
       .find({ ...options, mda: param.mda })
       .populate({
         path: 'newsSections',
-        options: { sort: { position: 1 } }
+        options: { sort: { position: 1 } },
       })
       .populate('tags')
       .skip(pagination.offset)
@@ -249,7 +249,7 @@ export class NewsService {
 
   async findMdaArticlesAdmin(
     body: NewsPaginationDto,
-    user: User
+    user: User,
   ): Promise<any> {
     const { page = 1, pageSize = 10, ...rest } = body;
     const usePage: number = page < 1 ? 1 : page;
@@ -258,11 +258,12 @@ export class NewsService {
       pageSize,
     });
     const tag = rest.tag;
-    const mda: Mda = await this.mdaService.findByUser(user.id)
-    if(!mda) throw new UnauthorizedException({
-      status: false,
-      message: "User is not assigned to any mda"
-    })
+    const mda: Mda = await this.mdaService.findByUser(user.id);
+    if (!mda)
+      throw new UnauthorizedException({
+        status: false,
+        message: 'User is not assigned to any mda',
+      });
     delete rest.tag;
     const options: any = await this.miscService.search(rest);
     const newsTotal: News[] = await this.newsModel.find(options);
@@ -284,7 +285,7 @@ export class NewsService {
       .find({ ...options, mda: mda.id })
       .populate({
         path: 'newsSections',
-        options: { sort: { position: 1 } }
+        options: { sort: { position: 1 } },
       })
       .populate('tags')
       .skip(pagination.offset)
@@ -304,62 +305,64 @@ export class NewsService {
   }
 
   async getAggregatedNewsPerMda() {
-    const aggregatedNews = await this.newsModel.aggregate([
-      {
-        $project: {
-          mda: 1,
-          year: { $year: "$createdAt" },
-          month: { $month: "$createdAt" },
+    const aggregatedNews = await this.newsModel
+      .aggregate([
+        {
+          $project: {
+            mda: 1,
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' },
+          },
         },
-      },
-      {
-        $group: {
-          _id: { mda: "$mda", year: "$year", month: "$month" },
-          count: { $sum: 1 },
+        {
+          $group: {
+            _id: { mda: '$mda', year: '$year', month: '$month' },
+            count: { $sum: 1 },
+          },
         },
-      },
-      {
-        $sort: {
-          "_id.year": 1,
-          "_id.month": 1,
+        {
+          $sort: {
+            '_id.year': 1,
+            '_id.month': 1,
+          },
         },
-      },
-      {
-        $lookup: {
-          from: 'mdas', // The collection name of MDAs
-          localField: '_id.mda',
-          foreignField: '_id',
-          as: 'mdaDetails',
+        {
+          $lookup: {
+            from: 'mdas', // The collection name of MDAs
+            localField: '_id.mda',
+            foreignField: '_id',
+            as: 'mdaDetails',
+          },
         },
-      },
-      {
-        $unwind: '$mdaDetails',
-      },
-      {
-        $group: {
-          _id: "$mdaDetails",
-          newsByMonth: {
-            $push: {
-              year: "$_id.year",
-              month: "$_id.month",
-              count: "$count"
-            }
-          }
+        {
+          $unwind: '$mdaDetails',
         },
-      },
-      {
-        $project: {
-          mda: "$_id",
-          newsByMonth: 1,
-          _id: 0,
+        {
+          $group: {
+            _id: '$mdaDetails',
+            newsByMonth: {
+              $push: {
+                year: '$_id.year',
+                month: '$_id.month',
+                count: '$count',
+              },
+            },
+          },
         },
-      },
-      {
-        $sort: {
-          "mda.name": 1, // Assuming MDA has a name field, adjust accordingly
+        {
+          $project: {
+            mda: '$_id',
+            newsByMonth: 1,
+            _id: 0,
+          },
         },
-      },
-    ]).exec();
+        {
+          $sort: {
+            'mda.name': 1, // Assuming MDA has a name field, adjust accordingly
+          },
+        },
+      ])
+      .exec();
 
     return aggregatedNews;
   }
@@ -396,7 +399,7 @@ export class NewsService {
       .find(options, { mda: mda.id })
       .populate({
         path: 'newsSections',
-        options: { sort: { position: 1 } }
+        options: { sort: { position: 1 } },
       })
       .populate('tags')
       .skip(pagination.offset)
@@ -425,8 +428,6 @@ export class NewsService {
     return news;
   }
 
-
-
   async postNews(newsId: string, user: User) {
     await this.checkIfUserIsAuthorized(user);
     const news: News = await this.findById(newsId);
@@ -453,6 +454,26 @@ export class NewsService {
 
   async updateNews(newsId: string, body: UpdateNewsDto): Promise<News> {
     const news: News = await this.newsModel.findById(newsId);
+    let tags = []
+    tags = news.tags
+    if (news.tags) {
+      for (let i = 0; i < body.tags.length; i++) {
+        const tagId = new mongoose.Types.ObjectId(body.tags[i]);
+        let existingTagIndex = -1;
+        for (let j = 0; j < news.tags.length; j++) {
+          if (news.tags[j].toString() === tagId.toString()) {
+            existingTagIndex = j;
+            break;
+          }
+        }
+        if (existingTagIndex !== -1) {
+          news.tags[existingTagIndex] = tagId;
+        } else {
+          tags.push(tagId);
+        }
+      }
+    }
+    body.tags = tags
     if (!news)
       throw new NotFoundException({
         status: true,

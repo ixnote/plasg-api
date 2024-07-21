@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsArray,
   IsMongoId,
   IsOptional,
   IsString,
@@ -21,4 +22,9 @@ export class UpdateNewsDto {
   @IsOptional()
   headline: string;
 
+  @ApiProperty()
+  @IsArray()
+  @IsMongoId({ each: true }) 
+  @IsOptional()
+  tags: string[];
 }
