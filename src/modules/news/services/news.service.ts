@@ -376,6 +376,7 @@ export class NewsService {
     const { page = 1, pageSize = 10, ...rest } = body;
     const usePage: number = page < 1 ? 1 : page;
     const mda: Mda = await this.mdaService.findByName('News');
+    console.log('🚀 ~ NewsService ~ findNews ~ mda:', mda);
     const pagination = await this.miscService.paginate({
       page: usePage,
       pageSize,
@@ -401,15 +402,16 @@ export class NewsService {
     const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
 
     const news: News[] = await this.newsModel
-      .find(options, { mda: mda.id })
+      .find({...options, mda: mda.id })
       .populate({
         path: 'newsSections',
         options: { sort: { position: 1 } },
       })
-      .populate('tags')
+      .populate('tags', 'name')
       .skip(pagination.offset)
       .limit(pagination.limit)
       .sort({ createdAt: -1 });
+
     return {
       pagination: {
         currentPage: Number(usePage),
@@ -521,8 +523,6 @@ export class NewsService {
   }
 
   async getTotalNewsAllTime(mdaId: mongoose.Types.ObjectId): Promise<number> {
-    return await this.newsModel
-      .countDocuments({ mda: mdaId})
-      .exec();
+    return await this.newsModel.countDocuments({ mda: mdaId }).exec();
   }
 }
