@@ -20,6 +20,7 @@ import { GetResourcesDto } from '../dtos/get-resources.dto';
 import { TagType } from 'src/common/constants/enum';
 import { CloudinaryService } from 'src/common/services/cloudinary/cloudinary.service';
 import { UpdateResourceDto } from '../dtos/update-resource.dto';
+import slugify from 'slugify';
 
 @Injectable()
 export class ResourceService {
@@ -109,7 +110,8 @@ export class ResourceService {
           message: `Topic Tag in position ${i} of All topic tags not found`,
         });
     }
-    return await this.create({ ...body, mda: mda.id });
+    const slug = slugify(body.name, '_')
+    return await this.create({ ...body, mda: mda.id, slug });
   }
 
   async updateResource(

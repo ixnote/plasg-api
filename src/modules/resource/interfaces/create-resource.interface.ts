@@ -4,6 +4,7 @@ export interface ResourceData{
   image: string;
   description: string;
   mda: string;
+  slug: string;
   main_type_tag: string;
   sub_type_tag: string;
   main_topic_tag: string;

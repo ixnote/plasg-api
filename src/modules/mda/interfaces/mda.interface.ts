@@ -15,6 +15,7 @@ export interface Mda extends mongoose.Document {
   contact: Contact;
   about: About;
   hero: Hero,
+  slug: string,
   published: boolean;
   readonly createdAt: Date;
   updatedAt: Date;

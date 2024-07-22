@@ -17,6 +17,10 @@ export const MdaSchema: Schema = new Schema<Mda>(
       type: String,
       required: true,
     },
+    slug: {
+      type: String,
+      required: false,
+    },
     admin: {
         type: Schema.Types.ObjectId,
         ref: 'User',

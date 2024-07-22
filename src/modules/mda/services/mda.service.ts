@@ -21,6 +21,7 @@ import { UpdateMdaDto } from '../dtos/update-mda.dto';
 import { AddTeamMembersDto } from '../dtos/add-team.dto';
 import { Team } from '../interfaces/team.interface';
 import { GetTeamDto } from '../dtos/get-team.dto';
+import slugify from 'slugify';
 
 @Injectable()
 export class MdaService {
@@ -61,7 +62,9 @@ export class MdaService {
         status: false,
         message: 'Mda already exists',
       });
-    return await this.create(body);
+    
+    const slug = slugify(body.name, '_')
+    return await this.create({...body, slug});
   }
 
   async totalNumberOfMdas(): Promise<number>{

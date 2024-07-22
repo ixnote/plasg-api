@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { DestinationTypes } from 'src/common/constants/enum';
+import { DestinationTypes, LegislativeTypes } from 'src/common/constants/enum';
 import { Legislative } from '../interfaces/legislative.interface';
 
 function transformValue(doc, ret: { [key: string]: any }) {
@@ -30,9 +30,14 @@ export const LegislativeSchema: Schema = new Schema<Legislative>(
       required: false,
     },
     image: {
-        type: String,
-        required: false,
-      },
+      type: String,
+      required: false,
+    },
+    type: {
+      type: String,
+      enum: LegislativeTypes,
+      required: true
+    },
     public_id: {
       type: String,
       required: false,

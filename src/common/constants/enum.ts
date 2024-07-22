@@ -24,6 +24,10 @@ export enum DestinationTypes {
   EAT = "eat"
 }
 
+export enum LegislativeTypes{
+  LEGISLATIVE = 'legislative',
+  GOVERNOR = 'governor'
+}
 export enum ComponentType {
   
 }
