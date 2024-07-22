@@ -36,7 +36,6 @@ export class AuthController {
   @UseFilters(ExceptionsLoggerFilter)
   async login(@Body()body: SignInDto){
     const tokens = await this.authService.signIn(body);
-    console.log("🚀 ~ AuthController ~ login ~ tokens:", tokens)
     return {
       status: true,
       message: 'Login successful',

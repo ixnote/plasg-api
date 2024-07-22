@@ -13,6 +13,8 @@ import { Destination } from './interfaces/destination.interface';
 import { GetDestinationDto } from './dtos/get-destination.dto';
 import { GetDestinationsDto } from './dtos/get-destinations.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { UserGuard } from 'src/framework/guards/user.guard';
+import { User } from '../user/interfaces/user.interface';
 
 @Controller('statics')
 export class StaticsController {
@@ -26,6 +28,19 @@ export class StaticsController {
     @Roles(UserRoles.SUPER)
     async superAdminDashboard(){
         const results = await this.staticsService.adminDashboard()
+        return {
+            status: true,
+            message: "Results fetched successfully",
+            results
+        }
+    }
+
+
+    @Get('/mda/dashboard')
+    @UseGuards(AuthGuard, RolesGuard)
+    @Roles(UserRoles.MDA)
+    async mdaAdminDashboard(@UserGuard() user: User){
+        const results = await this.staticsService.mdaDashboard(user)
         return {
             status: true,
             message: "Results fetched successfully",

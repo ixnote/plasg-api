@@ -107,7 +107,7 @@ export class MdaService {
     const options: any = await this.miscService.search(rest);
     options.is_suspended = false;
     options.is_deleted = false;
-    options.published = true;
+    // options.published = true;
     const mdasTotal: Mda[] = await this.mdaModel.find(options);
     const totalMdasCount = mdasTotal.length;
     const totalPages = Math.ceil(totalMdasCount / pageSize);

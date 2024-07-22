@@ -13,6 +13,7 @@ import { UserSchema } from 'src/modules/user/schemas/user.schema';
 import { MdaModule } from '../mda/mda.module';
 import { NewsModule } from '../news/news.module';
 import { NewsSchema } from '../news/schemas/news.schema';
+import { ResourceModule } from '../resource/resource.module';
 
 @Module({
   imports: [
@@ -26,7 +27,8 @@ import { NewsSchema } from '../news/schemas/news.schema';
     CloudinaryModule,
     AuthModule,
     MdaModule,
-    NewsModule
+    NewsModule,
+    ResourceModule
   ],
   controllers: [StaticsController],
   providers: [StaticsService, MiscClass],

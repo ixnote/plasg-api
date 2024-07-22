@@ -499,4 +499,30 @@ export class NewsService {
     news.tags = newArray;
     return await news.save();
   }
+
+  async getTotalNewsToday(mdaId: mongoose.Types.ObjectId): Promise<number> {
+    const currentDate = new Date();
+    const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0));
+    return await this.newsModel
+      .countDocuments({ mda: mdaId, createdAt: { $gte: startOfDay } })
+      .exec();
+  }
+
+  async getTotalNewsMonth(mdaId: mongoose.Types.ObjectId): Promise<number> {
+    const currentDate = new Date();
+    const startOfMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      1,
+    );
+    return await this.newsModel
+      .countDocuments({ mda: mdaId, createdAt: { $gte: startOfMonth } })
+      .exec();
+  }
+
+  async getTotalNewsAllTime(mdaId: mongoose.Types.ObjectId): Promise<number> {
+    return await this.newsModel
+      .countDocuments({ mda: mdaId})
+      .exec();
+  }
 }

@@ -22,6 +22,7 @@ import { CloudinaryModule } from 'src/common/services/cloudinary/cloudinary.modu
     CloudinaryModule
   ],
   controllers: [ResourceController],
-  providers: [ResourceService, MiscClass]
+  providers: [ResourceService, MiscClass],
+  exports: [ResourceService]
 })
 export class ResourceModule {}

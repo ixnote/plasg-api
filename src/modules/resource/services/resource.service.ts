@@ -397,4 +397,30 @@ export class ResourceService {
       resources,
     };
   }
+
+  async getTotalResourcesToday(mdaId: mongoose.Types.ObjectId): Promise<number> {
+    const currentDate = new Date();
+    const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0));
+    return await this.resourceModel
+      .countDocuments({ mda: mdaId, createdAt: { $gte: startOfDay } })
+      .exec();
+  }
+
+  async getTotalResourcesMonth(mdaId: mongoose.Types.ObjectId): Promise<number> {
+    const currentDate = new Date();
+    const startOfMonth = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      1,
+    );
+    return await this.resourceModel
+      .countDocuments({ mda: mdaId, createdAt: { $gte: startOfMonth } })
+      .exec();
+  }
+
+  async getTotalResourcesAllTime(mdaId: mongoose.Types.ObjectId): Promise<number> {
+    return await this.resourceModel
+      .countDocuments({ mda: mdaId})
+      .exec()
+  }
 }

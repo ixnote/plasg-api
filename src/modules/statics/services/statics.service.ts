@@ -19,6 +19,8 @@ import { User } from 'src/modules/user/interfaces/user.interface';
 import { UserService } from 'src/modules/user/services/user.service';
 import { MdaService } from 'src/modules/mda/services/mda.service';
 import { NewsService } from 'src/modules/news/services/news.service';
+import { Mda } from 'src/modules/mda/interfaces/mda.interface';
+import { ResourceService } from 'src/modules/resource/services/resource.service';
 
 @Injectable()
 export class StaticsService {
@@ -31,58 +33,94 @@ export class StaticsService {
     private cloudinaryService: CloudinaryService,
     private userService: UserService,
     private mdaService: MdaService,
-    private newsService: NewsService
+    private newsService: NewsService,
+    private resourceService: ResourceService,
   ) {}
 
-
-async adminDashboard(){
-  const totalUsers: number = await this.userService.getTotalNumberOfUsers();
-  const totalMdas: number = await this.mdaService.totalNumberOfMdas();
-  const totalNews: number = await this.newsService.totalNumberOfNews();
-  return {
-    users: totalUsers,
-    mdas: totalMdas,
-    news: totalNews
+  async adminDashboard() {
+    const totalUsers: number = await this.userService.getTotalNumberOfUsers();
+    const totalMdas: number = await this.mdaService.totalNumberOfMdas();
+    const totalNews: number = await this.newsService.totalNumberOfNews();
+    return {
+      users: totalUsers,
+      mdas: totalMdas,
+      news: totalNews,
+    };
   }
-}
+
+  async mdaDashboard(user: User) {
+    const mda: Mda = await this.mdaService.findByUser(user.id);
+    if (!mda)
+      throw new NotFoundException({
+        status: false,
+        message: 'Mda not found',
+      });
+    const newsToday = await this.newsService.getTotalNewsToday(mda.id);
+    const resourcesToday = await this.resourceService.getTotalResourcesToday(
+      mda.id,
+    );
+
+    const newsThisMonth = await this.newsService.getTotalNewsMonth(mda.id);
+    const resourcesThisMonth =
+      await this.resourceService.getTotalResourcesMonth(mda.id);
+
+    const newsAllTime = await this.newsService.getTotalNewsAllTime(mda.id);
+    const resourcesAllTime =
+      await this.resourceService.getTotalResourcesAllTime(mda.id);
+
+    return {
+      articles: {
+        today: newsToday,
+        month: newsThisMonth,
+        all_time: newsAllTime,
+      },
+      resources: {
+        today: resourcesToday,
+        month: resourcesThisMonth,
+        all_time: resourcesAllTime,
+      },
+    };
+  }
 
   async addLegislative(body: AddLegislativeDto): Promise<Legislative> {
     const findLegislative: Legislative = await this.legislativeModel.findOne({
       name: body.name,
       role: body.role,
     });
-    let data: any = {...body}
+    let data: any = { ...body };
     if (findLegislative)
       throw new NotFoundException({
         status: false,
         message: 'Legislative already exists',
       });
-      if (body.file) {
-        const response = await this.cloudinaryService.uploadFile(body.file);
-        if (!response)
-          throw new NotFoundException({
-            status: 'error',
-            message: 'Invalid File',
-          });
-        data.url = response.url;
-        data.public_id = response.public_id;
-      }
+    if (body.file) {
+      const response = await this.cloudinaryService.uploadFile(body.file);
+      if (!response)
+        throw new NotFoundException({
+          status: 'error',
+          message: 'Invalid File',
+        });
+      data.url = response.url;
+      data.public_id = response.public_id;
+    }
     const legislative: Legislative = new this.legislativeModel(body);
     return await legislative.save();
   }
 
   async updateLegislatives(body: AddLegislativeDto): Promise<Legislative> {
     let data: any = { ...body };
-    const updatedDestination: Legislative = await this.legislativeModel.findOneAndUpdate(
-      { name: data.name }, 
-      { $set: data },
-      { new: true, upsert: true } 
-    ).exec();
+    const updatedDestination: Legislative = await this.legislativeModel
+      .findOneAndUpdate(
+        { name: data.name },
+        { $set: data },
+        { new: true, upsert: true },
+      )
+      .exec();
 
     return updatedDestination;
   }
 
-  async deleteLegislative(body: GetLegislativeDto): Promise<Legislative>{
+  async deleteLegislative(body: GetLegislativeDto): Promise<Legislative> {
     const legislative: Legislative = await this.legislativeModel.findById(
       body.legislativeId,
     );
@@ -103,7 +141,7 @@ async adminDashboard(){
       pageSize,
     });
     const options: any = await this.miscService.search(rest);
-    options.is_deleted = false
+    options.is_deleted = false;
     const legislatives: Legislative[] = await this.legislativeModel
       .find(options)
       .skip(pagination.offset)
@@ -159,11 +197,13 @@ async adminDashboard(){
 
   async updateDestinations(body: AddDestinationDto): Promise<Destination> {
     let data: any = { ...body };
-    const updatedDestination: Destination = await this.destinationModel.findOneAndUpdate(
-      { name: data.name }, 
-      { $set: data },
-      { new: true, upsert: true } 
-    ).exec();
+    const updatedDestination: Destination = await this.destinationModel
+      .findOneAndUpdate(
+        { name: data.name },
+        { $set: data },
+        { new: true, upsert: true },
+      )
+      .exec();
 
     return updatedDestination;
   }
