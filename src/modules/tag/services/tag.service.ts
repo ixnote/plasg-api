@@ -81,7 +81,7 @@ export class TagService {
     const tag: Tag = await this.createTag(body);
     if (sub_tags.length > 0) {
       for (const item of sub_tags) {
-        const use_tag = await new this.tagModel({
+        const use_tag = new this.tagModel({
           name: item.toLowerCase(),
           type: TagType.TOPIC,
           parent: tag.id,
@@ -89,8 +89,7 @@ export class TagService {
         await use_tag.save();
         put_sub_tags.push(use_tag.id);
       }
-      console.log('🚀 ~ TagService ~ addTag ~ put_sub_tags:', put_sub_tags);
-      tag.sub_tags = put_sub_tags;
+     tag.sub_tags = put_sub_tags;
       await tag.save();
     }
 

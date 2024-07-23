@@ -1,17 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+    IsArray,
     IsEmail,
+  IsEnum,
   IsOptional,
   IsString,
 } from 'class-validator'; 
+import { AddBiographyDto } from './add-biography.dto';
+import { AddCabinetDto } from './add-cabinet.dto';
 
-export class AddLegislativeDto {
+export class UpdateGovernmentOfficialDto {
   @ApiProperty()
   @IsString()
+  @IsOptional()
   name: string;
 
   @ApiProperty()
   @IsString()
+  @IsOptional()
   image: string;
 
   @ApiProperty()
@@ -25,11 +31,11 @@ export class AddLegislativeDto {
   title: string;
 
   @ApiProperty()
-  @IsString()
-  lga: string;
+  @IsOptional()
+  biography: AddBiographyDto;
 
   @ApiProperty()
-  @IsEmail()
+  @IsArray()
   @IsOptional()
-  email: string;
+  cabinet: AddCabinetDto[];
 }

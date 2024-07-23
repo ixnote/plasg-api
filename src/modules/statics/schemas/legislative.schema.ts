@@ -2,6 +2,7 @@ import { Schema } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { DestinationTypes, LegislativeTypes } from 'src/common/constants/enum';
 import { Legislative } from '../interfaces/legislative.interface';
+import { BiographySchema } from './biography.schema';
 
 function transformValue(doc, ret: { [key: string]: any }) {
   delete ret._id;
@@ -37,6 +38,20 @@ export const LegislativeSchema: Schema = new Schema<Legislative>(
       type: String,
       enum: LegislativeTypes,
       required: true
+    },
+    biography: {
+      type: BiographySchema,
+      required: false
+    },
+    cabinet:{
+      type: [Schema.Types.ObjectId],
+      ref: 'Legislative',
+      required: false,
+    },
+    parentId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Legislative',
+      required: false,
     },
     is_deleted: {
       type: Boolean,

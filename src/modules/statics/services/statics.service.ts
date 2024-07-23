@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Destination } from '../interfaces/destination.interface';
 import { Model } from 'mongoose';
@@ -18,6 +22,8 @@ import { MdaService } from 'src/modules/mda/services/mda.service';
 import { NewsService } from 'src/modules/news/services/news.service';
 import { Mda } from 'src/modules/mda/interfaces/mda.interface';
 import { ResourceService } from 'src/modules/resource/services/resource.service';
+import { AddGovernmentOfficialDto } from '../dtos/add-governement-official.dto';
+import { UpdateGovernmentOfficialDto } from '../dtos/update-government-officaial.dto';
 
 @Injectable()
 export class StaticsService {
@@ -76,9 +82,9 @@ export class StaticsService {
         month: resourcesThisMonth,
         all_time: resourcesAllTime,
       },
+      mda,
     };
   }
-
 
   async addLegislative(body: AddLegislativeDto): Promise<Legislative> {
     const findLegislative: Legislative = await this.legislativeModel.findOne({
@@ -86,12 +92,78 @@ export class StaticsService {
       role: body.role,
     });
     if (findLegislative)
-      throw new NotFoundException({
+      throw new BadRequestException({
         status: false,
         message: 'Legislative already exists',
       });
     const legislative: Legislative = new this.legislativeModel(body);
     return await legislative.save();
+  }
+
+  async addGovernmentOfficial(
+    body: AddGovernmentOfficialDto,
+  ): Promise<Legislative> {
+    const findLegislative: Legislative = await this.legislativeModel.findOne({
+      name: body.name,
+      type: LegislativeTypes.OFFICIAL,
+    });
+    if (findLegislative)
+      throw new NotFoundException({
+        status: false,
+        message: 'Legislative already exists',
+      });
+    const legislative: Legislative = new this.legislativeModel({...body, type: LegislativeTypes.OFFICIAL});
+    return await legislative.save();
+  }
+
+  async updateGovernmentOfficial(
+    param: GetLegislativeDto,
+    body: UpdateGovernmentOfficialDto,
+  ): Promise<Legislative> {
+    const findLegislative = await this.legislativeModel.findById(
+      param.legislativeId,
+    );
+    if (!findLegislative)
+      throw new NotFoundException({
+        status: true,
+        message: 'Official not found',
+      });
+    let cabinet = []
+    if (body.cabinet.length > 0) {
+      for (const item of body.cabinet) {
+        const newLegislative = new this.legislativeModel({...item, parent: param.legislativeId, type: LegislativeTypes.CABINET });
+        await newLegislative.save();
+        cabinet.push(newLegislative.id);
+      }
+      findLegislative.cabinet = cabinet
+      await findLegislative.save()
+      delete body.cabinet
+    }
+
+    return await this.legislativeModel.findByIdAndUpdate(
+      param.legislativeId,
+      body,
+      { new: true },
+    );
+  }
+
+  async getGovernmentOfficial(body: GetLegislativeDto) {
+    const legislative: Legislative = await this.legislativeModel.findOne({
+      _id: body.legislativeId,
+      type: LegislativeTypes.OFFICIAL,
+    });
+    if (!legislative)
+      throw new NotFoundException({
+        status: false,
+        message: 'Legislative not found',
+      });
+    return legislative;
+  }
+
+  async getGovernmentOfficials(body: GetLegislativesDto) {
+    return await this.legislativeModel.find({
+      type: LegislativeTypes.OFFICIAL,
+    });
   }
 
   async updateLegislatives(body: AddLegislativeDto): Promise<Legislative> {
@@ -120,40 +192,40 @@ export class StaticsService {
     return await legislative.save();
   }
 
-  async getGovernorsCabinet(query: GetLegislativesDto): Promise<any> {
-    const { page = 1, pageSize = 10, ...rest } = query;
-    const usePage: number = page < 1 ? 1 : page;
-    const pagination = await this.miscService.paginate({
-      page: usePage,
-      pageSize,
-    });
-    const options: any = await this.miscService.search(rest);
-    options.is_deleted = false;
-    options.type = LegislativeTypes.GOVERNOR;
-    const legislatives: Legislative[] = await this.legislativeModel
-      .find(options)
-      .skip(pagination.offset)
-      .limit(pagination.limit)
-      .sort({ createdAt: -1 })
-      .exec();
+  // async getGovernorsCabinet(query: GetLegislativesDto): Promise<any> {
+  //   const { page = 1, pageSize = 10, ...rest } = query;
+  //   const usePage: number = page < 1 ? 1 : page;
+  //   const pagination = await this.miscService.paginate({
+  //     page: usePage,
+  //     pageSize,
+  //   });
+  //   const options: any = await this.miscService.search(rest);
+  //   options.is_deleted = false;
+  //   options.type = LegislativeTypes.GOVERNOR;
+  //   const legislatives: Legislative[] = await this.legislativeModel
+  //     .find(options)
+  //     .skip(pagination.offset)
+  //     .limit(pagination.limit)
+  //     .sort({ createdAt: -1 })
+  //     .exec();
 
-    const total = legislatives.length;
-    const totalPages = Math.ceil(total / pageSize);
-    const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
-    const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
+  //   const total = legislatives.length;
+  //   const totalPages = Math.ceil(total / pageSize);
+  //   const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
+  //   const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
 
-    return {
-      pagination: {
-        currentPage: Number(usePage),
-        totalPages,
-        nextPage,
-        prevPage,
-        total,
-        pageSize: Number(pageSize),
-      },
-      data: legislatives,
-    };
-  }
+  //   return {
+  //     pagination: {
+  //       currentPage: Number(usePage),
+  //       totalPages,
+  //       nextPage,
+  //       prevPage,
+  //       total,
+  //       pageSize: Number(pageSize),
+  //     },
+  //     data: legislatives,
+  //   };
+  // }
 
   async getLegislatives(query: GetLegislativesDto): Promise<any> {
     const { page = 1, pageSize = 10, ...rest } = query;

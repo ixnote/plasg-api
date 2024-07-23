@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import { Biography } from './biography.interface';
 
 export interface Legislative extends mongoose.Document {
   name: string;
@@ -8,6 +9,9 @@ export interface Legislative extends mongoose.Document {
   email: string;
   image: string;
   type: string;
+  biography: Biography;
+  cabinet: Legislative[];
+  parentId: mongoose.Types.ObjectId;
   is_deleted: boolean;
   readonly createdAt: Date;
   updatedAt: Date;

@@ -26,8 +26,10 @@ export enum DestinationTypes {
 
 export enum LegislativeTypes{
   LEGISLATIVE = 'legislative',
-  GOVERNOR = 'governor'
+  OFFICIAL = 'official',
+  CABINET = 'cabinet'
 }
+
 export enum ComponentType {
   
 }

@@ -18,4 +18,8 @@ export const DirectorSchema = new Schema<Director>({
     type: String,
     required: false,
   },
+  message: {
+    type: String,
+    required: false,
+  },
 });

@@ -11,6 +11,7 @@ export class UpdateMdaDto {
 
     @ApiProperty()
     @IsBoolean()
+    @IsOptional()
     published: boolean
 
     @ApiProperty()
@@ -38,6 +39,7 @@ export class UpdateMdaDto {
     @IsArray()
     @ValidateNested({ each: true })
     @Type(() =>  AddTeamMembersDto)
+    @IsOptional()
     team: AddTeamMembersDto[];
   
   }

@@ -5,5 +5,6 @@ export interface Director extends mongoose.Document {
   title: string;
   image: string;
   name: string;
+  message: string;
   public_id: string;
 }
