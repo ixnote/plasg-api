@@ -1,9 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
     IsEmail,
+  IsEnum,
   IsOptional,
   IsString,
 } from 'class-validator'; 
+import { LegislativeTypes } from 'src/common/constants/enum';
 
 export class AddLegislativeDto {
   @ApiProperty()
@@ -12,6 +14,11 @@ export class AddLegislativeDto {
 
   @ApiProperty()
   @IsString()
+  image: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
   role?: string;
 
   @ApiProperty()
@@ -29,5 +36,6 @@ export class AddLegislativeDto {
   email: string;
 
   @ApiProperty()
-  file?: any;
+  @IsEnum(LegislativeTypes)
+  type: string
 }

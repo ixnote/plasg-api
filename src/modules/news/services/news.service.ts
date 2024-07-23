@@ -23,6 +23,7 @@ import { UserRoles } from 'src/common/constants/enum';
 import { AddNewsTagsDto } from '../dtos/add-news-tags.dto';
 import { RemoveTagDto } from '../dtos/remove-news-tag.dto';
 import { AddNewsDto } from '../dtos/add-news.dto';
+import slugify from 'slugify';
 
 @Injectable()
 export class NewsService {
@@ -51,7 +52,8 @@ export class NewsService {
         status: false,
         message: 'Not Authorized',
       });
-    const createdNews = new this.newsModel({ ...body, mda: findMda.id });
+    const slug = slugify(body.headline, '_')
+    const createdNews = new this.newsModel({ ...body, mda: findMda.id, slug });
     return createdNews.save();
   }
 

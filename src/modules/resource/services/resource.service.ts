@@ -348,6 +348,52 @@ export class ResourceService {
     };
   }
 
+  async findLatestResourcesByTag(): Promise<Resource[]> {
+    return this.resourceModel.aggregate([
+      {
+        $sort: { createdAt: -1 }
+      },
+      {
+        $group: {
+          _id: "$main_topic_tag",
+          doc: { $first: "$$ROOT" }
+        }
+      },
+      {
+        $replaceRoot: { newRoot: "$doc" }
+      },
+      {
+        $lookup: {
+          from: 'tags',
+          localField: 'main_topic_tag',
+          foreignField: '_id',
+          as: 'main_topic_tag'
+        }
+      },
+      {
+        $unwind: '$main_topic_tag'
+      },
+      {
+        $project: {
+          main_topic_tag: {
+            name: 1,
+            image: 1,
+            type: 1
+          },
+          // Include other fields from the resource document as needed
+          _id: 1,
+          name: 1,
+          title: 1,
+          link: 1,
+          description: 1,
+          slug: 1,
+          createdAt: 1,
+          // other fields
+        }
+      }
+    ]).exec();
+  }
+
   async getResourcesByCategory(
     name: string,
     body: GetResourcesDto,

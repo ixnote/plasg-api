@@ -20,6 +20,10 @@ export const NewsSchema: Schema = new Schema<News>(
       type: String,
       required: false,
     },
+    slug: {
+      type: String,
+      required: false,
+    },
     newsSections: [
       {
         type: Schema.Types.ObjectId,

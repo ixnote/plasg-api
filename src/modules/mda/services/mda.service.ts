@@ -22,6 +22,7 @@ import { AddTeamMembersDto } from '../dtos/add-team.dto';
 import { Team } from '../interfaces/team.interface';
 import { GetTeamDto } from '../dtos/get-team.dto';
 import slugify from 'slugify';
+import { GetMdaBySlugDto } from '../dtos/get-mda-by-slug.dto';
 
 @Injectable()
 export class MdaService {
@@ -46,6 +47,10 @@ export class MdaService {
     return this.mdaModel.findById(id);
   }
 
+  async findBySlug(slug: string): Promise<Mda> {
+    return this.mdaModel.findOne({ slug });
+  }
+
   async findByName(name: string): Promise<Mda> {
     return this.mdaModel.findOne({ name }).exec();
   }
@@ -62,14 +67,14 @@ export class MdaService {
         status: false,
         message: 'Mda already exists',
       });
-    
-    const slug = slugify(body.name, '_')
-    return await this.create({...body, slug});
+
+    const slug = slugify(body.name, '_');
+    return await this.create({ ...body, slug });
   }
 
-  async totalNumberOfMdas(): Promise<number>{
-    const totalMdas: Mda[] = await this.mdaModel.find()
-    return totalMdas.length
+  async totalNumberOfMdas(): Promise<number> {
+    const totalMdas: Mda[] = await this.mdaModel.find();
+    return totalMdas.length;
   }
   async updateMda(param: GetMdaDto, body: UpdateMdaDto): Promise<Mda> {
     const mda: Mda = await this.findById(param.mdaId);
@@ -92,6 +97,16 @@ export class MdaService {
 
   async getMda(body: GetMdaDto): Promise<Mda> {
     const mda: Mda = await this.findById(body.mdaId);
+    if (!mda)
+      throw new NotFoundException({
+        status: false,
+        message: 'Mda not found!',
+      });
+    return mda;
+  }
+
+  async getMdaBySlug(body: GetMdaBySlugDto): Promise<Mda> {
+    const mda: Mda = await this.findBySlug(body.slug);
     if (!mda)
       throw new NotFoundException({
         status: false,
@@ -222,18 +237,25 @@ export class MdaService {
   }
 
   // Team
-  async addMdaTeamMember(param: GetMdaDto, body: AddTeamMembersDto): Promise<Mda> {
+  async addMdaTeamMember(
+    param: GetMdaDto,
+    body: AddTeamMembersDto,
+  ): Promise<Mda> {
     const mda: Mda = await this.findById(param.mdaId);
     if (!mda)
       throw new NotFoundException({
         status: false,
         message: 'Mda not found',
       });
-      const team: any [] = mda.team
-      team.push({...body})
-    
-    console.log("🚀 ~ MdaService ~ addMdaTeamMember ~ team:", team)
-    return await this.mdaModel.findByIdAndUpdate(mda.id, { team }, { new: true });
+    const team: any[] = mda.team;
+    team.push({ ...body });
+
+    console.log('🚀 ~ MdaService ~ addMdaTeamMember ~ team:', team);
+    return await this.mdaModel.findByIdAndUpdate(
+      mda.id,
+      { team },
+      { new: true },
+    );
   }
 
   async removeMdaTeamMember(param: GetTeamDto): Promise<Mda> {
@@ -243,7 +265,7 @@ export class MdaService {
         status: false,
         message: 'Mda not found',
       });
-      mda.team = mda.team.filter(teamMember => teamMember.name !== param.name);
-      return await mda.save();
+    mda.team = mda.team.filter((teamMember) => teamMember.name !== param.name);
+    return await mda.save();
   }
 }

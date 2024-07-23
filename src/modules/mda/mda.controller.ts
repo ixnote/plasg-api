@@ -16,6 +16,7 @@ import { ApiConsumes } from '@nestjs/swagger';
 import { UpdateMdaDto } from './dtos/update-mda.dto';
 import { AddTeamMembersDto } from './dtos/add-team.dto';
 import { GetTeamDto } from './dtos/get-team.dto';
+import { GetMdaBySlugDto } from './dtos/get-mda-by-slug.dto';
 
 @Controller('mda')
 export class MdaController {
@@ -93,6 +94,16 @@ export class MdaController {
     @Get('/single/:mdaId')
     async getMda(@Param() param: GetMdaDto){
         const mda: Mda = await this.mdaService.getMda(param);
+        return {
+            status: true,
+            message: "Mda fetched successfully",
+            data: mda
+        }
+    }
+
+    @Get('/slug/:slug')
+    async getMdaBySlug(@Param() param: GetMdaBySlugDto){
+        const mda: Mda = await this.mdaService.getMdaBySlug(param);
         return {
             status: true,
             message: "Mda fetched successfully",

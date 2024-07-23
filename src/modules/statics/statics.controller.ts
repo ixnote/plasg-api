@@ -52,11 +52,7 @@ export class StaticsController {
     @Post('/legislatives/add')
     @UseGuards(AuthGuard, RolesGuard)
     @Roles(UserRoles.SUPER)
-    @UseInterceptors(FileInterceptor('file'))
-    async addLegislative(@Body() body: AddLegislativeDto,  @UploadedFile() file: Express.Multer.File){
-        if(file){
-            body.file = file
-        }
+    async addLegislative(@Body() body: AddLegislativeDto){
         const legislative: Legislative = await this.staticsService.addLegislative(body)
         return {
             status: true,
@@ -85,6 +81,17 @@ export class StaticsController {
             data: result
         }
     }
+
+    @Get('/governor-cabinet')
+    async getGovernorsCabinet(@Query() query: GetLegislativesDto){
+        const result = await this.staticsService.getGovernorsCabinet(query)
+        return {
+            status: true,
+            message: "Legislatives fetched successfully",
+            data: result
+        }
+    }
+
 
     @Get('/legislatives/:legislativeId')
     async getLegislative(@Param() param: GetLegislativeDto){

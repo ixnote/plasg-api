@@ -89,4 +89,14 @@ export class ResourceController {
       data: results,
     };
   }
+
+  @Get('/home-page')
+  async findLatestResourcesByTag(){
+    const results = await this.resourceService.findLatestResourcesByTag()
+    return {
+      status: true,
+      message: 'Resources fetched successfully',
+      data: results,
+    };
+  }
 }

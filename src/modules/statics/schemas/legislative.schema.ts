@@ -38,10 +38,6 @@ export const LegislativeSchema: Schema = new Schema<Legislative>(
       enum: LegislativeTypes,
       required: true
     },
-    public_id: {
-      type: String,
-      required: false,
-    },
     is_deleted: {
       type: Boolean,
       default: false,

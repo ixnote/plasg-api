@@ -1,4 +1,4 @@
-import { Get, Injectable, NotFoundException, UseGuards } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Destination } from '../interfaces/destination.interface';
 import { Model } from 'mongoose';
@@ -11,10 +11,7 @@ import { GetLegislativeDto } from '../dtos/get-legislative.dto';
 import { GetLegislativesDto } from '../dtos/get-legislatives.dto';
 import { AddDestinationDto } from '../dtos/add-destination.dto';
 import { CloudinaryService } from 'src/common/services/cloudinary/cloudinary.service';
-import { AuthGuard } from '@nestjs/passport';
-import { Roles } from 'src/common/decorators/roles.decorator';
-import { RolesGuard } from 'src/framework/guards/roles.guard';
-import { UserRoles } from 'src/common/constants/enum';
+import { LegislativeTypes } from 'src/common/constants/enum';
 import { User } from 'src/modules/user/interfaces/user.interface';
 import { UserService } from 'src/modules/user/services/user.service';
 import { MdaService } from 'src/modules/mda/services/mda.service';
@@ -82,27 +79,17 @@ export class StaticsService {
     };
   }
 
+
   async addLegislative(body: AddLegislativeDto): Promise<Legislative> {
     const findLegislative: Legislative = await this.legislativeModel.findOne({
       name: body.name,
       role: body.role,
     });
-    let data: any = { ...body };
     if (findLegislative)
       throw new NotFoundException({
         status: false,
         message: 'Legislative already exists',
       });
-    if (body.file) {
-      const response = await this.cloudinaryService.uploadFile(body.file);
-      if (!response)
-        throw new NotFoundException({
-          status: 'error',
-          message: 'Invalid File',
-        });
-      data.url = response.url;
-      data.public_id = response.public_id;
-    }
     const legislative: Legislative = new this.legislativeModel(body);
     return await legislative.save();
   }
@@ -133,6 +120,41 @@ export class StaticsService {
     return await legislative.save();
   }
 
+  async getGovernorsCabinet(query: GetLegislativesDto): Promise<any> {
+    const { page = 1, pageSize = 10, ...rest } = query;
+    const usePage: number = page < 1 ? 1 : page;
+    const pagination = await this.miscService.paginate({
+      page: usePage,
+      pageSize,
+    });
+    const options: any = await this.miscService.search(rest);
+    options.is_deleted = false;
+    options.type = LegislativeTypes.GOVERNOR;
+    const legislatives: Legislative[] = await this.legislativeModel
+      .find(options)
+      .skip(pagination.offset)
+      .limit(pagination.limit)
+      .sort({ createdAt: -1 })
+      .exec();
+
+    const total = legislatives.length;
+    const totalPages = Math.ceil(total / pageSize);
+    const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
+    const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
+
+    return {
+      pagination: {
+        currentPage: Number(usePage),
+        totalPages,
+        nextPage,
+        prevPage,
+        total,
+        pageSize: Number(pageSize),
+      },
+      data: legislatives,
+    };
+  }
+
   async getLegislatives(query: GetLegislativesDto): Promise<any> {
     const { page = 1, pageSize = 10, ...rest } = query;
     const usePage: number = page < 1 ? 1 : page;
@@ -142,6 +164,7 @@ export class StaticsService {
     });
     const options: any = await this.miscService.search(rest);
     options.is_deleted = false;
+    options.type = LegislativeTypes.LEGISLATIVE;
     const legislatives: Legislative[] = await this.legislativeModel
       .find(options)
       .skip(pagination.offset)

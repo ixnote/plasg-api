@@ -8,7 +8,6 @@ export interface Legislative extends mongoose.Document {
   email: string;
   image: string;
   type: string;
-  public_id: string;
   is_deleted: boolean;
   readonly createdAt: Date;
   updatedAt: Date;
