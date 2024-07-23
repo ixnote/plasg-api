@@ -43,10 +43,17 @@ export const LegislativeSchema: Schema = new Schema<Legislative>(
       type: BiographySchema,
       required: false
     },
-    cabinet:{
+    members:{
       type: [Schema.Types.ObjectId],
       ref: 'Legislative',
       required: false,
+      default: null
+    },
+    executives:{
+      type: [Schema.Types.ObjectId],
+      ref: 'Legislative',
+      required: false,
+      default: null
     },
     parentId: {
       type: Schema.Types.ObjectId,

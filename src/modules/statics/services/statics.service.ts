@@ -112,7 +112,10 @@ export class StaticsService {
         status: false,
         message: 'Legislative already exists',
       });
-    const legislative: Legislative = new this.legislativeModel({...body, type: LegislativeTypes.OFFICIAL});
+    const legislative: Legislative = new this.legislativeModel({
+      ...body,
+      type: LegislativeTypes.OFFICIAL,
+    });
     return await legislative.save();
   }
 
@@ -120,33 +123,83 @@ export class StaticsService {
     param: GetLegislativeDto,
     body: UpdateGovernmentOfficialDto,
   ): Promise<Legislative> {
-    const findLegislative = await this.legislativeModel.findById(
-      param.legislativeId,
-    );
-    if (!findLegislative)
+    const findLegislative = await this.legislativeModel.findById(param.legislativeId);
+    if (!findLegislative) {
       throw new NotFoundException({
         status: true,
         message: 'Official not found',
       });
-    let cabinet = []
-    if (body.cabinet.length > 0) {
-      for (const item of body.cabinet) {
-        const newLegislative = new this.legislativeModel({...item, parent: param.legislativeId, type: LegislativeTypes.CABINET });
-        await newLegislative.save();
-        cabinet.push(newLegislative.id);
-      }
-      findLegislative.cabinet = cabinet
-      console.log("🚀 ~ StaticsService ~ findLegislative:", findLegislative)
-      await findLegislative.save()
-      delete body.cabinet
     }
+  
+    if (body.members && body.members.length > 0) {
+      const members = [];
+      for (const item of body.members) {
+        console.log("🚀 ~ StaticsService ~ item:", item, param)
+        let member = await this.legislativeModel.findOne({
+          name: item.name,
+          // parent: param.legislativeId,
+          type: LegislativeTypes.CABINET
+        });
+        console.log("🚀 ~ StaticsService ~ member:", member)
 
+        if (!member) {
+          member = new this.legislativeModel({
+            ...item,
+            parent: param.legislativeId,
+            type: LegislativeTypes.CABINET,
+          });
+          await member.save();
+          members.push(member.id);
+        }else{
+         member = await this.legislativeModel.findOneAndUpdate(
+            { name: member.name, type: LegislativeTypes.CABINET },
+            { ...member },
+            { upsert: true, new: true, runValidators: true },
+          );
+          members.push(member.id);
+        }
+      }
+      findLegislative.members = members;
+      await findLegislative.save();
+      delete body.members;
+    }
+  
+    if (body.executives && body.executives.length > 0) {
+      const executives = [];
+      for (const item of body.executives) {
+        let executive = await this.legislativeModel.findOne({
+          name: item.name,
+          type: LegislativeTypes.CABINET
+          // parent: param.legislativeId,
+        });
+        if (!executive) {
+          executive = new this.legislativeModel({
+            ...item,
+            parent: param.legislativeId,
+            type: LegislativeTypes.CABINET,
+          });
+          await executive.save();
+        }else{
+          executive = await this.legislativeModel.findOneAndUpdate(
+            { name: executive.name, type: LegislativeTypes.CABINET },
+            { ...executive },
+            { upsert: true, new: true, runValidators: true },
+          );
+        }
+        executives.push(executive.id);
+      }
+      findLegislative.executives = executives;
+      await findLegislative.save();
+      delete body.executives;
+    }
+  
     return await this.legislativeModel.findByIdAndUpdate(
       param.legislativeId,
       body,
       { new: true },
     );
   }
+  
 
   async getGovernmentOfficial(body: GetLegislativeDto) {
     const legislative: Legislative = await this.legislativeModel.findOne({
