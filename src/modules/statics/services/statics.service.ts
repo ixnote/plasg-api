@@ -136,6 +136,7 @@ export class StaticsService {
         cabinet.push(newLegislative.id);
       }
       findLegislative.cabinet = cabinet
+      console.log("🚀 ~ StaticsService ~ findLegislative:", findLegislative)
       await findLegislative.save()
       delete body.cabinet
     }
