@@ -18,6 +18,10 @@ export class UpdateMdaDto {
     @IsString()
     @IsOptional()
     name: string
+    
+    @IsString()
+    @IsOptional()
+    slug: string
 
     @ApiProperty()
     @IsString()

@@ -83,6 +83,7 @@ export class MdaService {
         status: false,
         message: 'Mda not found',
       });
+    if(body.name) body.slug = slugify(body.name, '_')
     return await this.mdaModel.findByIdAndUpdate(param.mdaId, body, {
       new: true,
     });
