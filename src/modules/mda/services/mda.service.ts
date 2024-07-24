@@ -83,7 +83,7 @@ export class MdaService {
         status: false,
         message: 'Mda not found',
       });
-    if(body.name) body.slug = slugify(body.name, '_')
+    if (body.name) body.slug = slugify(body.name, '_');
     return await this.mdaModel.findByIdAndUpdate(param.mdaId, body, {
       new: true,
     });
@@ -97,7 +97,7 @@ export class MdaService {
   }
 
   async getMda(body: GetMdaDto): Promise<Mda> {
-    const mda: Mda = await this.findById(body.mdaId);
+    const mda: Mda = await this.mdaModel.findById(body.mdaId).populate('admin');
     if (!mda)
       throw new NotFoundException({
         status: false,
@@ -227,7 +227,7 @@ export class MdaService {
     await this.mdaModel.findByIdAndUpdate(mda, {
       admin,
     });
-    await this.userService.assignMdaToUser(mda, admin)
+    await this.userService.assignMdaToUser(mda, admin);
     return 'Mda assigned successfully.';
   }
 
