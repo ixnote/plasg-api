@@ -6,6 +6,10 @@ export const AboutSchema = new Schema<About>({
     type: String,
     required: false,
   },
+  info: {
+    type: String,
+    required: false,
+  },
   description: {
     type: String,
     required: false,

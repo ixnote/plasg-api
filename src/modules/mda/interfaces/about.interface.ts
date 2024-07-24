@@ -6,5 +6,5 @@ export interface About extends mongoose.Document {
   vision: string;
   mission: string;
   image: string;
-  public_id: string;
+  info: string;
 }
