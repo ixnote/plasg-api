@@ -37,5 +37,10 @@ export class UpdateGovernmentOfficialDto {
   @ApiProperty()
   @IsArray()
   @IsOptional()
-  cabinet: AddCabinetDto[];
+  members: AddCabinetDto[];
+
+  @ApiProperty()
+  @IsArray()
+  @IsOptional()
+  executives: AddCabinetDto[];
 }

@@ -21,6 +21,10 @@ export const MdaSchema: Schema = new Schema<Mda>(
       type: String,
       required: false,
     },
+    abbreviation: {
+      type: String,
+      required: false,
+    },
     admin: {
         type: Schema.Types.ObjectId,
         ref: 'User',

@@ -20,7 +20,7 @@ export class UserService {
   constructor(
     @InjectModel('User') private readonly userModel: Model<User>,
     private mongooseService: MongooseService,
-    private miscService: MiscClass
+    private miscService: MiscClass,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -40,9 +40,9 @@ export class UserService {
     return this.userModel.findById(id);
   }
 
-  async getTotalNumberOfUsers(): Promise<number>{
-    const users: User[] = await this.userModel.find()
-    return users.length
+  async getTotalNumberOfUsers(): Promise<number> {
+    const users: User[] = await this.userModel.find();
+    return users.length;
   }
 
   async findByEmail(email: string): Promise<User> {
@@ -66,6 +66,22 @@ export class UserService {
       .exec();
   }
 
+  async assignMdaToUser(mda: string, user: string) {
+    return await this.userModel.findByIdAndUpdate(
+      user,
+      { mda: mda },
+      { new: true },
+    );
+  }
+
+  async unassignMdaFromUser(user: string) {
+    return await this.userModel.findByIdAndUpdate(
+      user,
+      { mda: null },
+      { new: true },
+    );
+  }
+
   async getMdaUsers(body: GetUsersDto): Promise<any> {
     const { page = 1, pageSize = 10, ...rest } = body;
     const usePage: number = page < 1 ? 1 : page;
@@ -82,22 +98,22 @@ export class UserService {
     const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
     const users: User[] = await this.userModel
       .find(options)
-      .populate('mdas')
+      .populate('mda')
       .skip(pagination.offset)
       .limit(pagination.limit)
       .sort({ createdAt: -1 });
 
-      return {
-        pagination: {
-          currentPage: Number(usePage),
-          totalPages,
-          nextPage,
-          prevPage,
-          totalNews: totalNewsCount,
-          pageSize: Number(pageSize),
-        },
-        users,
-      };
+    return {
+      pagination: {
+        currentPage: Number(usePage),
+        totalPages,
+        nextPage,
+        prevPage,
+        totalNews: totalNewsCount,
+        pageSize: Number(pageSize),
+      },
+      users,
+    };
   }
 
   async registerUser(body: CreateUserDto): Promise<User> {
@@ -129,12 +145,12 @@ export class UserService {
       .exec();
   }
 
-  async updatePassword(body: UpdatePassword, user: User): Promise<void>{
+  async updatePassword(body: UpdatePassword, user: User): Promise<void> {
     const hashedPassword: string = await this.hashData(body.password);
     await this.userModel.findByIdAndUpdate(user.id, {
       password: hashedPassword,
-      password_updated: true
-    })
+      password_updated: true,
+    });
   }
 
   async updateUser(body: {

@@ -9,6 +9,11 @@ export class AddAboutDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
+  info: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
   title: string;
 
   @ApiProperty()

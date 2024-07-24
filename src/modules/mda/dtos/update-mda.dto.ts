@@ -19,6 +19,15 @@ export class UpdateMdaDto {
     @IsOptional()
     name: string
     
+    @IsString()
+    @IsOptional()
+    slug: string
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    abbreviation: string
+    
     @ApiProperty()
     @IsOptional()
     about: AddAboutDto

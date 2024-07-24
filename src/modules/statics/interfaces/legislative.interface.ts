@@ -10,7 +10,8 @@ export interface Legislative extends mongoose.Document {
   image: string;
   type: string;
   biography: Biography;
-  cabinet: Legislative[];
+  members: Legislative[];
+  executives: Legislative[];
   parentId: mongoose.Types.ObjectId;
   is_deleted: boolean;
   readonly createdAt: Date;

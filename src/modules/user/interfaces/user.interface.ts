@@ -14,7 +14,7 @@ export interface User extends mongoose.Document {
   password_updated: boolean;
   is_suspended: boolean;
   is_deleted: boolean;
-  mda?: any; 
+  mda: mongoose.Types.ObjectId; 
   otp: UserCode;
   readonly createdAt: Date;
   updatedAt: Date;
