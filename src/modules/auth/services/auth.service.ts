@@ -38,7 +38,7 @@ export class AuthService {
 
   async signIn(data: SignInDto) {
     const user: User = await this.userService.findPasswordByEmail(data.email);
-    console.log("🚀 ~ AuthService ~ signIn ~ user:", user)
+    console.log('🚀 ~ AuthService ~ signIn ~ user:', user);
     if (!user)
       throw new BadRequestException({
         status: false,
@@ -54,7 +54,7 @@ export class AuthService {
     await this.updateRefreshToken(user._id, tokens.refreshToken);
     const findUser: User = await this.userService.findById(user.id);
     this.mailService.sendLoginEmail(findUser);
-    const first_time_login = user.password_updated ? false : true
+    const first_time_login = user.password_updated ? false : true;
     return { first_time_login, tokens, role: user.role };
   }
 
@@ -117,6 +117,7 @@ export class AuthService {
     const hash = await this.hashData(newPassword);
     await this.userService.update(user.id, {
       password: hash,
+      password_updated: true,
     });
     return 'Password changed successfully';
   }
@@ -128,11 +129,12 @@ export class AuthService {
         status: false,
         message: 'Account does not exist',
       });
-    const now = new Date()
-    if(user.otp.token !== body.otp || user.otp.expirationTime < now) throw new UnauthorizedException({
-      status: false,
-      message: "Invalid token"
-    })
+    const now = new Date();
+    if (user.otp.token !== body.otp || user.otp.expirationTime < now)
+      throw new UnauthorizedException({
+        status: false,
+        message: 'Invalid token',
+      });
     const hashedPassword: string = await this.hashData(body?.password);
     await this.userService.update(user.id, {
       password: hashedPassword,
