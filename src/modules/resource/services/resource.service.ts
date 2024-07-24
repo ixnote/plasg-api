@@ -348,6 +348,88 @@ export class ResourceService {
     };
   }
 
+  async getResourcesForMda(body: GetResourcesDto, user: User): Promise<any> {
+    const {
+      page = 1,
+      pageSize = 10,
+      main_type_tag,
+      main_topic_tag,
+      sub_type_tag,
+      sub_topic_tag,
+      all_topic_tag,
+      ...rest
+    } = body;
+    const extraQuery: any = {};
+    const mda: Mda = await this.mdaService.findByUser(user.id)
+    if(!mda) throw new NotFoundException({
+      status: false,
+      message: "You are not assigned to any MDA"
+    })
+    if (body.main_type_tag) {
+      extraQuery.main_type_tag = main_type_tag;
+    }
+    if (body.main_topic_tag) {
+      extraQuery.main_topic_tag = main_topic_tag;
+    }
+
+    if (body.sub_topic_tag) {
+      extraQuery.sub_topic_tag = sub_topic_tag;
+    }
+
+    if (body.sub_type_tag) {
+      extraQuery.sub_type_tag = sub_type_tag;
+    }
+
+    if (all_topic_tag) {
+      extraQuery.all_topic_tags = { $in: [all_topic_tag] };
+    }
+
+    const usePage: number = page < 1 ? 1 : page;
+    const pagination = await this.miscService.paginate({
+      page: usePage,
+      pageSize,
+    });
+    const options: any = await this.miscService.search(rest);
+    const query = { ...options, ...extraQuery, mda: mda.id };
+    const resources: Resource[] = await this.resourceModel
+      .find(query)
+      .skip(pagination.offset)
+      .limit(pagination.limit)
+      .sort({ createdAt: -1 })
+      .populate('main_type_tag', 'name type')
+      .populate('sub_type_tag', 'name type')
+      .populate('main_topic_tag', 'name type')
+      .populate('all_topic_tags', 'name type')
+      .exec();
+
+    const totalResources: Resource[] = await this.resourceModel
+      .find(query)
+      .sort({ createdAt: -1 })
+      .populate('main_type_tag', 'name type')
+      .populate('sub_type_tag', 'name type')
+      .populate('main_topic_tag', 'name type')
+      .populate('all_topic_tags', 'name type')
+      .exec();
+
+    const total = totalResources.length;
+    const totalPages = Math.ceil(total / pageSize);
+    const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
+    const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
+
+    return {
+      pagination: {
+        currentPage: Number(usePage),
+        totalPages,
+        nextPage,
+        prevPage,
+        total,
+        pageSize: Number(pageSize),
+      },
+      resources,
+    };
+  }
+
+
   async findLatestResourcesByTag(): Promise<Resource[]> {
     return this.resourceModel.aggregate([
       {

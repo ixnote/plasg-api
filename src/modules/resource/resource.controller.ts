@@ -50,6 +50,18 @@ export class ResourceController {
     };
   }
 
+  @Get('/mda')
+  @UseGuards(AuthGuard)
+  @Roles(UserRoles.MDA)
+  async getResourcesForMda(@Query() query: GetResourcesDto, @UserGuard() user: User){
+    const results = await this.resourceService.getResourcesForMda(query, user)
+    return {
+      status: true,
+      message: 'Resources fetched successfully',
+      data: results,
+    };
+  }
+
   @Get('/search/:name')
   async searchResources(@Param() param: {name: string}, @Query() query: SearchResourcesDto) {
     const resources = await this.resourceService.searchResources(param, query);
