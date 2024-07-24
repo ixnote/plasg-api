@@ -78,7 +78,7 @@ export class MdaController {
     };
   }
 
-  @Get('/unassign/:mda')
+  @Patch('/unassign/:mda')
   async removeAdmin(@Param() param: RemoveMdaDto) {
     const message: string = await this.mdaService.removeUserFromMda(param);
     return {
