@@ -62,7 +62,7 @@ export class MdaController {
     };
   }
 
-  @Get('/assign/:mda')
+  @Patch('/assign/:mda')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(UserRoles.SUPER)
   @UseFilters(ExceptionsLoggerFilter)
