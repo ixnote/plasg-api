@@ -9,7 +9,6 @@ import { NewsSection } from '../interfaces/newsSection.interface';
 import { News } from '../interfaces/news.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
-import { CreateNews } from '../interfaces/create-news.interface';
 import { AddNewsSectionItemsDto } from '../dtos/add-news-section-item.dto';
 import { User } from 'src/modules/user/interfaces/user.interface';
 import { MdaService } from 'src/modules/mda/services/mda.service';
@@ -52,7 +51,7 @@ export class NewsService {
         status: false,
         message: 'Not Authorized',
       });
-    const slug = slugify(body.headline, '_')
+    const slug = slugify(body.headline, '_');
     const createdNews = new this.newsModel({ ...body, mda: findMda.id, slug });
     return createdNews.save();
   }
@@ -404,7 +403,7 @@ export class NewsService {
     const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
 
     const news: News[] = await this.newsModel
-      .find({...options, mda: mda.id })
+      .find({ ...options, mda: mda.id })
       .populate({
         path: 'newsSections',
         options: { sort: { position: 1 } },

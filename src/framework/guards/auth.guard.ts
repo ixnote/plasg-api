@@ -41,7 +41,7 @@ export class AuthGuard implements CanActivate {
       const url: string =
         request.protocol + '://' + request.get('host') + request.originalUrl;
       const urlArray: string[] = url.split('/');
-      if (!(urlArray[urlArray.length - 1] == 'update-password')) {
+      if (!(urlArray[urlArray.length - 1] == 'change-password')) {
         if (!user.password_updated)
           throw new UnauthorizedException({
             status: false,
