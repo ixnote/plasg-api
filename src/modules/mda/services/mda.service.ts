@@ -215,9 +215,6 @@ export class MdaService {
         status: false,
         message: 'This Mda already has an admin',
       });
-    await this.mdaModel.findByIdAndUpdate(mda, {
-      admin,
-    });
     const findIfUserIsConnectedToMda = await this.mdaModel.findOne({
       user: user.id,
     });
@@ -226,6 +223,10 @@ export class MdaService {
         status: false,
         message: 'User currently handles an Mda',
       });
+    await this.mdaModel.findByIdAndUpdate(mda, {
+      admin,
+    });
+    await this.userService.assignMdaToUser(mda, admin)
     return 'Mda assigned successfully.';
   }
 
@@ -233,6 +234,7 @@ export class MdaService {
     await this.mdaModel.findByIdAndUpdate(body.mda, {
       admin: null,
     });
+    await this.userService.unassignMdaFromUser(body.mda);
     return 'Admin unassigned successfully.';
   }
 

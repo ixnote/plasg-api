@@ -61,6 +61,11 @@ export const UserSchema: Schema = new Schema<User>(
       type: UserCodeSchema,
       required: false,
     },
+    mda: {
+      type: Schema.Types.ObjectId,
+      ref: "Mda",
+      required: false
+    },
     is_suspended: {
       type: Boolean,
       default: false,
