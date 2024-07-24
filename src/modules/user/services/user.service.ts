@@ -98,7 +98,7 @@ export class UserService {
     const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
     const users: User[] = await this.userModel
       .find(options)
-      .populate('mdas')
+      .populate('mda')
       .skip(pagination.offset)
       .limit(pagination.limit)
       .sort({ createdAt: -1 });
