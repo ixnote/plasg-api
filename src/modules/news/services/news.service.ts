@@ -377,7 +377,6 @@ export class NewsService {
     const { page = 1, pageSize = 10, ...rest } = body;
     const usePage: number = page < 1 ? 1 : page;
     const mda: Mda = await this.mdaService.findByName('News');
-    console.log('🚀 ~ NewsService ~ findNews ~ mda:', mda);
     const pagination = await this.miscService.paginate({
       page: usePage,
       pageSize,
@@ -386,7 +385,7 @@ export class NewsService {
 
     delete rest.tag;
     const options: any = await this.miscService.search(rest);
-    const newsTotal: News[] = await this.newsModel.find(options);
+    const newsTotal: News[] = await this.newsModel.find({ ...options, mda: mda.id });
 
     if (tag) {
       const tag: Tag = await this.tagService.findById(body.tag);

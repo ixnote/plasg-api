@@ -33,6 +33,16 @@ import { GetSectionDto } from './dtos/get-section.dto';
 export class NewsController {
   constructor(private newsService: NewsService) {}
 
+  @Get('/')
+  async getNewsFromNewsMda(@Query() query: NewsPaginationDto) {
+    const results = await this.newsService.findNews(query);
+    return {
+      status: true,
+      message: 'News fetched successfully',
+      data: results,
+    };
+  }
+  
   @Get('/articles/:mda')
   async getNews(
     @Query() query: NewsPaginationDto,
@@ -72,15 +82,6 @@ export class NewsController {
     };
   }
 
-  @Get('/')
-  async getNewsFromNewsMda(@Query() query: NewsPaginationDto) {
-    const results = await this.newsService.findNews(query);
-    return {
-      status: true,
-      message: 'News fetched successfully',
-      data: results,
-    };
-  }
 
   @Get('/:newsId')
   async getSIngle(@Param() param: { newsId: string }) {
