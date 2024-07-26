@@ -138,7 +138,7 @@ export class NewsController {
   @Patch('/section/update/:sectionId')
   async updateNewsSection(
     @Param() param: GetSectionDto,
-    body: AddNewsSectionItemsDto,
+    @Body() body: AddNewsSectionItemsDto,
     @UserGuard() user: User,
   ) {
     await this.newsService.updateSection(body, param.sectionId, user);
@@ -153,7 +153,7 @@ export class NewsController {
   @Roles(UserRoles.MDA)
   async reorderNewsSection(
     @Param() param: GetNewsDto,
-    body: any,
+    @Body() body: any,
     @UserGuard() user: User,
   ) {
     const result = await this.newsService.reorderSection(body, param, user);
