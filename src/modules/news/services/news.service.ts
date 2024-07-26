@@ -119,7 +119,11 @@ export class NewsService {
       });
     return await this.newsModel
       .findById(id)
-      .populate('newsSections', 'type value')
+      .populate({
+        path: 'newsSections',
+        select: 'type value position',
+        options: { sort: { position: 1 } },
+      })
       .populate('mda', 'name logo')
       .populate('tags', 'name type description');
   }
