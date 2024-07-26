@@ -149,6 +149,8 @@ export class NewsController {
   }
 
   @Patch('/section/reorder/:newsId')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(UserRoles.MDA)
   async reorderNewsSection(
     @Param() param: GetNewsDto,
     body: ReorderNewsSectionItemsDto,
