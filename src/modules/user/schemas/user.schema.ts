@@ -1,5 +1,4 @@
 import { Schema } from 'mongoose';
-import * as argon2 from 'argon2';
 import * as mongoose from 'mongoose';
 import { User } from '../interfaces/user.interface';
 import { UserRoles } from 'src/common/constants/enum';

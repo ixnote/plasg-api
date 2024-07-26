@@ -4,7 +4,6 @@ import {
   Get,
   HttpCode,
   Param,
-  Patch,
   Post,
   Put,
   UseFilters,
@@ -21,7 +20,6 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { SignInDto } from './dtos/sign-in.dto';
 import { UserGuard } from 'src/framework/guards/user.guard';
 import { ForgotPasswordDto } from './dtos/forgot-password.dto';
-import { ResendOtpDto } from './dtos/resend-otp.dto';
 import { ResetPasswordDto } from './dtos/reset-password.dto';
 import { ChangePasswordDto } from './dtos/change-password.dto';
 

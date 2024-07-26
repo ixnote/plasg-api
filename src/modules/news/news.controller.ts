@@ -1,4 +1,3 @@
-import { Data } from './../data/interfaces/data.interface';
 import {
   Body,
   Controller,
@@ -22,7 +21,6 @@ import { UpdateNewsDto } from './dtos/updat-news.dto';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { RolesGuard } from 'src/framework/guards/roles.guard';
 import { UserRoles } from 'src/common/constants/enum';
-import { GetArticlesMdaDto } from './dtos/get-articles-param.dto';
 import { RemoveTagDto } from './dtos/remove-news-tag.dto';
 import { AddNewsTagsDto } from './dtos/add-news-tags.dto';
 import { AddNewsDto } from './dtos/add-news.dto';
@@ -111,7 +109,6 @@ export class NewsController {
   async updateNews(
     @Param() param: { newsId: string },
     @Body() body: UpdateNewsDto,
-    @UserGuard() user: User,
   ) {
     const news: News = await this.newsService.updateNews(param.newsId, body);
     return {
@@ -199,7 +196,6 @@ export class NewsController {
   async addNewsTags(
     @Param() param: { newsId: string },
     @Body() body: AddNewsTagsDto,
-    @UserGuard() user: User,
   ) {
     const news: News = await this.newsService.addNewsTags(param.newsId, body);
     return {
