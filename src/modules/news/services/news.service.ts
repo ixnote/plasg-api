@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { AddNewsSectionDto } from '../dtos/add-news-section.dto';
 import { NewsSection } from '../interfaces/newsSection.interface';
@@ -200,30 +201,36 @@ export class NewsService {
       });
     const sectionFoundQuery = [];
     const sectionUpdateQuery = [];
+    try {
+      for (const item of body.sections) {
+        const foundResult = this.findNewsSectionById(item.id);
+        const updateResult = this.newsSectionModel.findByIdAndUpdate(
+          item.id,
+          { position: item.position },
+          {
+            new: true,
+          },
+        );
+        sectionFoundQuery.push(foundResult);
+        sectionUpdateQuery.push(updateResult);
+      }
 
-    for (const item of body.sections) {
-      const foundResult = this.findNewsSectionById(item.id);
-      const updateResult = this.newsSectionModel.findByIdAndUpdate(
-        item.id,
-        { position: item.position },
-        {
-          new: true,
-        },
-      );
-      sectionFoundQuery.push(foundResult);
-      sectionUpdateQuery.push(updateResult);
-    }
+      const foundSections = await Promise.all(sectionFoundQuery);
+      const isFound = foundSections.every(Boolean);
 
-    const foundSections = await Promise.all(sectionFoundQuery);
-    const isFound = foundSections.every(Boolean);
+      if (!isFound)
+        throw new NotFoundException({
+          status: false,
+          message: 'Sections not found',
+        });
 
-    if (!isFound)
-      throw new NotFoundException({
+      return await Promise.all(sectionUpdateQuery);
+    } catch (error) {
+      throw new InternalServerErrorException({
         status: false,
-        message: 'Sections not found',
+        message: 'Internal Server Error',
       });
-
-    return await Promise.all(sectionUpdateQuery);
+    }
   }
 
   async removeSection(sectionId: string, user: User): Promise<News> {

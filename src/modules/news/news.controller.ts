@@ -1,3 +1,4 @@
+import { Data } from './../data/interfaces/data.interface';
 import {
   Body,
   Controller,
