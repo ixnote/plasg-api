@@ -187,12 +187,8 @@ export class NewsService {
     });
   }
 
-  async reorderSection(
-    body: ReorderNewsSectionItemsDto,
-    param: GetNewsDto,
-    user: User,
-  ) {
-    await this.checkIfUserIsAuthorized(user);
+  async reorderSection(body: any, param: GetNewsDto, user: User) {
+    // await this.checkIfUserIsAuthorized(user);
     const news: News = await this.findById(param.newsId);
     if (!news)
       throw new NotFoundException({
