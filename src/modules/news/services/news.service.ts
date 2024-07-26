@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { AddNewsSectionDto } from '../dtos/add-news-section.dto';
 import { NewsSection } from '../interfaces/newsSection.interface';
@@ -200,19 +201,19 @@ export class NewsService {
       }
 
       const foundSections = await Promise.all(sectionFoundQuery);
-      const isFound = foundSections.every(Boolean);
+      // const isFound = foundSections.every(Boolean);
 
-      if (!isFound)
-        throw new NotFoundException({
-          status: false,
-          message: 'Sections not found',
-        });
-
-      return await Promise.all(sectionUpdateQuery);
+      // if (!isFound)
+      //   throw new NotFoundException({
+      //     status: false,
+      //     message: 'Sections not found',
+      //   });
+      return foundSections;
+      // return await Promise.all(sectionUpdateQuery);
     } catch (error) {
-      throw new BadRequestException({
+      throw new InternalServerErrorException({
         status: false,
-        message: error,
+        message: 'Internal Server Error',
       });
     }
   }
