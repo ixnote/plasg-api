@@ -17,8 +17,8 @@ export const NewsSectionSchema: Schema = new Schema<NewsSection>(
       required: true,
     },
     value: {
-      type: Schema.Types.Mixed, 
-      required: true
+      type: Schema.Types.Mixed,
+      required: true,
     },
     news: {
       type: Schema.Types.ObjectId,

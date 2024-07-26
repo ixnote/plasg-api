@@ -188,7 +188,7 @@ export class NewsService {
   }
 
   async reorderSection(body: any, param: GetNewsDto, user: User) {
-    // await this.checkIfUserIsAuthorized(user);
+    await this.checkIfUserIsAuthorized(user);
     const news: News = await this.findById(param.newsId);
     if (!news)
       throw new NotFoundException({
@@ -225,6 +225,7 @@ export class NewsService {
       throw new InternalServerErrorException({
         status: false,
         message: 'Internal Server Error',
+        error,
       });
     }
   }
