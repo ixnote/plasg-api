@@ -37,35 +37,35 @@ export const LegislativeSchema: Schema = new Schema<Legislative>(
     type: {
       type: String,
       enum: LegislativeTypes,
-      required: true
+      required: true,
     },
     biography: {
       type: BiographySchema,
-      required: false
+      required: false,
     },
-    members:{
+    members: {
       type: [Schema.Types.ObjectId],
       ref: 'Legislative',
       required: false,
-      default: null
+      default: null,
     },
-    executives:{
+    executives: {
       type: [Schema.Types.ObjectId],
       ref: 'Legislative',
       required: false,
-      default: null
+      default: null,
     },
     start: {
       type: Date,
-      required: false
+      required: false,
     },
     end: {
       type: Date,
-      required: false
+      required: false,
     },
     active: {
       type: Boolean,
-      required: false
+      required: false,
     },
     parentId: {
       type: Schema.Types.ObjectId,
