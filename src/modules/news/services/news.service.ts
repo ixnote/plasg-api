@@ -23,6 +23,7 @@ import { AddNewsTagsDto } from '../dtos/add-news-tags.dto';
 import { RemoveTagDto } from '../dtos/remove-news-tag.dto';
 import { AddNewsDto } from '../dtos/add-news.dto';
 import slugify from 'slugify';
+import { ReorderNewsSectionItemsDto } from '../dtos/reorder-news-section-item.dto';
 
 @Injectable()
 export class NewsService {
@@ -173,6 +174,40 @@ export class NewsService {
     return await this.newsSectionModel.findByIdAndUpdate(section.id, body, {
       new: true,
     });
+  }
+
+  async reorderSection(
+    body: ReorderNewsSectionItemsDto,
+    newsId: string,
+    user: User,
+  ) {
+    await this.checkIfUserIsAuthorized(user);
+    const sectionFoundQuery = [];
+    const sectionUpdateQuery = [];
+
+    for (const item of body.sections) {
+      const foundResult = this.findNewsSectionById(item.id);
+      const updateResult = this.newsSectionModel.findByIdAndUpdate(
+        item.id,
+        { position: item.position },
+        {
+          new: true,
+        },
+      );
+      sectionFoundQuery.push(foundResult);
+      sectionUpdateQuery.push(updateResult);
+    }
+
+    const foundSections = await Promise.all(sectionFoundQuery);
+    const isFound = foundSections.every(Boolean);
+
+    if (!isFound)
+      throw new NotFoundException({
+        status: false,
+        message: 'Sections not found',
+      });
+
+    return await Promise.all(sectionUpdateQuery);
   }
 
   async removeSection(sectionId: string, user: User): Promise<News> {
@@ -385,7 +420,10 @@ export class NewsService {
 
     delete rest.tag;
     const options: any = await this.miscService.search(rest);
-    const newsTotal: News[] = await this.newsModel.find({ ...options, mda: mda.id });
+    const newsTotal: News[] = await this.newsModel.find({
+      ...options,
+      mda: mda.id,
+    });
 
     if (tag) {
       const tag: Tag = await this.tagService.findById(body.tag);

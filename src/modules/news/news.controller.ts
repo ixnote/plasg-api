@@ -28,6 +28,7 @@ import { AddNewsDto } from './dtos/add-news.dto';
 import { GetNewsDto } from './dtos/get-news.dto';
 import { AddNewsSectionItemsDto } from './dtos/add-news-section-item.dto';
 import { GetSectionDto } from './dtos/get-section.dto';
+import { ReorderNewsSectionItemsDto } from './dtos/reorder-news-section-item.dto';
 
 @Controller('news')
 export class NewsController {
@@ -42,7 +43,7 @@ export class NewsController {
       data: results,
     };
   }
-  
+
   @Get('/articles/:mda')
   async getNews(
     @Query() query: NewsPaginationDto,
@@ -81,7 +82,6 @@ export class NewsController {
       data: results,
     };
   }
-
 
   @Get('/:newsId')
   async getSIngle(@Param() param: { newsId: string }) {
@@ -144,6 +144,19 @@ export class NewsController {
     return {
       status: true,
       message: 'News sections updated successfully',
+    };
+  }
+
+  @Patch('/section/reorder/:newsId')
+  async reorderNewsSection(
+    @Param() param: { newsId: string },
+    body: ReorderNewsSectionItemsDto,
+    @UserGuard() user: User,
+  ) {
+    await this.newsService.reorderSection(body, param.newsId, user);
+    return {
+      status: true,
+      message: 'News sections reordered successfully',
     };
   }
 
