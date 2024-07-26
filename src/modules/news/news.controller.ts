@@ -156,10 +156,11 @@ export class NewsController {
     body: any,
     @UserGuard() user: User,
   ) {
-    await this.newsService.reorderSection(body, param, user);
+    const result = await this.newsService.reorderSection(body, param, user);
     return {
       status: true,
       message: 'News sections reordered successfully',
+      data: result,
     };
   }
 
