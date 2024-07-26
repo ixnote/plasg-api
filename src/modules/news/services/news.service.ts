@@ -181,33 +181,37 @@ export class NewsService {
     newsId: string,
     user: User,
   ) {
-    await this.checkIfUserIsAuthorized(user);
-    const sectionFoundQuery = [];
-    const sectionUpdateQuery = [];
+    try {
+      await this.checkIfUserIsAuthorized(user);
+      const sectionFoundQuery = [];
+      const sectionUpdateQuery = [];
 
-    for (const item of body.sections) {
-      const foundResult = this.findNewsSectionById(item.id);
-      const updateResult = this.newsSectionModel.findByIdAndUpdate(
-        item.id,
-        { position: item.position },
-        {
-          new: true,
-        },
-      );
-      sectionFoundQuery.push(foundResult);
-      sectionUpdateQuery.push(updateResult);
+      for (const item of body.sections) {
+        const foundResult = this.findNewsSectionById(item.id);
+        const updateResult = this.newsSectionModel.findByIdAndUpdate(
+          item.id,
+          { position: item.position },
+          {
+            new: true,
+          },
+        );
+        sectionFoundQuery.push(foundResult);
+        sectionUpdateQuery.push(updateResult);
+      }
+
+      const foundSections = await Promise.all(sectionFoundQuery);
+      const isFound = foundSections.every(Boolean);
+
+      if (!isFound)
+        throw new NotFoundException({
+          status: false,
+          message: 'Sections not found',
+        });
+
+      return await Promise.all(sectionUpdateQuery);
+    } catch (error) {
+      throw new BadRequestException(error);
     }
-
-    const foundSections = await Promise.all(sectionFoundQuery);
-    const isFound = foundSections.every(Boolean);
-
-    if (!isFound)
-      throw new NotFoundException({
-        status: false,
-        message: 'Sections not found',
-      });
-
-    return await Promise.all(sectionUpdateQuery);
   }
 
   async removeSection(sectionId: string, user: User): Promise<News> {
