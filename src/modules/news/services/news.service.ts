@@ -187,20 +187,20 @@ export class NewsService {
       const sectionFoundQuery = [];
       const sectionUpdateQuery = [];
 
-      for (const item of body.sections) {
-        const foundResult = this.findNewsSectionById(item.id);
-        const updateResult = this.newsSectionModel.findByIdAndUpdate(
-          item.id,
-          { position: item.position },
-          {
-            new: true,
-          },
-        );
-        sectionFoundQuery.push(foundResult);
-        sectionUpdateQuery.push(updateResult);
-      }
+      // for (const item of body.sections) {
+      //   const foundResult = this.findNewsSectionById(item.id);
+      //   const updateResult = this.newsSectionModel.findByIdAndUpdate(
+      //     item.id,
+      //     { position: item.position },
+      //     {
+      //       new: true,
+      //     },
+      //   );
+      //   sectionFoundQuery.push(foundResult);
+      //   sectionUpdateQuery.push(updateResult);
+      // }
 
-      const foundSections = await Promise.all(sectionFoundQuery);
+      // const foundSections = await Promise.all(sectionFoundQuery);
       // const isFound = foundSections.every(Boolean);
 
       // if (!isFound)
@@ -208,7 +208,7 @@ export class NewsService {
       //     status: false,
       //     message: 'Sections not found',
       //   });
-      return foundSections;
+      return body;
       // return await Promise.all(sectionUpdateQuery);
     } catch (error) {
       throw new InternalServerErrorException({
