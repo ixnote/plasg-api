@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { DestinationTypes, LegislativeTypes } from 'src/common/constants/enum';
+import { LegislativeTypes } from 'src/common/constants/enum';
 import { Legislative } from '../interfaces/legislative.interface';
 import { BiographySchema } from './biography.schema';
 
