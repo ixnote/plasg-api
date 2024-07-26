@@ -210,7 +210,10 @@ export class NewsService {
 
       return await Promise.all(sectionUpdateQuery);
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new BadRequestException({
+        status: false,
+        message: error,
+      });
     }
   }
 
