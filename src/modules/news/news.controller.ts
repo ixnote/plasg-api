@@ -1,3 +1,4 @@
+import { Data } from './../data/interfaces/data.interface';
 import {
   Body,
   Controller,
@@ -153,10 +154,11 @@ export class NewsController {
     body: ReorderNewsSectionItemsDto,
     @UserGuard() user: User,
   ) {
-    await this.newsService.reorderSection(body, param.newsId, user);
+    // await this.newsService.reorderSection(body, param.newsId, user);
     return {
       status: true,
       message: 'News sections reordered successfully',
+      Data: body,
     };
   }
 
