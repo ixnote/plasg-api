@@ -45,7 +45,7 @@ export const UserSchema: Schema = new Schema<User>(
     refreshToken: {
       type: String,
     },
-   company_logo: {
+    company_logo: {
       type: String,
       required: false,
     },
@@ -56,15 +56,15 @@ export const UserSchema: Schema = new Schema<User>(
     password_updated: {
       type: Boolean,
       default: false,
-    }, 
+    },
     otp: {
       type: UserCodeSchema,
       required: false,
     },
     mda: {
       type: Schema.Types.ObjectId,
-      ref: "Mda",
-      required: false
+      ref: 'Mda',
+      required: false,
     },
     is_suspended: {
       type: Boolean,

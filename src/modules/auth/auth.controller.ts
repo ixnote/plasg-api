@@ -1,4 +1,15 @@
-import { Body, Controller, Get, HttpCode, Param, Patch, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  Patch,
+  Post,
+  Put,
+  UseFilters,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { ExceptionsLoggerFilter } from 'src/framework/exceptions/exceptionLogger.filter';
 import { AuthService } from './services/auth.service';
@@ -34,7 +45,7 @@ export class AuthController {
   @Post('login')
   @HttpCode(200)
   @UseFilters(ExceptionsLoggerFilter)
-  async login(@Body()body: SignInDto){
+  async login(@Body() body: SignInDto) {
     const tokens = await this.authService.signIn(body);
     return {
       status: true,
@@ -47,8 +58,8 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @HttpCode(200)
   @UseFilters(ExceptionsLoggerFilter)
-  async getProfile(@UserGuard() user: User){
-    const profile: User = await this.authService.getProfile(user)
+  async getProfile(@UserGuard() user: User) {
+    const profile: User = await this.authService.getProfile(user);
     return {
       status: true,
       message: 'Get User Profile',
@@ -98,5 +109,4 @@ export class AuthController {
       data: null,
     };
   }
-
 }

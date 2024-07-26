@@ -153,7 +153,7 @@ export class NewsController {
   @Roles(UserRoles.MDA)
   async reorderNewsSection(
     @Param() param: GetNewsDto,
-    @Body() body: any,
+    @Body() body: ReorderNewsSectionItemsDto,
     @UserGuard() user: User,
   ) {
     const result = await this.newsService.reorderSection(body, param, user);
