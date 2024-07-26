@@ -195,24 +195,24 @@ export class NewsService {
         status: false,
         message: 'News not found',
       });
-    // const sectionFoundQuery = [];
+    const sectionFoundQuery = [];
     const sectionUpdateQuery = [];
     try {
       for (const item of body.sections) {
-        // const foundResult = this.findNewsSectionById(item.id);
-        const updateResult = this.newsSectionModel.findByIdAndUpdate(
-          item.id,
-          { position: item.position },
-          {
-            new: true,
-          },
-        );
-        // sectionFoundQuery.push(foundResult);
-        sectionUpdateQuery.push(updateResult);
+        const foundResult = this.findNewsSectionById(item.id);
+        // const updateResult = this.newsSectionModel.findByIdAndUpdate(
+        //   item.id,
+        //   { position: item.position },
+        //   {
+        //     new: true,
+        //   },
+        // );
+        sectionFoundQuery.push(foundResult);
+        // sectionUpdateQuery.push(updateResult);
       }
 
-      // const foundSections = await Promise.all(sectionFoundQuery);
-      // const isFound = foundSections.every(Boolean);
+      const foundSections = await Promise.all(sectionFoundQuery);
+      const isFound = foundSections.every(Boolean);
 
       // if (!isFound)
       //   throw new NotFoundException({
@@ -220,11 +220,11 @@ export class NewsService {
       //     message: 'Sections not found',
       //   });
 
-      return await Promise.all(sectionUpdateQuery);
+      return isFound;
     } catch (error) {
       throw new InternalServerErrorException({
         status: false,
-        message: 'Internal Server Error gggg',
+        message: 'Internal Server Error ttttt',
         error,
       });
     }
