@@ -34,19 +34,23 @@ export const ResourceSchema: Schema = new Schema<Resource>(
       type: String,
       required: true,
     },
+
     image: {
       type: String,
       required: false,
     },
+
     slug: {
       type: String,
-      required: false
+      required: false,
     },
+
     main_type_tag: {
       type: Schema.Types.ObjectId,
       ref: 'Tag',
       required: true,
     },
+
     sub_type_tag: {
       type: Schema.Types.ObjectId,
       ref: 'Tag',
@@ -83,4 +87,7 @@ export const ResourceSchema: Schema = new Schema<Resource>(
   },
 );
 
-export const ResourceModel = mongoose.model<Resource>('Resource', ResourceSchema);
+export const ResourceModel = mongoose.model<Resource>(
+  'Resource',
+  ResourceSchema,
+);
