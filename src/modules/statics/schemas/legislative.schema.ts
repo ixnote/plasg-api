@@ -55,6 +55,18 @@ export const LegislativeSchema: Schema = new Schema<Legislative>(
       required: false,
       default: null
     },
+    start: {
+      type: Date,
+      required: false
+    },
+    end: {
+      type: Date,
+      required: false
+    },
+    active: {
+      type: Boolean,
+      required: false
+    },
     parentId: {
       type: Schema.Types.ObjectId,
       ref: 'Legislative',

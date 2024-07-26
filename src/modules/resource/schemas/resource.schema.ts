@@ -39,6 +39,10 @@ export const ResourceSchema: Schema = new Schema<Resource>(
       type: String,
       required: false,
     },
+    body : {
+      type: String,
+      required: false,
+    },
 
     slug: {
       type: String,

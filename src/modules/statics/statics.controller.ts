@@ -29,6 +29,7 @@ import { UserGuard } from 'src/framework/guards/user.guard';
 import { User } from '../user/interfaces/user.interface';
 import { UpdateGovernmentOfficialDto } from './dtos/update-government-officaial.dto';
 import { AddGovernmentOfficialDto } from './dtos/add-governement-official.dto';
+import { GlobalSearchDto } from './dtos/global-search.dto';
 
 @Controller('statics')
 export class StaticsController {
@@ -39,6 +40,16 @@ export class StaticsController {
   @Roles(UserRoles.SUPER)
   async superAdminDashboard() {
     const results = await this.staticsService.adminDashboard();
+    return {
+      status: true,
+      message: 'Results fetched successfully',
+      results,
+    };
+  }
+
+  @Get('/global-search/:description')
+  async globalSearch(@Param() param: GlobalSearchDto){
+    const results = await this.staticsService.globalSearch(param.description)
     return {
       status: true,
       message: 'Results fetched successfully',
@@ -86,6 +97,17 @@ export class StaticsController {
     };
   }
 
+  @Get('/government/active')
+  async getActiveGovernment() {
+    const government: Legislative =
+      await this.staticsService.getActiveGovernment();
+    return {
+      status: true,
+      message: 'Active government fetched successfully',
+      data: government,
+    };
+  }
+
   @Put('/government/:legislativeId')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(UserRoles.SUPER)
@@ -94,7 +116,7 @@ export class StaticsController {
     @Body() body: UpdateGovernmentOfficialDto,
   ) {
     const legislative: Legislative =
-      await this.staticsService.updateGovernmentOfficial(param, body);
+      await this.staticsService.updateGovernment(param, body);
     return {
       status: true,
       message: 'Government official updated successfully',
@@ -113,14 +135,15 @@ export class StaticsController {
     };
   }
 
-  @Get('/government')
+
+  @Get('/governments')
   async getGovernmentOfficials(@Query() query: GetLegislativesDto) {
-    const legislatives: Legislative[] =
-      await this.staticsService.getGovernmentOfficials(query);
+    const governments: Legislative[] =
+      await this.staticsService.getGovernments(query);
     return {
       status: true,
-      message: 'Government officials fetched successfully',
-      data: legislatives,
+      message: 'List of governments fetched successfully',
+      data: governments,
     };
   }
 

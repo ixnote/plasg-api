@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Destination } from '../interfaces/destination.interface';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { GetDestinationsDto } from '../dtos/get-destinations.dto';
 import { MiscClass } from 'src/common/services/misc.service';
 import { GetDestinationDto } from '../dtos/get-destination.dto';
@@ -24,6 +24,8 @@ import { Mda } from 'src/modules/mda/interfaces/mda.interface';
 import { ResourceService } from 'src/modules/resource/services/resource.service';
 import { AddGovernmentOfficialDto } from '../dtos/add-governement-official.dto';
 import { UpdateGovernmentOfficialDto } from '../dtos/update-government-officaial.dto';
+import { News } from 'src/modules/news/interfaces/news.interface';
+import { Resource } from 'src/modules/resource/interfaces/resource.interface';
 
 @Injectable()
 export class StaticsService {
@@ -86,6 +88,45 @@ export class StaticsService {
     };
   }
 
+  async globalSearch(body: string) {
+    const mdas: Mda[] = await this.mdaService.regexSearch(body);
+    const news: News[] = await this.newsService.regexSearch(body);
+    const resources: Resource[] = await this.resourceService.regexSearch(body);
+    const government: Legislative[] = await this.governmentRegexSearch(body);
+    const legislatives: Legislative[] = await this.legislativeRegexSearch(body);
+    const destinations: Destination[] = await this.destinationRegexSearch(body)
+    return {
+      mdas,
+      news,
+      resources,
+      government,
+      legislatives,
+      destinations
+    };
+  }
+
+  async governmentRegexSearch(body: string): Promise<Legislative[]> {
+    const $regex = new RegExp(body, 'i');
+    return await this.legislativeModel.find({
+      name: { $regex },
+      type: LegislativeTypes.OFFICIAL,
+    });
+  }
+
+  async legislativeRegexSearch(body: string): Promise<Legislative[]> {
+    const $regex = new RegExp(body, 'i');
+    return await this.legislativeModel.find({
+      name: { $regex },
+      type: { $ne: LegislativeTypes.OFFICIAL },
+    });
+  }
+
+  async destinationRegexSearch(body: string): Promise<Destination[]> {
+    const $regex = new RegExp(body, 'i');
+    return await this.destinationModel.find({
+      name: { $regex }
+    });
+  }
   async addLegislative(body: AddLegislativeDto): Promise<Legislative> {
     const findLegislative: Legislative = await this.legislativeModel.findOne({
       name: body.name,
@@ -98,6 +139,19 @@ export class StaticsService {
       });
     const legislative: Legislative = new this.legislativeModel(body);
     return await legislative.save();
+  }
+
+  async getCurrentGovernment(): Promise<Legislative> {
+    const government: Legislative = await this.legislativeModel.findOne({
+      type: LegislativeTypes.OFFICIAL,
+      active: true,
+    });
+    if (!government)
+      throw new NotFoundException({
+        status: false,
+        message: 'No active government.',
+      });
+    return government;
   }
 
   async addGovernmentOfficial(
@@ -119,28 +173,50 @@ export class StaticsService {
     return await legislative.save();
   }
 
-  async updateGovernmentOfficial(
+  async getActiveGovernment() {
+    const government: Legislative = await this.legislativeModel.findOne({
+      type: LegislativeTypes.OFFICIAL,
+      active: true,
+    });
+    if (!government)
+      throw new NotFoundException({
+        status: false,
+        message: 'No active government',
+      });
+    return government;
+  }
+
+  async updateGovernment(
     param: GetLegislativeDto,
     body: UpdateGovernmentOfficialDto,
   ): Promise<Legislative> {
-    const findLegislative = await this.legislativeModel.findById(param.legislativeId);
+    const findLegislative = await this.legislativeModel.findById(
+      param.legislativeId,
+    );
     if (!findLegislative) {
       throw new NotFoundException({
         status: true,
         message: 'Official not found',
       });
     }
-  
+    if (body?.active) {
+      const governments: Legislative[] = await this.legislativeModel.find({
+        type: LegislativeTypes.OFFICIAL,
+      });
+      for (const government of governments) {
+        government.active = false;
+        await government.save();
+      }
+    }
+    const parentId = new mongoose.Types.ObjectId(param.legislativeId);
     if (body.members && body.members.length > 0) {
       const members = [];
       for (const item of body.members) {
-        console.log("🚀 ~ StaticsService ~ item:", item, param)
         let member = await this.legislativeModel.findOne({
           name: item.name,
-          // parent: param.legislativeId,
-          type: LegislativeTypes.CABINET
+          parent: parentId,
+          type: LegislativeTypes.CABINET,
         });
-        console.log("🚀 ~ StaticsService ~ member:", member)
 
         if (!member) {
           member = new this.legislativeModel({
@@ -150,8 +226,8 @@ export class StaticsService {
           });
           await member.save();
           members.push(member.id);
-        }else{
-         member = await this.legislativeModel.findOneAndUpdate(
+        } else {
+          member = await this.legislativeModel.findOneAndUpdate(
             { name: member.name, type: LegislativeTypes.CABINET },
             { ...member },
             { upsert: true, new: true, runValidators: true },
@@ -163,14 +239,14 @@ export class StaticsService {
       await findLegislative.save();
       delete body.members;
     }
-  
+
     if (body.executives && body.executives.length > 0) {
       const executives = [];
       for (const item of body.executives) {
         let executive = await this.legislativeModel.findOne({
           name: item.name,
-          type: LegislativeTypes.CABINET
-          // parent: param.legislativeId,
+          type: LegislativeTypes.CABINET,
+          parent: parentId,
         });
         if (!executive) {
           executive = new this.legislativeModel({
@@ -179,7 +255,7 @@ export class StaticsService {
             type: LegislativeTypes.CABINET,
           });
           await executive.save();
-        }else{
+        } else {
           executive = await this.legislativeModel.findOneAndUpdate(
             { name: executive.name, type: LegislativeTypes.CABINET },
             { ...executive },
@@ -192,14 +268,13 @@ export class StaticsService {
       await findLegislative.save();
       delete body.executives;
     }
-  
+
     return await this.legislativeModel.findByIdAndUpdate(
       param.legislativeId,
       body,
       { new: true },
     );
   }
-  
 
   async getGovernmentOfficial(body: GetLegislativeDto) {
     const legislative: Legislative = await this.legislativeModel.findOne({
@@ -214,10 +289,12 @@ export class StaticsService {
     return legislative;
   }
 
-  async getGovernmentOfficials(body: GetLegislativesDto) {
-    return await this.legislativeModel.find({
-      type: LegislativeTypes.OFFICIAL,
-    });
+  async getGovernments(body: GetLegislativesDto) {
+    return await this.legislativeModel
+      .find({
+        type: LegislativeTypes.OFFICIAL,
+      })
+      .sort({ end: -1 });
   }
 
   async updateLegislatives(body: AddLegislativeDto): Promise<Legislative> {

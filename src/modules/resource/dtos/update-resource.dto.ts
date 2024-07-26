@@ -27,6 +27,11 @@ export class UpdateResourceDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
+  body: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
   description: string;
 
   @ApiProperty()

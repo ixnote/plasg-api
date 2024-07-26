@@ -9,6 +9,9 @@ export interface Legislative extends mongoose.Document {
   email: string;
   image: string;
   type: string;
+  start: Date;
+  end: Date;
+  active: boolean;
   biography: Biography;
   members: Legislative[];
   executives: Legislative[];

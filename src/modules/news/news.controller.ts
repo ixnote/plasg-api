@@ -149,11 +149,11 @@ export class NewsController {
 
   @Patch('/section/reorder/:newsId')
   async reorderNewsSection(
-    @Param() param: { newsId: string },
+    @Param() param: GetNewsDto,
     body: ReorderNewsSectionItemsDto,
     @UserGuard() user: User,
   ) {
-    await this.newsService.reorderSection(body, param.newsId, user);
+    await this.newsService.reorderSection(body, param, user);
     return {
       status: true,
       message: 'News sections reordered successfully',

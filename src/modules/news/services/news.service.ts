@@ -24,6 +24,7 @@ import { RemoveTagDto } from '../dtos/remove-news-tag.dto';
 import { AddNewsDto } from '../dtos/add-news.dto';
 import slugify from 'slugify';
 import { ReorderNewsSectionItemsDto } from '../dtos/reorder-news-section-item.dto';
+import { GetNewsDto } from '../dtos/get-news.dto';
 
 @Injectable()
 export class NewsService {
@@ -130,6 +131,15 @@ export class NewsService {
     return await newsSection.save();
   }
 
+  async regexSearch(body: string): Promise<News[]> {
+    const $regex = new RegExp(body, 'i');
+    return await this.newsModel
+      .find({ name: { $regex } })
+      .populate('newsSections', 'type value')
+      .populate('mda', 'name logo')
+      .populate('tags', 'name type description');
+  }
+
   async findNewsSectionById(id: string): Promise<NewsSection> {
     return this.newsSectionModel.findById(id);
   }
@@ -178,10 +188,16 @@ export class NewsService {
 
   async reorderSection(
     body: ReorderNewsSectionItemsDto,
-    newsId: string,
+    param: GetNewsDto,
     user: User,
   ) {
     await this.checkIfUserIsAuthorized(user);
+    const news: News = await this.findById(param.newsId);
+    if (!news)
+      throw new NotFoundException({
+        status: false,
+        message: 'News not found',
+      });
     const sectionFoundQuery = [];
     const sectionUpdateQuery = [];
 

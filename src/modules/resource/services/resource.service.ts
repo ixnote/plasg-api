@@ -48,6 +48,16 @@ export class ResourceService {
     return this.resourceModel.findOne({ name }).exec();
   }
 
+  async regexSearch(body: string): Promise<Resource[]> {
+    const $regex = new RegExp(body, 'i');
+    return await this.resourceModel
+      .find({ name: { $regex } })
+      .populate('main_type_tag', 'name type')
+      .populate('sub_type_tag', 'name type')
+      .populate('main_topic_tag', 'name type')
+      .populate('all_topic_tags', 'name type')
+  }
+
   async createResource(body: CreateResourceDto, user: User): Promise<Resource> {
     const mda: Mda = await this.mdaService.findByUser(user.id);
     if (!mda)

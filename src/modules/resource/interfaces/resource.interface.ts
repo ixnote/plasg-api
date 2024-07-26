@@ -6,6 +6,7 @@ export interface Resource extends mongoose.Document {
   link: string;
   image: string;
   mda: mongoose.Types.ObjectId;
+  body: string;
   description: string;
   slug: string;
   main_type_tag: mongoose.Types.ObjectId;

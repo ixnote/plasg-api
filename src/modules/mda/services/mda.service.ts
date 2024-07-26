@@ -55,6 +55,12 @@ export class MdaService {
     return this.mdaModel.findOne({ name }).exec();
   }
 
+  async regexSearch(body: string): Promise<Mda[]>{
+    const $regex = new RegExp(body, 'i');
+    return await this.mdaModel.find({name: { $regex }})
+  }
+
+
   async findByUser(admin: string): Promise<Mda> {
     return this.mdaModel.findOne({ admin }).exec();
   }

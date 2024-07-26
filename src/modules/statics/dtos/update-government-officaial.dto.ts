@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
     IsArray,
+    IsBoolean,
+    IsDateString,
     IsEmail,
   IsEnum,
   IsOptional,
@@ -29,6 +31,21 @@ export class UpdateGovernmentOfficialDto {
   @IsString()
   @IsOptional()
   title: string;
+
+  @ApiProperty()
+  @IsDateString()
+  @IsOptional()
+  start: string;
+
+  @ApiProperty()
+  @IsDateString()
+  @IsOptional()
+  end: string;
+
+  @ApiProperty()
+  @IsBoolean()
+  @IsOptional()
+  active: boolean;
 
   @ApiProperty()
   @IsOptional()
