@@ -158,8 +158,7 @@ export class NewsService {
     .populate('mda', 'name logo')
     .populate('tags', 'name type description')
 
-    const totalMdas: Mda[] = await this.newsModel.find({ name: { $regex } });
-    const total = totalMdas.length;
+    const total = totalNews.length;
     const totalPages = Math.ceil(total / pageSize);
     const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
     const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
