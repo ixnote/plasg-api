@@ -1,4 +1,14 @@
-import { Body, Controller, Get, HttpCode, Param, Patch, Post, Put, UseFilters, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Put,
+  UseFilters,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { ExceptionsLoggerFilter } from 'src/framework/exceptions/exceptionLogger.filter';
 import { AuthService } from './services/auth.service';
@@ -10,7 +20,6 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 import { SignInDto } from './dtos/sign-in.dto';
 import { UserGuard } from 'src/framework/guards/user.guard';
 import { ForgotPasswordDto } from './dtos/forgot-password.dto';
-import { ResendOtpDto } from './dtos/resend-otp.dto';
 import { ResetPasswordDto } from './dtos/reset-password.dto';
 import { ChangePasswordDto } from './dtos/change-password.dto';
 
@@ -34,7 +43,7 @@ export class AuthController {
   @Post('login')
   @HttpCode(200)
   @UseFilters(ExceptionsLoggerFilter)
-  async login(@Body()body: SignInDto){
+  async login(@Body() body: SignInDto) {
     const tokens = await this.authService.signIn(body);
     return {
       status: true,
@@ -47,8 +56,8 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @HttpCode(200)
   @UseFilters(ExceptionsLoggerFilter)
-  async getProfile(@UserGuard() user: User){
-    const profile: User = await this.authService.getProfile(user)
+  async getProfile(@UserGuard() user: User) {
+    const profile: User = await this.authService.getProfile(user);
     return {
       status: true,
       message: 'Get User Profile',
@@ -98,5 +107,4 @@ export class AuthController {
       data: null,
     };
   }
-
 }

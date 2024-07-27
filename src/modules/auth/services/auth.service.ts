@@ -2,12 +2,11 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
+
 import { UserService } from 'src/modules/user/services/user.service';
 import { User } from 'src/modules/user/interfaces/user.interface';
 import { CreateUserDto } from '../dtos/create-user.dto';

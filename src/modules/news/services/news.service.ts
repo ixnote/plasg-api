@@ -24,7 +24,6 @@ import { AddNewsTagsDto } from '../dtos/add-news-tags.dto';
 import { RemoveTagDto } from '../dtos/remove-news-tag.dto';
 import { AddNewsDto } from '../dtos/add-news.dto';
 import slugify from 'slugify';
-import { ReorderNewsSectionItemsDto } from '../dtos/reorder-news-section-item.dto';
 import { GetNewsDto } from '../dtos/get-news.dto';
 import { GlobalSearchPaginationDto } from 'src/modules/statics/dtos/global-search.dto';
 
@@ -157,7 +156,7 @@ export class NewsService {
     return this.newsSectionModel.findById(id);
   }
 
-  async deleteNewsSectionById(newsSectionId: string) {
+  async deleteNewsSectionById() {
     return await this.newsSectionModel.findByIdAndDelete();
   }
 
