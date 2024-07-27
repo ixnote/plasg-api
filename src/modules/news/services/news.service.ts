@@ -24,7 +24,6 @@ import { AddNewsTagsDto } from '../dtos/add-news-tags.dto';
 import { RemoveTagDto } from '../dtos/remove-news-tag.dto';
 import { AddNewsDto } from '../dtos/add-news.dto';
 import slugify from 'slugify';
-import { ReorderNewsSectionItemsDto } from '../dtos/reorder-news-section-item.dto';
 import { GetNewsDto } from '../dtos/get-news.dto';
 import { GlobalSearchPaginationDto } from 'src/modules/statics/dtos/global-search.dto';
 
@@ -145,6 +144,7 @@ export class NewsService {
       pageSize: body.pageSize,
     });
     const $regex = new RegExp(body.name, 'i');
+<<<<<<< HEAD
     const news: News[] = await this.newsModel
     .find({ name: { $regex } })
     .populate('newsSections', 'type value')
@@ -177,13 +177,22 @@ export class NewsService {
       },
       news,
     };
+=======
+    return await this.newsModel
+      .find({ name: { $regex } })
+      .populate('newsSections', 'type value')
+      .populate('mda', 'name logo')
+      .populate('tags', 'name type description')
+      .skip(pagination.offset)
+      .limit(pagination.limit);
+>>>>>>> 609165b4d194d3002fdb6418d29a1063631559ce
   }
 
   async findNewsSectionById(id: string): Promise<NewsSection> {
     return this.newsSectionModel.findById(id);
   }
 
-  async deleteNewsSectionById(newsSectionId: string) {
+  async deleteNewsSectionById() {
     return await this.newsSectionModel.findByIdAndDelete();
   }
 
@@ -557,7 +566,7 @@ export class NewsService {
   async updateNews(newsId: string, body: UpdateNewsDto): Promise<News> {
     const news: News = await this.newsModel.findById(newsId);
     let tags = [];
-    tags = news.tags;
+    tags = news?.tags;
     if (news.tags) {
       for (let i = 0; i < body.tags.length; i++) {
         const tagId = new mongoose.Types.ObjectId(body.tags[i]);
@@ -576,6 +585,19 @@ export class NewsService {
       }
     }
     body.tags = tags;
+    if (!news)
+      throw new NotFoundException({
+        status: true,
+        message: 'News not found',
+      });
+    return await this.newsModel.findByIdAndUpdate(newsId, body, { new: true });
+  }
+
+  async publishNews(
+    newsId: string,
+    body: { is_posted: boolean },
+  ): Promise<News> {
+    const news: News = await this.newsModel.findById(newsId);
     if (!news)
       throw new NotFoundException({
         status: true,
