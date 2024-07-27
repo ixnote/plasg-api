@@ -26,6 +26,7 @@ import { AddNewsDto } from '../dtos/add-news.dto';
 import slugify from 'slugify';
 import { ReorderNewsSectionItemsDto } from '../dtos/reorder-news-section-item.dto';
 import { GetNewsDto } from '../dtos/get-news.dto';
+import { GlobalSearchPaginationDto } from 'src/modules/statics/dtos/global-search.dto';
 
 @Injectable()
 export class NewsService {
@@ -132,13 +133,20 @@ export class NewsService {
     return await newsSection.save();
   }
 
-  async regexSearch(body: string): Promise<News[]> {
-    const $regex = new RegExp(body, 'i');
+  async regexSearch(body: GlobalSearchPaginationDto): Promise<News[]> {
+    const usePage: number = body.page < 1 ? 1 : body.page;
+    const pagination = await this.miscService.paginate({
+      page: usePage,
+      pageSize: body.pageSize,
+    });
+    const $regex = new RegExp(body.name, 'i');
     return await this.newsModel
-      .find({ name: { $regex } })
-      .populate('newsSections', 'type value')
-      .populate('mda', 'name logo')
-      .populate('tags', 'name type description');
+    .find({ name: { $regex } })
+    .populate('newsSections', 'type value')
+    .populate('mda', 'name logo')
+    .populate('tags', 'name type description')
+    .skip(pagination.offset)
+    .limit(pagination.limit);
   }
 
   async findNewsSectionById(id: string): Promise<NewsSection> {

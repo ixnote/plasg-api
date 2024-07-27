@@ -29,7 +29,8 @@ import { UserGuard } from 'src/framework/guards/user.guard';
 import { User } from '../user/interfaces/user.interface';
 import { UpdateGovernmentOfficialDto } from './dtos/update-government-officaial.dto';
 import { AddGovernmentOfficialDto } from './dtos/add-governement-official.dto';
-import { GlobalSearchDto } from './dtos/global-search.dto';
+import { GlobalSearchPaginationDto } from './dtos/global-search.dto';
+import { query } from 'express';
 
 @Controller('statics')
 export class StaticsController {
@@ -47,9 +48,9 @@ export class StaticsController {
     };
   }
 
-  @Get('/global-search/:description')
-  async globalSearch(@Param() param: GlobalSearchDto){
-    const results = await this.staticsService.globalSearch(param.description)
+  @Get('/global-search')
+  async globalSearch(@Query() query: GlobalSearchPaginationDto){
+    const results = await this.staticsService.globalSearch(query)
     return {
       status: true,
       message: 'Results fetched successfully',

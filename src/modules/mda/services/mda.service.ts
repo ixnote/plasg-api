@@ -23,6 +23,7 @@ import { Team } from '../interfaces/team.interface';
 import { GetTeamDto } from '../dtos/get-team.dto';
 import slugify from 'slugify';
 import { GetMdaBySlugDto } from '../dtos/get-mda-by-slug.dto';
+import { GlobalSearchPaginationDto } from 'src/modules/statics/dtos/global-search.dto';
 
 @Injectable()
 export class MdaService {
@@ -55,11 +56,18 @@ export class MdaService {
     return this.mdaModel.findOne({ name }).exec();
   }
 
-  async regexSearch(body: string): Promise<Mda[]>{
-    const $regex = new RegExp(body, 'i');
-    return await this.mdaModel.find({name: { $regex }})
+  async regexSearch(body: GlobalSearchPaginationDto): Promise<Mda[]> {
+    const usePage: number = body.page < 1 ? 1 : body.page;
+    const pagination = await this.miscService.paginate({
+      page: usePage,
+      pageSize: body.pageSize,
+    });
+    const $regex = new RegExp(body.name, 'i');
+    return await this.mdaModel
+      .find({ name: { $regex } })
+      .skip(pagination.offset)
+      .limit(pagination.limit);
   }
-
 
   async findByUser(admin: string): Promise<Mda> {
     return this.mdaModel.findOne({ admin }).exec();
