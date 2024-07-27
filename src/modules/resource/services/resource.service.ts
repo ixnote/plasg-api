@@ -362,6 +362,7 @@ export class ResourceService {
       .populate('sub_type_tag', 'name type')
       .populate('main_topic_tag', 'name type')
       .populate('all_topic_tags', 'name type')
+      .populate('mda', 'name slug')
       .exec();
 
     const totalResources: Resource[] = await this.resourceModel
