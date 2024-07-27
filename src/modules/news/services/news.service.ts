@@ -144,7 +144,6 @@ export class NewsService {
       pageSize: body.pageSize,
     });
     const $regex = new RegExp(body.name, 'i');
-<<<<<<< HEAD
     const news: News[] = await this.newsModel
     .find({ name: { $regex } })
     .populate('newsSections', 'type value')
@@ -177,15 +176,6 @@ export class NewsService {
       },
       news,
     };
-=======
-    return await this.newsModel
-      .find({ name: { $regex } })
-      .populate('newsSections', 'type value')
-      .populate('mda', 'name logo')
-      .populate('tags', 'name type description')
-      .skip(pagination.offset)
-      .limit(pagination.limit);
->>>>>>> 609165b4d194d3002fdb6418d29a1063631559ce
   }
 
   async findNewsSectionById(id: string): Promise<NewsSection> {
