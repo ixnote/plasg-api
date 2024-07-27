@@ -144,12 +144,12 @@ export class NewsService {
     });
     const $regex = new RegExp(body.name, 'i');
     return await this.newsModel
-    .find({ name: { $regex } })
-    .populate('newsSections', 'type value')
-    .populate('mda', 'name logo')
-    .populate('tags', 'name type description')
-    .skip(pagination.offset)
-    .limit(pagination.limit);
+      .find({ name: { $regex } })
+      .populate('newsSections', 'type value')
+      .populate('mda', 'name logo')
+      .populate('tags', 'name type description')
+      .skip(pagination.offset)
+      .limit(pagination.limit);
   }
 
   async findNewsSectionById(id: string): Promise<NewsSection> {
@@ -530,7 +530,7 @@ export class NewsService {
   async updateNews(newsId: string, body: UpdateNewsDto): Promise<News> {
     const news: News = await this.newsModel.findById(newsId);
     let tags = [];
-    tags = news.tags;
+    tags = news?.tags;
     if (news.tags) {
       for (let i = 0; i < body.tags.length; i++) {
         const tagId = new mongoose.Types.ObjectId(body.tags[i]);
@@ -549,6 +549,19 @@ export class NewsService {
       }
     }
     body.tags = tags;
+    if (!news)
+      throw new NotFoundException({
+        status: true,
+        message: 'News not found',
+      });
+    return await this.newsModel.findByIdAndUpdate(newsId, body, { new: true });
+  }
+
+  async publishNews(
+    newsId: string,
+    body: { is_posted: boolean },
+  ): Promise<News> {
+    const news: News = await this.newsModel.findById(newsId);
     if (!news)
       throw new NotFoundException({
         status: true,

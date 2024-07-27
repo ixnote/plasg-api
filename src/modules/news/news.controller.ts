@@ -118,6 +118,20 @@ export class NewsController {
     };
   }
 
+  @Put('/update/:newsId/publish')
+  @UseGuards(AuthGuard)
+  async publishNews(
+    @Param() param: { newsId: string },
+    @Body() body: { is_posted: boolean },
+  ) {
+    const news: News = await this.newsService.publishNews(param.newsId, body);
+    return {
+      status: true,
+      message: 'News updated successfully',
+      data: news,
+    };
+  }
+
   @Put('/section/add/:newsId')
   async addNewsSections(
     @Param() param: { newsId: string },
