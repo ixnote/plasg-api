@@ -56,17 +56,35 @@ export class MdaService {
     return this.mdaModel.findOne({ name }).exec();
   }
 
-  async regexSearch(body: GlobalSearchPaginationDto): Promise<Mda[]> {
+  async regexSearch(body: GlobalSearchPaginationDto): Promise<any> {
+    const { page = 1, pageSize = 10, name } = body;
     const usePage: number = body.page < 1 ? 1 : body.page;
     const pagination = await this.miscService.paginate({
       page: usePage,
       pageSize: body.pageSize,
     });
     const $regex = new RegExp(body.name, 'i');
-    return await this.mdaModel
+    const mdas: Mda[] = await this.mdaModel
       .find({ name: { $regex } })
       .skip(pagination.offset)
       .limit(pagination.limit);
+
+    const totalMdas: Mda[] = await this.mdaModel.find({ name: { $regex } });
+    const total = totalMdas.length;
+    const totalPages = Math.ceil(total / pageSize);
+    const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
+    const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
+    return {
+      pagination: {
+        currentPage: Number(usePage),
+        totalPages,
+        nextPage,
+        prevPage,
+        total,
+        pageSize: Number(pageSize),
+      },
+      mdas,
+    };
   }
 
   async findByUser(admin: string): Promise<Mda> {

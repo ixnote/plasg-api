@@ -137,20 +137,46 @@ export class NewsService {
     return await newsSection.save();
   }
 
-  async regexSearch(body: GlobalSearchPaginationDto): Promise<News[]> {
+  async regexSearch(body: GlobalSearchPaginationDto): Promise<any> {
+    const { page = 1, pageSize = 10, name } = body;
     const usePage: number = body.page < 1 ? 1 : body.page;
     const pagination = await this.miscService.paginate({
       page: usePage,
       pageSize: body.pageSize,
     });
     const $regex = new RegExp(body.name, 'i');
-    return await this.newsModel
+    const news: News[] = await this.newsModel
     .find({ name: { $regex } })
     .populate('newsSections', 'type value')
     .populate('mda', 'name logo')
     .populate('tags', 'name type description')
     .skip(pagination.offset)
     .limit(pagination.limit);
+
+    const totalNews: News[] = await this.newsModel
+    .find({ name: { $regex } })
+    .populate('newsSections', 'type value')
+    .populate('mda', 'name logo')
+    .populate('tags', 'name type description')
+
+    const totalMdas: Mda[] = await this.newsModel.find({ name: { $regex } });
+    const total = totalMdas.length;
+    const totalPages = Math.ceil(total / pageSize);
+    const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
+    const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
+    
+
+    return {
+      pagination: {
+        currentPage: Number(usePage),
+        totalPages,
+        nextPage,
+        prevPage,
+        total,
+        pageSize: Number(pageSize),
+      },
+      news,
+    };
   }
 
   async findNewsSectionById(id: string): Promise<NewsSection> {

@@ -90,7 +90,6 @@ export class StaticsService {
   }
 
   async globalSearch(body: GlobalSearchPaginationDto) {
-    const { page = 1, pageSize = 10, name } = body;
     const mdas: Mda[] = await this.mdaService.regexSearch(body);
     const news: News[] = await this.newsService.regexSearch(body);
     const resources: Resource[] = await this.resourceService.regexSearch(body);
@@ -107,57 +106,119 @@ export class StaticsService {
     };
   }
 
-  async governmentRegexSearch(
-    body: GlobalSearchPaginationDto,
-  ): Promise<Legislative[]> {
+  async governmentRegexSearch(body: GlobalSearchPaginationDto): Promise<any> {
+    const { page = 1, pageSize = 10, name } = body;
     const usePage: number = body.page < 1 ? 1 : body.page;
     const pagination = await this.miscService.paginate({
       page: usePage,
       pageSize: body.pageSize,
     });
     const $regex = new RegExp(body.name, 'i');
-    return await this.legislativeModel
+    const governments: Legislative[] = await this.legislativeModel
       .find({
         name: { $regex },
         type: LegislativeTypes.OFFICIAL,
       })
       .skip(pagination.offset)
       .limit(pagination.limit);
+
+    const totalGovernments: Legislative[] = await this.legislativeModel.find({
+      name: { $regex },
+      type: LegislativeTypes.OFFICIAL,
+    });
+
+    const total = totalGovernments.length;
+    const totalPages = Math.ceil(total / pageSize);
+    const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
+    const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
+
+    return {
+      pagination: {
+        currentPage: Number(usePage),
+        totalPages,
+        nextPage,
+        prevPage,
+        total,
+        pageSize: Number(pageSize),
+      },
+      governments,
+    };
   }
 
-  async legislativeRegexSearch(
-    body: GlobalSearchPaginationDto,
-  ): Promise<Legislative[]> {
+  async legislativeRegexSearch(body: GlobalSearchPaginationDto): Promise<any> {
+    const { page = 1, pageSize = 10, name } = body;
     const usePage: number = body.page < 1 ? 1 : body.page;
     const pagination = await this.miscService.paginate({
       page: usePage,
       pageSize: body.pageSize,
     });
     const $regex = new RegExp(body.name, 'i');
-    return await this.legislativeModel
+    const legislatives: Legislative[] = await this.legislativeModel
       .find({
         name: { $regex },
         type: { $ne: LegislativeTypes.OFFICIAL },
       })
       .skip(pagination.offset)
       .limit(pagination.limit);
+
+    const totalLegislatives: Legislative[] = await this.legislativeModel.find({
+      name: { $regex },
+      type: { $ne: LegislativeTypes.OFFICIAL },
+    });
+
+    const total = totalLegislatives.length;
+    const totalPages = Math.ceil(total / pageSize);
+    const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
+    const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
+
+    return {
+      pagination: {
+        currentPage: Number(usePage),
+        totalPages,
+        nextPage,
+        prevPage,
+        total,
+        pageSize: Number(pageSize),
+      },
+      legislatives,
+    };
   }
 
-  async destinationRegexSearch(
-    body: GlobalSearchPaginationDto,
-  ): Promise<Destination[]> {
+  async destinationRegexSearch(body: GlobalSearchPaginationDto): Promise<any> {
+    const { page = 1, pageSize = 10, name } = body;
     const usePage: number = body.page < 1 ? 1 : body.page;
     const pagination = await this.miscService.paginate({
       page: usePage,
       pageSize: body.pageSize,
     });
     const $regex = new RegExp(body.name, 'i');
-    return await this.destinationModel
+    const destinations: Destination[] = await this.destinationModel
       .find({
         name: { $regex },
       })
       .skip(pagination.offset)
       .limit(pagination.limit);
+
+    const totalDestinations: Destination[] = await this.destinationModel.find({
+      name: { $regex },
+    });
+
+    const total = totalDestinations.length;
+    const totalPages = Math.ceil(total / pageSize);
+    const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
+    const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
+
+    return {
+      pagination: {
+        currentPage: Number(usePage),
+        totalPages,
+        nextPage,
+        prevPage,
+        total,
+        pageSize: Number(pageSize),
+      },
+      destinations,
+    };
   }
   async addLegislative(body: AddLegislativeDto): Promise<Legislative> {
     const findLegislative: Legislative = await this.legislativeModel.findOne({
