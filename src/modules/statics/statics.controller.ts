@@ -31,6 +31,9 @@ import { UpdateGovernmentOfficialDto } from './dtos/update-government-officaial.
 import { AddGovernmentOfficialDto } from './dtos/add-governement-official.dto';
 import { GlobalSearchPaginationDto } from './dtos/global-search.dto';
 import { query } from 'express';
+import { Government } from './interfaces/government.interface';
+import { GetGovernmentDto } from './dtos/get-government.dto';
+import { GetGovernmentsDto } from './dtos/get-governments.dto';
 
 @Controller('statics')
 export class StaticsController {
@@ -88,19 +91,19 @@ export class StaticsController {
   @Post('/government/add')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(UserRoles.SUPER)
-  async addGovernmentOfficial(@Body() body: AddGovernmentOfficialDto) {
-    const legislative: Legislative =
-      await this.staticsService.addGovernmentOfficial(body);
+  async addGovernment(@Body() body: AddGovernmentOfficialDto) {
+    const government: Government =
+      await this.staticsService.addGovernment(body);
     return {
       status: true,
       message: 'Government official added successfully',
-      data: legislative,
+      data: government,
     };
   }
 
   @Get('/government/active')
   async getActiveGovernment() {
-    const government: Legislative =
+    const government: Government =
       await this.staticsService.getActiveGovernment();
     return {
       status: true,
@@ -109,37 +112,37 @@ export class StaticsController {
     };
   }
 
-  @Put('/government/:legislativeId')
+  @Put('/government/:governmentId')
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(UserRoles.SUPER)
-  async updateGovernmentOfficial(
-    @Param() param: GetLegislativeDto,
+  async updateGovernment(
+    @Param() param: GetGovernmentDto,
     @Body() body: UpdateGovernmentOfficialDto,
   ) {
-    const legislative: Legislative =
+    const government: Government =
       await this.staticsService.updateGovernment(param, body);
     return {
       status: true,
-      message: 'Government official updated successfully',
-      data: legislative,
+      message: 'Government updated successfully',
+      data: government
     };
   }
 
-  @Get('/government/:legislativeId')
-  async getGovernmentOfficial(@Param() param: GetLegislativeDto) {
-    const legislative: Legislative =
-      await this.staticsService.getGovernmentOfficial(param);
+  @Get('/government/:governmentId')
+  async getGovernmentOfficial(@Param() param: GetGovernmentDto) {
+    const government: Government =
+      await this.staticsService.getGovernment(param);
     return {
       status: true,
       message: 'Government official fetched successfully',
-      data: legislative,
+      data: government,
     };
   }
 
 
   @Get('/governments')
-  async getGovernmentOfficials(@Query() query: GetLegislativesDto) {
-    const governments: Legislative[] =
+  async getGovernments(@Query() query: GetGovernmentsDto) {
+    const governments: Government[] =
       await this.staticsService.getGovernments(query);
     return {
       status: true,
