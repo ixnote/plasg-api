@@ -21,6 +21,7 @@ import { TagType } from 'src/common/constants/enum';
 import { CloudinaryService } from 'src/common/services/cloudinary/cloudinary.service';
 import { UpdateResourceDto } from '../dtos/update-resource.dto';
 import slugify from 'slugify';
+import { GlobalSearchPaginationDto } from 'src/modules/statics/dtos/global-search.dto';
 
 @Injectable()
 export class ResourceService {
@@ -48,14 +49,22 @@ export class ResourceService {
     return this.resourceModel.findOne({ name }).exec();
   }
 
-  async regexSearch(body: string): Promise<Resource[]> {
-    const $regex = new RegExp(body, 'i');
+  async regexSearch(body: GlobalSearchPaginationDto): Promise<Resource[]> {
+    const usePage: number = body.page < 1 ? 1 : body.page;
+    const pagination = await this.miscService.paginate({
+      page: usePage,
+      pageSize: body.pageSize,
+    });
+    const $regex = new RegExp(body.name, 'i');
     return await this.resourceModel
-      .find({ name: { $regex } })
-      .populate('main_type_tag', 'name type')
-      .populate('sub_type_tag', 'name type')
-      .populate('main_topic_tag', 'name type')
-      .populate('all_topic_tags', 'name type')
+    .find({ name: { $regex } })
+    .populate('main_type_tag', 'name type')
+    .populate('sub_type_tag', 'name type')
+    .populate('main_topic_tag', 'name type')
+    .populate('all_topic_tags', 'name type')
+    .skip(pagination.offset)
+    .limit(pagination.limit);
+    
   }
 
   async createResource(body: CreateResourceDto, user: User): Promise<Resource> {

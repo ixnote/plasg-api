@@ -26,6 +26,7 @@ import { AddGovernmentOfficialDto } from '../dtos/add-governement-official.dto';
 import { UpdateGovernmentOfficialDto } from '../dtos/update-government-officaial.dto';
 import { News } from 'src/modules/news/interfaces/news.interface';
 import { Resource } from 'src/modules/resource/interfaces/resource.interface';
+import { GlobalSearchPaginationDto } from '../dtos/global-search.dto';
 
 @Injectable()
 export class StaticsService {
@@ -88,44 +89,75 @@ export class StaticsService {
     };
   }
 
-  async globalSearch(body: string) {
+  async globalSearch(body: GlobalSearchPaginationDto) {
+    const { page = 1, pageSize = 10, name } = body;
     const mdas: Mda[] = await this.mdaService.regexSearch(body);
     const news: News[] = await this.newsService.regexSearch(body);
     const resources: Resource[] = await this.resourceService.regexSearch(body);
     const government: Legislative[] = await this.governmentRegexSearch(body);
     const legislatives: Legislative[] = await this.legislativeRegexSearch(body);
-    const destinations: Destination[] = await this.destinationRegexSearch(body)
+    const destinations: Destination[] = await this.destinationRegexSearch(body);
     return {
       mdas,
       news,
       resources,
       government,
       legislatives,
-      destinations
+      destinations,
     };
   }
 
-  async governmentRegexSearch(body: string): Promise<Legislative[]> {
-    const $regex = new RegExp(body, 'i');
-    return await this.legislativeModel.find({
-      name: { $regex },
-      type: LegislativeTypes.OFFICIAL,
+  async governmentRegexSearch(
+    body: GlobalSearchPaginationDto,
+  ): Promise<Legislative[]> {
+    const usePage: number = body.page < 1 ? 1 : body.page;
+    const pagination = await this.miscService.paginate({
+      page: usePage,
+      pageSize: body.pageSize,
     });
+    const $regex = new RegExp(body.name, 'i');
+    return await this.legislativeModel
+      .find({
+        name: { $regex },
+        type: LegislativeTypes.OFFICIAL,
+      })
+      .skip(pagination.offset)
+      .limit(pagination.limit);
   }
 
-  async legislativeRegexSearch(body: string): Promise<Legislative[]> {
-    const $regex = new RegExp(body, 'i');
-    return await this.legislativeModel.find({
-      name: { $regex },
-      type: { $ne: LegislativeTypes.OFFICIAL },
+  async legislativeRegexSearch(
+    body: GlobalSearchPaginationDto,
+  ): Promise<Legislative[]> {
+    const usePage: number = body.page < 1 ? 1 : body.page;
+    const pagination = await this.miscService.paginate({
+      page: usePage,
+      pageSize: body.pageSize,
     });
+    const $regex = new RegExp(body.name, 'i');
+    return await this.legislativeModel
+      .find({
+        name: { $regex },
+        type: { $ne: LegislativeTypes.OFFICIAL },
+      })
+      .skip(pagination.offset)
+      .limit(pagination.limit);
   }
 
-  async destinationRegexSearch(body: string): Promise<Destination[]> {
-    const $regex = new RegExp(body, 'i');
-    return await this.destinationModel.find({
-      name: { $regex }
+  async destinationRegexSearch(
+    body: GlobalSearchPaginationDto,
+  ): Promise<Destination[]> {
+    const usePage: number = body.page < 1 ? 1 : body.page;
+    const pagination = await this.miscService.paginate({
+      page: usePage,
+      pageSize: body.pageSize,
     });
+    const $regex = new RegExp(body.name, 'i');
+    return await this.destinationModel
+      .find({
+        name: { $regex },
+      })
+      .skip(pagination.offset)
+      .limit(pagination.limit);
   }
   async addLegislative(body: AddLegislativeDto): Promise<Legislative> {
     const findLegislative: Legislative = await this.legislativeModel.findOne({

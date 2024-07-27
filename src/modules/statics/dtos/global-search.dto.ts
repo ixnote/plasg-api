@@ -1,8 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsNumberString, IsOptional, IsString } from 'class-validator';
 
-export class GlobalSearchDto {
+export class GlobalSearchPaginationDto {
   @ApiProperty()
   @IsString()
-  description: string;
+  name: string;
+
+  @IsNumberString()
+  @IsOptional()
+  page?: number;
+
+  @IsNumberString()
+  @IsOptional()
+  pageSize?: number;
+
 }
