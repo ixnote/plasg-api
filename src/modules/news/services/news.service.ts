@@ -120,7 +120,11 @@ export class NewsService {
       });
     return await this.newsModel
       .findById(id)
-      .populate('newsSections', 'type value')
+      .populate({
+        path: 'newsSections',
+        select: 'type value position',
+        options: { sort: { position: 1 } },
+      })
       .populate('mda', 'name logo')
       .populate('tags', 'name type description');
   }
@@ -196,7 +200,7 @@ export class NewsService {
   }
 
   async reorderSection(body: any, param: GetNewsDto, user: User) {
-    // await this.checkIfUserIsAuthorized(user);
+    await this.checkIfUserIsAuthorized(user);
     const news: News = await this.findById(param.newsId);
     if (!news)
       throw new NotFoundException({
@@ -232,7 +236,7 @@ export class NewsService {
     } catch (error) {
       throw new InternalServerErrorException({
         status: false,
-        message: 'Internal Server Error',
+        message: 'Internal Server Error jjjkkkk',
       });
     }
   }
