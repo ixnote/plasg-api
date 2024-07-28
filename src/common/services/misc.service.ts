@@ -45,66 +45,68 @@ export class MiscClass {
     };
   }
 
-//   async getStates() {
-//     const stateObj = [];
-//     const states = JSON.parse(
-//       fs.readFileSync(`${__dirname}/assets/states.txt`, 'utf-8'),
-//     );
+  //   async getStates() {
+  //     const stateObj = [];
+  //     const states = JSON.parse(
+  //       fs.readFileSync(`${__dirname}/assets/states.txt`, 'utf-8'),
+  //     );
 
-//     for (const state of states) {
-//       stateObj.push(state.state);
-//     }
-//     return {
-//       status: 'success',
-//       message: 'states fetched',
-//       data: stateObj,
-//     };
-//   }
+  //     for (const state of states) {
+  //       stateObj.push(state.state);
+  //     }
+  //     return {
+  //       status: 'success',
+  //       message: 'states fetched',
+  //       data: stateObj,
+  //     };
+  //   }
 
-async search(params: any) {
-  const query = {};
-  for (const value in params) {
-    if (params[value] && params[value] != 'null' && params[value] != null) {
-      if (value.match(/date|Date|createdAt/g)) {
-        const date = new Date(params[value]);
-        const endDate = moment(date).add(1, 'day').format();
-        query['createdAt'] = { $gte: date, $lte: new Date(endDate) };
-      } else if (value.match(/start|Start|end|End/g)) {
-        const date = new Date(params[value]);
-        if (value.toLowerCase() === 'start' && !params['end']) {
-          // If 'from' is set and 'to' is not set, use current day for 'to'
-          const today = new Date();
-          today.setHours(23, 59, 59, 999); // Set to end of the day
-          query['createdAt'] = { $gte: date, $lte: today };
-        } else {
-          const queryDate: any = {};
-          if (value.toLowerCase() === 'to') {
+  async search(params: any) {
+    const query = {};
+    for (const value in params) {
+      if (params[value] && params[value] != 'null' && params[value] != null) {
+        if (value.match(/date|Date|createdAt/g)) {
+          const date = new Date(params[value]);
+          const endDate = moment(date).add(1, 'day').format();
+          query['createdAt'] = { $gte: date, $lte: new Date(endDate) };
+        } else if (value.match(/start|Start|end|End/g)) {
+          const date = new Date(params[value]);
+          if (value.toLowerCase() === 'start' && !params['end']) {
+            // If 'from' is set and 'to' is not set, use current day for 'to'
+            const today = new Date();
+            today.setHours(23, 59, 59, 999); // Set to end of the day
+            query['createdAt'] = { $gte: date, $lte: today };
+          } else {
+            const queryDate: any = {};
+            if (value.toLowerCase() === 'to') {
               const to = new Date(params[value]);
               to.setHours(23, 59, 59, 999);
               queryDate.$lte = to;
-          } else {
+            } else {
               const endDate = new Date(date);
               endDate.setDate(endDate.getDate() + 1);
               queryDate.$lt = endDate;
+            }
+            // Only modify the upper limit if 'to' is set
+            const existingFrom = query['createdAt'] && query['createdAt'].$gte;
+            query['createdAt'] = {
+              ...(existingFrom ? { $gte: existingFrom } : {}),
+              ...queryDate,
+            };
           }
-          // Only modify the upper limit if 'to' is set
-          const existingFrom = query['createdAt'] && query['createdAt'].$gte;
-          query['createdAt'] = { ...(existingFrom ? { $gte: existingFrom } : {}), ...queryDate };
-      
+        } else if (params[value] == 'true') {
+          query[value] = true;
+        } else if (params[value] == 'false') {
+          query[value] = false;
+        } else if (value == 'category' || value == 'categories') {
+          query[value] = { $in: params[value] };
+        } else {
+          const $regex = new RegExp(params[value]);
+          const $options = 'i';
+          query[value] = { $regex, $options };
         }
-      } else if (params[value] == 'true') {
-        query[value] = true;
-      } else if (params[value] == 'false') {
-        query[value] = false;
-      } else if (value == 'category' || value == 'categories') {
-        query[value] = { $in: params[value] };
-      } else {
-        const $regex = new RegExp(params[value]);
-        const $options = 'i';
-        query[value] = { $regex, $options };
       }
     }
+    return query;
   }
-  return query;
-}
 }

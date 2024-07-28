@@ -453,6 +453,7 @@ export class NewsService {
     const newsTotal: News[] = await this.newsModel.find({
       ...options,
       mda: mda.id,
+      is_posted: true,
     });
 
     if (tag) {
@@ -470,7 +471,7 @@ export class NewsService {
     const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
 
     const news: News[] = await this.newsModel
-      .find({ ...options, mda: mda.id })
+      .find({ ...options, mda: mda.id, is_posted: true })
       .populate({
         path: 'newsSections',
         options: { sort: { position: 1 } },
