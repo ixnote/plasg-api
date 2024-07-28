@@ -145,24 +145,23 @@ export class NewsService {
     });
     const $regex = new RegExp(body.name, 'i');
     const news: News[] = await this.newsModel
-    .find({ name: { $regex } })
-    .populate('newsSections', 'type value')
-    .populate('mda', 'name logo')
-    .populate('tags', 'name type description')
-    .skip(pagination.offset)
-    .limit(pagination.limit);
+      .find({ name: { $regex } })
+      .populate('newsSections', 'type value')
+      .populate('mda', 'name logo')
+      .populate('tags', 'name type description')
+      .skip(pagination.offset)
+      .limit(pagination.limit);
 
     const totalNews: News[] = await this.newsModel
-    .find({ name: { $regex } })
-    .populate('newsSections', 'type value')
-    .populate('mda', 'name logo')
-    .populate('tags', 'name type description')
+      .find({ name: { $regex } })
+      .populate('newsSections', 'type value')
+      .populate('mda', 'name logo')
+      .populate('tags', 'name type description');
 
     const total = totalNews.length;
     const totalPages = Math.ceil(total / pageSize);
     const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
     const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
-    
 
     return {
       pagination: {
@@ -260,7 +259,7 @@ export class NewsService {
     } catch (error) {
       throw new InternalServerErrorException({
         status: false,
-        message: 'Internal Server Error jjjkkkk',
+        message: 'Internal Server Error',
       });
     }
   }
