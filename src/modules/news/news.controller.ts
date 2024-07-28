@@ -176,6 +176,7 @@ export class NewsController {
   }
 
   @Delete('/section/delete/:sectionId')
+  @UseGuards(AuthGuard, RolesGuard)
   async deleteNewsSection(
     @Param() param: GetSectionDto,
     @UserGuard() user: User,
