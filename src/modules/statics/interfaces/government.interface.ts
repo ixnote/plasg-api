@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose';
-import { Biography } from './biography.interface';
 import { Legislative } from './legislative.interface';
 
 export interface Government extends mongoose.Document {

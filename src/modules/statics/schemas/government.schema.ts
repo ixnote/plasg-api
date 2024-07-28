@@ -1,6 +1,5 @@
 import { Schema } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { BiographySchema } from './biography.schema';
 import { Government } from '../interfaces/government.interface';
 
 function transformValue(doc, ret: { [key: string]: any }) {

@@ -30,7 +30,6 @@ import { User } from '../user/interfaces/user.interface';
 import { UpdateGovernmentOfficialDto } from './dtos/update-government-officaial.dto';
 import { AddGovernmentOfficialDto } from './dtos/add-governement-official.dto';
 import { GlobalSearchPaginationDto } from './dtos/global-search.dto';
-import { query } from 'express';
 import { Government } from './interfaces/government.interface';
 import { GetGovernmentDto } from './dtos/get-government.dto';
 import { GetGovernmentsDto } from './dtos/get-governments.dto';
