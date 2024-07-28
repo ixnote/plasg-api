@@ -49,14 +49,15 @@ export class ResourceService {
     return this.resourceModel.findOne({ name }).exec();
   }
 
-  async regexSearch(body: GlobalSearchPaginationDto): Promise<Resource[]> {
+  async regexSearch(body: GlobalSearchPaginationDto): Promise<any> {
+    const { page = 1, pageSize = 10, name } = body;
     const usePage: number = body.page < 1 ? 1 : body.page;
     const pagination = await this.miscService.paginate({
       page: usePage,
       pageSize: body.pageSize,
     });
     const $regex = new RegExp(body.name, 'i');
-    return await this.resourceModel
+    const resources: Resource[] = await this.resourceModel
     .find({ name: { $regex } })
     .populate('main_type_tag', 'name type')
     .populate('sub_type_tag', 'name type')
@@ -65,6 +66,29 @@ export class ResourceService {
     .skip(pagination.offset)
     .limit(pagination.limit);
     
+    const totalResources: Mda[] = await this.resourceModel
+    .find({ name: { $regex } })
+    .populate('main_type_tag', 'name type')
+    .populate('sub_type_tag', 'name type')
+    .populate('main_topic_tag', 'name type')
+    .populate('all_topic_tags', 'name type')
+
+    const total = totalResources.length;
+    const totalPages = Math.ceil(total / pageSize);
+    const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
+    const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
+    
+    return {
+      pagination: {
+        currentPage: Number(usePage),
+        totalPages,
+        nextPage,
+        prevPage,
+        total,
+        pageSize: Number(pageSize),
+      },
+      resources,
+    };
   }
 
   async createResource(body: CreateResourceDto, user: User): Promise<Resource> {
@@ -338,6 +362,7 @@ export class ResourceService {
       .populate('sub_type_tag', 'name type')
       .populate('main_topic_tag', 'name type')
       .populate('all_topic_tags', 'name type')
+      .populate('mda', 'name slug')
       .exec();
 
     const totalResources: Resource[] = await this.resourceModel

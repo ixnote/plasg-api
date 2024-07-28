@@ -1,45 +1,22 @@
 import { Schema } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { LegislativeTypes } from 'src/common/constants/enum';
-import { Legislative } from '../interfaces/legislative.interface';
 import { BiographySchema } from './biography.schema';
+import { Government } from '../interfaces/government.interface';
 
 function transformValue(doc, ret: { [key: string]: any }) {
   delete ret._id;
 }
 
-export const LegislativeSchema: Schema = new Schema<Legislative>(
+export const GovernmentSchema: Schema = new Schema<Government>(
   {
     name: {
       type: String,
       required: true,
     },
-    role: {
-      type: String,
-      required: false,
-    },
-    title: {
-      type: String,
-      required: false,
-    },
-    lga: {
-      type: String,
-      required: false,
-    },
-    email: {
-      type: String,
-      required: false,
-    },
     image: {
       type: String,
       required: false,
     },
-    type: {
-      type: String,
-      enum: LegislativeTypes,
-      required: true,
-    },
-  
     start: {
       type: Date,
       required: false,
@@ -47,6 +24,26 @@ export const LegislativeSchema: Schema = new Schema<Legislative>(
     end: {
       type: Date,
       required: false,
+    },
+    biography: {
+      type: BiographySchema,
+      required: false,
+    },
+    members: {
+      type: [Schema.Types.ObjectId],
+      ref: 'Legislative',
+      required: false,
+      default: null,
+    },
+    executives: {
+      type: [Schema.Types.ObjectId],
+      ref: 'Legislative',
+      required: false,
+      default: null,
+    },
+    active: {
+      type: Boolean,
+      default: false,
     },
     is_deleted: {
       type: Boolean,
@@ -68,7 +65,7 @@ export const LegislativeSchema: Schema = new Schema<Legislative>(
   },
 );
 
-export const LegislativeModel = mongoose.model<Legislative>(
-  'Legislative',
-  LegislativeSchema,
+export const GovernmentModel = mongoose.model<Government>(
+  'Government',
+  GovernmentSchema,
 );

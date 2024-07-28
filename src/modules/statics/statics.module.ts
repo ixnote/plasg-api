@@ -14,6 +14,7 @@ import { MdaModule } from '../mda/mda.module';
 import { NewsModule } from '../news/news.module';
 import { NewsSchema } from '../news/schemas/news.schema';
 import { ResourceModule } from '../resource/resource.module';
+import { GovernmentSchema } from './schemas/government.schema';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ResourceModule } from '../resource/resource.module';
       { name: 'Legislative', schema: LegislativeSchema },
       { name: 'User', schema: UserSchema },
       { name: 'Error', schema: ErrorSchema },
+      { name: 'Government', schema: GovernmentSchema },
     ]),
     UserModule,
     CloudinaryModule,
