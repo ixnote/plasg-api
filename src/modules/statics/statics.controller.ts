@@ -52,8 +52,8 @@ export class StaticsController {
   }
 
   @Get('/global-search')
-  async globalSearch(@Query() query: GlobalSearchPaginationDto){
-    const results = await this.staticsService.globalSearch(query)
+  async globalSearch(@Query() query: GlobalSearchPaginationDto) {
+    const results = await this.staticsService.globalSearch(query);
     return {
       status: true,
       message: 'Results fetched successfully',
@@ -92,8 +92,9 @@ export class StaticsController {
   @UseGuards(AuthGuard, RolesGuard)
   @Roles(UserRoles.SUPER)
   async addGovernment(@Body() body: AddGovernmentOfficialDto) {
-    const government: Government =
-      await this.staticsService.addGovernment(body);
+    const government: Government = await this.staticsService.addGovernment(
+      body,
+    );
     return {
       status: true,
       message: 'Government official added successfully',
@@ -119,19 +120,22 @@ export class StaticsController {
     @Param() param: GetGovernmentDto,
     @Body() body: UpdateGovernmentOfficialDto,
   ) {
-    const government: Government =
-      await this.staticsService.updateGovernment(param, body);
+    const government: Government = await this.staticsService.updateGovernment(
+      param,
+      body,
+    );
     return {
       status: true,
       message: 'Government updated successfully',
-      data: government
+      data: government,
     };
   }
 
   @Get('/government/:governmentId')
   async getGovernmentOfficial(@Param() param: GetGovernmentDto) {
-    const government: Government =
-      await this.staticsService.getGovernment(param);
+    const government: Government = await this.staticsService.getGovernment(
+      param,
+    );
     return {
       status: true,
       message: 'Government official fetched successfully',
@@ -139,11 +143,11 @@ export class StaticsController {
     };
   }
 
-
   @Get('/governments')
   async getGovernments(@Query() query: GetGovernmentsDto) {
-    const governments: Government[] =
-      await this.staticsService.getGovernments(query);
+    const governments: Government[] = await this.staticsService.getGovernments(
+      query,
+    );
     return {
       status: true,
       message: 'List of governments fetched successfully',

@@ -25,17 +25,19 @@ export const GovernmentSchema: Schema = new Schema<Government>(
       type: Date,
       required: false,
     },
-    biography: {
-      type: BiographySchema,
-      required: false,
-    },
-    members: {
-      type: [Schema.Types.ObjectId],
+    governor: {
+      type: Schema.Types.ObjectId,
       ref: 'Legislative',
       required: false,
       default: null,
     },
     executives: {
+      type: [Schema.Types.ObjectId],
+      ref: 'Legislative',
+      required: false,
+      default: null,
+    },
+    members: {
       type: [Schema.Types.ObjectId],
       ref: 'Legislative',
       required: false,

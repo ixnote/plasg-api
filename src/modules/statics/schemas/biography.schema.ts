@@ -9,5 +9,5 @@ export const BiographySchema = new Schema<Biography>({
   description: {
     type: [String],
     required: false,
-  }
+  },
 });

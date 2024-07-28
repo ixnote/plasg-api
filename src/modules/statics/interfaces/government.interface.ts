@@ -8,7 +8,7 @@ export interface Government extends mongoose.Document {
   start: Date;
   end: Date;
   active: boolean;
-  biography: Biography;
+  governor: Legislative;
   members: Legislative[];
   executives: Legislative[];
   is_deleted: boolean;
