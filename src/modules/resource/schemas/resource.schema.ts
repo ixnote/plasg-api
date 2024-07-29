@@ -39,7 +39,7 @@ export const ResourceSchema: Schema = new Schema<Resource>(
       type: String,
       required: false,
     },
-    body : {
+    body: {
       type: String,
       required: false,
     },
