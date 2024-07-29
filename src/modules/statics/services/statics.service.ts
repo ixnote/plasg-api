@@ -106,7 +106,7 @@ export class StaticsService {
     return {
       mdas,
       news,
-      resources,
+      articles: resources,
       government,
       legislatives,
       destinations,
