@@ -29,6 +29,10 @@ export class GetResourcesDto {
 
   @IsMongoId()
   @IsOptional()
+  slug?: string;
+
+  @IsMongoId()
+  @IsOptional()
   sub_topic_tag?: string;
 
   @IsMongoId()

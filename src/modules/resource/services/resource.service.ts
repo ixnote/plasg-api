@@ -323,6 +323,7 @@ export class ResourceService {
       sub_type_tag,
       sub_topic_tag,
       all_topic_tag,
+      slug,
       ...rest
     } = body;
     const extraQuery: any = {};
@@ -340,6 +341,10 @@ export class ResourceService {
 
     if (body.sub_type_tag) {
       extraQuery.sub_type_tag = sub_type_tag;
+    }
+
+    if (body.slug) {
+      extraQuery.slug = slug;
     }
 
     if (all_topic_tag) {
