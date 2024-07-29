@@ -93,6 +93,7 @@ export class ResourceService {
 
   async createResource(body: CreateResourceDto, user: User): Promise<Resource> {
     const mda: Mda = await this.mdaService.findByUser(user.id);
+    console.log("🚀 ~ ResourceService ~ createResource ~ mda:", mda)
     if (!mda)
       throw new UnauthorizedException({
         status: false,
@@ -367,7 +368,7 @@ export class ResourceService {
       .populate('sub_type_tag', 'name type')
       .populate('main_topic_tag', 'name type')
       .populate('all_topic_tags', 'name type')
-      .populate('mda', 'name slug')
+      .populate('mda')
       .exec();
 
     const totalResources: Resource[] = await this.resourceModel

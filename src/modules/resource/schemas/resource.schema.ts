@@ -27,7 +27,7 @@ export const ResourceSchema: Schema = new Schema<Resource>(
     },
     mda: {
       type: Schema.Types.ObjectId,
-      ref: 'Resource',
+      ref: 'Mda',
       required: true,
     },
     description: {
