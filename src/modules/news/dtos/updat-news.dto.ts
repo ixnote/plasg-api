@@ -24,6 +24,11 @@ export class UpdateNewsDto {
   headline: string;
 
   @ApiProperty()
+  @IsString()
+  @IsOptional()
+  description: string;
+
+  @ApiProperty()
   @IsBoolean()
   @IsOptional()
   is_posted: boolean;

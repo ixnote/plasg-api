@@ -16,6 +16,10 @@ export const NewsSchema: Schema = new Schema<News>(
       type: String,
       required: true,
     },
+    description: {
+      type: String,
+      required: true,
+    },
     image: {
       type: String,
       required: false,
@@ -33,7 +37,7 @@ export const NewsSchema: Schema = new Schema<News>(
     ],
     is_posted: {
       type: Boolean,
-      default: false
+      default: false,
     },
     tags: [
       {
@@ -46,7 +50,7 @@ export const NewsSchema: Schema = new Schema<News>(
       type: Schema.Types.ObjectId,
       ref: 'Mda',
       required: true,
-    }
+    },
   },
   {
     timestamps: true,
@@ -63,7 +67,4 @@ export const NewsSchema: Schema = new Schema<News>(
   },
 );
 
-export const NewsModel = mongoose.model<News>(
-  'News',
-  NewsSchema,
-);
+export const NewsModel = mongoose.model<News>('News', NewsSchema);
