@@ -42,7 +42,12 @@ export class ResourceService {
   }
 
   async findById(id: string): Promise<Resource> {
-    return this.resourceModel.findById(id);
+    return this.resourceModel
+      .findById(id)
+      .populate('main_type_tag', 'name type')
+      .populate('sub_type_tag', 'name type')
+      .populate('main_topic_tag', 'name type')
+      .populate('all_topic_tags', 'name type');
   }
 
   async findByName(name: string): Promise<Resource> {
@@ -58,26 +63,26 @@ export class ResourceService {
     });
     const $regex = new RegExp(body.name, 'i');
     const resources: Resource[] = await this.resourceModel
-    .find({ name: { $regex } })
-    .populate('main_type_tag', 'name type')
-    .populate('sub_type_tag', 'name type')
-    .populate('main_topic_tag', 'name type')
-    .populate('all_topic_tags', 'name type')
-    .skip(pagination.offset)
-    .limit(pagination.limit);
-    
+      .find({ name: { $regex } })
+      .populate('main_type_tag', 'name type')
+      .populate('sub_type_tag', 'name type')
+      .populate('main_topic_tag', 'name type')
+      .populate('all_topic_tags', 'name type')
+      .skip(pagination.offset)
+      .limit(pagination.limit);
+
     const totalResources: Mda[] = await this.resourceModel
-    .find({ name: { $regex } })
-    .populate('main_type_tag', 'name type')
-    .populate('sub_type_tag', 'name type')
-    .populate('main_topic_tag', 'name type')
-    .populate('all_topic_tags', 'name type')
+      .find({ name: { $regex } })
+      .populate('main_type_tag', 'name type')
+      .populate('sub_type_tag', 'name type')
+      .populate('main_topic_tag', 'name type')
+      .populate('all_topic_tags', 'name type');
 
     const total = totalResources.length;
     const totalPages = Math.ceil(total / pageSize);
     const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
     const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
-    
+
     return {
       pagination: {
         currentPage: Number(usePage),
@@ -153,13 +158,13 @@ export class ResourceService {
           message: `Topic Tag in position ${i} of All topic tags not found`,
         });
     }
-    const slug = slugify(body.name, '_')
+    const slug = slugify(body.name, '_');
     return await this.create({ ...body, mda: mda.id, slug });
   }
 
   async updateResource(
     resourceId: string,
-    body:UpdateResourceDto,
+    body: UpdateResourceDto,
     user: User,
   ) {
     const mda: Mda = await this.mdaService.findByUser(user.id);
@@ -212,7 +217,7 @@ export class ResourceService {
           message: 'Sub type tag not found',
         });
     }
-    if(body.all_topic_tags){
+    if (body.all_topic_tags) {
       for (let i = 0; i < body.all_topic_tags.length; i++) {
         const findTag: Tag = await this.tagService.findByIdAndType(
           body.all_topic_tags[i],
@@ -409,11 +414,12 @@ export class ResourceService {
       ...rest
     } = body;
     const extraQuery: any = {};
-    const mda: Mda = await this.mdaService.findByUser(user.id)
-    if(!mda) throw new NotFoundException({
-      status: false,
-      message: "You are not assigned to any MDA"
-    })
+    const mda: Mda = await this.mdaService.findByUser(user.id);
+    if (!mda)
+      throw new NotFoundException({
+        status: false,
+        message: 'You are not assigned to any MDA',
+      });
     if (body.main_type_tag) {
       extraQuery.main_type_tag = main_type_tag;
     }
@@ -478,51 +484,52 @@ export class ResourceService {
     };
   }
 
-
   async findLatestResourcesByTag(): Promise<Resource[]> {
-    return this.resourceModel.aggregate([
-      {
-        $sort: { createdAt: -1 }
-      },
-      {
-        $group: {
-          _id: "$main_topic_tag",
-          doc: { $first: "$$ROOT" }
-        }
-      },
-      {
-        $replaceRoot: { newRoot: "$doc" }
-      },
-      {
-        $lookup: {
-          from: 'tags',
-          localField: 'main_topic_tag',
-          foreignField: '_id',
-          as: 'main_topic_tag'
-        }
-      },
-      {
-        $unwind: '$main_topic_tag'
-      },
-      {
-        $project: {
-          main_topic_tag: {
-            name: 1,
-            image: 1,
-            type: 1
+    return this.resourceModel
+      .aggregate([
+        {
+          $sort: { createdAt: -1 },
+        },
+        {
+          $group: {
+            _id: '$main_topic_tag',
+            doc: { $first: '$$ROOT' },
           },
-          // Include other fields from the resource document as needed
-          _id: 1,
-          name: 1,
-          title: 1,
-          link: 1,
-          description: 1,
-          slug: 1,
-          createdAt: 1,
-          // other fields
-        }
-      }
-    ]).exec();
+        },
+        {
+          $replaceRoot: { newRoot: '$doc' },
+        },
+        {
+          $lookup: {
+            from: 'tags',
+            localField: 'main_topic_tag',
+            foreignField: '_id',
+            as: 'main_topic_tag',
+          },
+        },
+        {
+          $unwind: '$main_topic_tag',
+        },
+        {
+          $project: {
+            main_topic_tag: {
+              name: 1,
+              image: 1,
+              type: 1,
+            },
+            // Include other fields from the resource document as needed
+            _id: 1,
+            name: 1,
+            title: 1,
+            link: 1,
+            description: 1,
+            slug: 1,
+            createdAt: 1,
+            // other fields
+          },
+        },
+      ])
+      .exec();
   }
 
   async getResourcesByCategory(
@@ -577,7 +584,9 @@ export class ResourceService {
     };
   }
 
-  async getTotalResourcesToday(mdaId: mongoose.Types.ObjectId): Promise<number> {
+  async getTotalResourcesToday(
+    mdaId: mongoose.Types.ObjectId,
+  ): Promise<number> {
     const currentDate = new Date();
     const startOfDay = new Date(currentDate.setHours(0, 0, 0, 0));
     return await this.resourceModel
@@ -585,7 +594,9 @@ export class ResourceService {
       .exec();
   }
 
-  async getTotalResourcesMonth(mdaId: mongoose.Types.ObjectId): Promise<number> {
+  async getTotalResourcesMonth(
+    mdaId: mongoose.Types.ObjectId,
+  ): Promise<number> {
     const currentDate = new Date();
     const startOfMonth = new Date(
       currentDate.getFullYear(),
@@ -597,9 +608,9 @@ export class ResourceService {
       .exec();
   }
 
-  async getTotalResourcesAllTime(mdaId: mongoose.Types.ObjectId): Promise<number> {
-    return await this.resourceModel
-      .countDocuments({ mda: mdaId})
-      .exec()
+  async getTotalResourcesAllTime(
+    mdaId: mongoose.Types.ObjectId,
+  ): Promise<number> {
+    return await this.resourceModel.countDocuments({ mda: mdaId }).exec();
   }
 }
