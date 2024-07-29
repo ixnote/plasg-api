@@ -34,12 +34,15 @@ export const LegislativeSchema: Schema = new Schema<Legislative>(
       type: String,
       required: false,
     },
+    biography: {
+      type: BiographySchema,
+      required: false,
+    },
     type: {
       type: String,
       enum: LegislativeTypes,
       required: true,
     },
-  
     start: {
       type: Date,
       required: false,

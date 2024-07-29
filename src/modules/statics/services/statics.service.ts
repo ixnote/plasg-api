@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prefer-const */
 import {
   BadRequestException,
   Injectable,
@@ -252,9 +254,7 @@ export class StaticsService {
     return government;
   }
 
-  async addGovernment(
-    body: AddGovernmentOfficialDto,
-  ): Promise<Government> {
+  async addGovernment(body: AddGovernmentOfficialDto): Promise<Government> {
     const findGovernment: Government = await this.governmentModel.findOne({
       name: body.name,
     });
@@ -264,7 +264,7 @@ export class StaticsService {
         message: 'Government already exists',
       });
     const government = new this.governmentModel({
-      ...body
+      ...body,
     });
     return await government.save();
   }
@@ -282,7 +282,7 @@ export class StaticsService {
   }
 
   async updateGovernment(
-    param:GetGovernmentDto,
+    param: GetGovernmentDto,
     body: UpdateGovernmentOfficialDto,
   ): Promise<Government> {
     const findGovernment = await this.governmentModel.findById(
@@ -341,7 +341,7 @@ export class StaticsService {
         let executive = await this.legislativeModel.findOne({
           name: item.name,
           type: LegislativeTypes.CABINET,
-          government
+          government,
         });
         if (!executive) {
           executive = new this.legislativeModel({
@@ -372,11 +372,13 @@ export class StaticsService {
   }
 
   async getGovernment(body: GetGovernmentDto) {
-    const government: Government = await this.governmentModel.findOne({
-      _id: body.governmentId,
-    })
-    .populate('members')
-    .populate('executives');
+    const government: Government = await this.governmentModel
+      .findOne({
+        _id: body.governmentId,
+      })
+      .populate('governor')
+      .populate('members')
+      .populate('executives');
     if (!government)
       throw new NotFoundException({
         status: false,
@@ -393,19 +395,20 @@ export class StaticsService {
       pageSize,
     });
     const options: any = await this.miscService.search(rest);
-    
-    const governments: Government [] = await this.governmentModel
-    .find(options)
-    .sort({ end: -1 })
-    .populate('members')
-    .populate('executives')
-    .skip(pagination.offset)
-    .limit(pagination.limit);
 
-    const governmentTotal: Government [] = await this.governmentModel
-    .find(options)
-    .sort({ end: -1 });
-    
+    const governments: Government[] = await this.governmentModel
+      .find(options)
+      .sort({ end: -1 })
+      .populate('governor')
+      .populate('members')
+      .populate('executives')
+      .skip(pagination.offset)
+      .limit(pagination.limit);
+
+    const governmentTotal: Government[] = await this.governmentModel
+      .find(options)
+      .sort({ end: -1 });
+
     const totalMdasCount = governmentTotal.length;
     const totalPages = Math.ceil(totalMdasCount / pageSize);
     const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
@@ -422,7 +425,6 @@ export class StaticsService {
       },
       governments,
     };
-   
   }
 
   async updateLegislatives(body: AddLegislativeDto): Promise<Legislative> {

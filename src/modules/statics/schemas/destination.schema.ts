@@ -31,9 +31,9 @@ export const DestinationSchema: Schema = new Schema<Destination>(
       required: false,
     },
     is_deleted: {
-        type: Boolean,
-       default: false,
-    }
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
