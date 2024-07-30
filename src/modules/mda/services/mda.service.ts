@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Mda } from '../interfaces/mda.interface';
-import { Model } from 'mongoose';
+import { Model, SortOrder } from 'mongoose';
 import { MongooseService } from 'src/common/helpers/mongoose.helper';
 import { CreateMdaDto } from '../dtos/create-mda.dto';
 import { AssignMdaDto } from '../dtos/assign-mda.dto';
@@ -57,8 +57,8 @@ export class MdaService {
   }
 
   async regexSearch(body: GlobalSearchPaginationDto): Promise<any> {
-    const { page = 1, pageSize = 10, name } = body;
-    const usePage: number = body.page < 1 ? 1 : body.page;
+    const { page = 1, pageSize = 10, sort = -1, name } = body;
+   const usePage: number = body.page < 1 ? 1 : body.page;
     const pagination = await this.miscService.paginate({
       page: usePage,
       pageSize: body.pageSize,
@@ -66,6 +66,7 @@ export class MdaService {
     const $regex = new RegExp(body.name, 'i');
     const mdas: Mda[] = await this.mdaModel
       .find({ name: { $regex } })
+      .sort({created_at: sort == - 1 ? -1 : 1})
       .skip(pagination.offset)
       .limit(pagination.limit);
 

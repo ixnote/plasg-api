@@ -10,7 +10,7 @@ import { AddNewsSectionDto } from '../dtos/add-news-section.dto';
 import { NewsSection } from '../interfaces/newsSection.interface';
 import { News } from '../interfaces/news.interface';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
+import mongoose, { Model, SortOrder } from 'mongoose';
 import { AddNewsSectionItemsDto } from '../dtos/add-news-section-item.dto';
 import { User } from 'src/modules/user/interfaces/user.interface';
 import { MdaService } from 'src/modules/mda/services/mda.service';
@@ -138,7 +138,7 @@ export class NewsService {
   }
 
   async regexSearch(body: GlobalSearchPaginationDto): Promise<any> {
-    const { page = 1, pageSize = 10, name } = body;
+    const { page = 1, pageSize = 10, sort = -1, name } = body;
     const usePage: number = body.page < 1 ? 1 : body.page;
     const pagination = await this.miscService.paginate({
       page: usePage,
@@ -150,6 +150,7 @@ export class NewsService {
       .populate('newsSections', 'type value')
       .populate('mda', 'name logo')
       .populate('tags', 'name type description')
+      .sort({ created_at: sort == -1 ? -1 : 1 })
       .skip(pagination.offset)
       .limit(pagination.limit);
 

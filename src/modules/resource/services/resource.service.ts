@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
+import mongoose, { Model, SortOrder } from 'mongoose';
 import { Resource } from '../interfaces/resource.interface';
 import { CreateResourceDto } from '../dtos/create-resource.dto';
 import { ResourceData } from '../interfaces/create-resource.interface';
@@ -55,7 +55,7 @@ export class ResourceService {
   }
 
   async regexSearch(body: GlobalSearchPaginationDto): Promise<any> {
-    const { page = 1, pageSize = 10, name } = body;
+    const { page = 1, pageSize = 10, sort= -1, name } = body;
     const usePage: number = body.page < 1 ? 1 : body.page;
     const pagination = await this.miscService.paginate({
       page: usePage,
@@ -68,6 +68,7 @@ export class ResourceService {
       .populate('sub_type_tag', 'name type')
       .populate('main_topic_tag', 'name type')
       .populate('all_topic_tags', 'name type')
+      .sort({created_at: sort === - 1 ? -1 : 1})
       .skip(pagination.offset)
       .limit(pagination.limit);
 
@@ -368,7 +369,6 @@ export class ResourceService {
     });
     const options: any = await this.miscService.search(rest);
     const query = { ...options, ...extraQuery };
-    console.log("🚀 ~ ResourceService ~ getResources ~ query:", query)
     const resources: Resource[] = await this.resourceModel
       .find(query)
       .skip(pagination.offset)

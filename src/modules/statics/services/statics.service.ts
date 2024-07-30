@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Destination } from '../interfaces/destination.interface';
-import mongoose, { Model } from 'mongoose';
+import mongoose, { Model, SortOrder } from 'mongoose';
 import { GetDestinationsDto } from '../dtos/get-destinations.dto';
 import { MiscClass } from 'src/common/services/misc.service';
 import { GetDestinationDto } from '../dtos/get-destination.dto';
@@ -97,12 +97,22 @@ export class StaticsService {
   }
 
   async globalSearch(body: GlobalSearchPaginationDto) {
-    const mdas: Mda[] = await this.mdaService.regexSearch(body);
-    const news: News[] = await this.newsService.regexSearch(body);
-    const resources: Resource[] = await this.resourceService.regexSearch(body);
-    const government: Legislative[] = await this.governmentRegexSearch(body);
-    const legislatives: Legislative[] = await this.legislativeRegexSearch(body);
-    const destinations: Destination[] = await this.destinationRegexSearch(body);
+    const mdas: any = await this.mdaService.regexSearch(body);
+    const news: any = await this.newsService.regexSearch(body);
+    const resources: any = await this.resourceService.regexSearch(body);
+    const government = await this.governmentRegexSearch(body);
+    const legislatives = await this.legislativeRegexSearch(body);
+    const destinations = await this.destinationRegexSearch(body);
+    const all = [
+      ...mdas.mdas,
+      ...news.news,
+      ...resources.resources,
+      ...government.governments,
+      ...legislatives.legislatives,
+      ...destinations.destinations,
+    ];
+    console.log("🚀 ~ StaticsService ~ globalSearch ~ all:", all)
+    const showAll =  await this.shuffleArray(all) 
     return {
       mdas,
       news,
@@ -110,11 +120,13 @@ export class StaticsService {
       government,
       legislatives,
       destinations,
+      showAll,
     };
   }
 
   async governmentRegexSearch(body: GlobalSearchPaginationDto): Promise<any> {
-    const { page = 1, pageSize = 10, name } = body;
+    const { page = 1, pageSize = 10, sort = -1, name } = body;  
+    
     const usePage: number = body.page < 1 ? 1 : body.page;
     const pagination = await this.miscService.paginate({
       page: usePage,
@@ -126,6 +138,7 @@ export class StaticsService {
         name: { $regex },
         type: LegislativeTypes.OFFICIAL,
       })
+      .sort({created_at: sort === - 1 ? -1 : 1})
       .skip(pagination.offset)
       .limit(pagination.limit);
 
@@ -153,7 +166,7 @@ export class StaticsService {
   }
 
   async legislativeRegexSearch(body: GlobalSearchPaginationDto): Promise<any> {
-    const { page = 1, pageSize = 10, name } = body;
+    const { page = 1, pageSize = 10, sort = -1, name } = body;
     const usePage: number = body.page < 1 ? 1 : body.page;
     const pagination = await this.miscService.paginate({
       page: usePage,
@@ -165,6 +178,7 @@ export class StaticsService {
         name: { $regex },
         type: { $ne: LegislativeTypes.OFFICIAL },
       })
+      .sort({created_at: sort === - 1 ? -1 : 1})
       .skip(pagination.offset)
       .limit(pagination.limit);
 
@@ -192,7 +206,8 @@ export class StaticsService {
   }
 
   async destinationRegexSearch(body: GlobalSearchPaginationDto): Promise<any> {
-    const { page = 1, pageSize = 10, name } = body;
+    const { page = 1, pageSize = 10, sort = -1,name } = body;
+ 
     const usePage: number = body.page < 1 ? 1 : body.page;
     const pagination = await this.miscService.paginate({
       page: usePage,
@@ -203,6 +218,7 @@ export class StaticsService {
       .find({
         name: { $regex },
       })
+      .sort({created_at: sort === - 1 ? -1 : 1})
       .skip(pagination.offset)
       .limit(pagination.limit);
 
@@ -618,5 +634,13 @@ export class StaticsService {
         message: 'Destination not found',
       });
     return destination;
+  }
+
+  async shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
   }
 }
