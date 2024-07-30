@@ -84,7 +84,7 @@ export class MdaService {
         total,
         pageSize: Number(pageSize),
       },
-      mdas,
+      data: mdas,
     };
   }
 

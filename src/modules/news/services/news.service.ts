@@ -174,7 +174,7 @@ export class NewsService {
         total,
         pageSize: Number(pageSize),
       },
-      news,
+      data: news,
     };
   }
 

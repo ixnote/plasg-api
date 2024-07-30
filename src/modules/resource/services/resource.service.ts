@@ -93,7 +93,7 @@ export class ResourceService {
         total,
         pageSize: Number(pageSize),
       },
-      resources,
+      data: resources,
     };
   }
 

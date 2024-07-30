@@ -104,15 +104,14 @@ export class StaticsService {
     const legislatives = await this.legislativeRegexSearch(body);
     const destinations = await this.destinationRegexSearch(body);
     const all = [
-      ...mdas.mdas,
-      ...news.news,
-      ...resources.resources,
-      ...government.governments,
-      ...legislatives.legislatives,
-      ...destinations.destinations,
+      ...mdas.data,
+      ...news.data,
+      ...resources.data,
+      ...government.data,
+      ...legislatives.data,
+      ...destinations.data,
     ];
-    console.log("🚀 ~ StaticsService ~ globalSearch ~ all:", all)
-    const showAll =  await this.shuffleArray(all) 
+    const showAll = await this.shuffleArray(all);
     return {
       mdas,
       news,
@@ -120,13 +119,15 @@ export class StaticsService {
       government,
       legislatives,
       destinations,
-      showAll,
+      showAll: {
+        data: showAll,
+      },
     };
   }
 
   async governmentRegexSearch(body: GlobalSearchPaginationDto): Promise<any> {
-    const { page = 1, pageSize = 10, sort = -1, name } = body;  
-    
+    const { page = 1, pageSize = 10, sort = -1, name } = body;
+
     const usePage: number = body.page < 1 ? 1 : body.page;
     const pagination = await this.miscService.paginate({
       page: usePage,
@@ -138,7 +139,7 @@ export class StaticsService {
         name: { $regex },
         type: LegislativeTypes.OFFICIAL,
       })
-      .sort({created_at: sort === - 1 ? -1 : 1})
+      .sort({ created_at: sort === -1 ? -1 : 1 })
       .skip(pagination.offset)
       .limit(pagination.limit);
 
@@ -161,7 +162,7 @@ export class StaticsService {
         total,
         pageSize: Number(pageSize),
       },
-      governments,
+      data: governments,
     };
   }
 
@@ -178,7 +179,7 @@ export class StaticsService {
         name: { $regex },
         type: { $ne: LegislativeTypes.OFFICIAL },
       })
-      .sort({created_at: sort === - 1 ? -1 : 1})
+      .sort({ created_at: sort === -1 ? -1 : 1 })
       .skip(pagination.offset)
       .limit(pagination.limit);
 
@@ -201,13 +202,13 @@ export class StaticsService {
         total,
         pageSize: Number(pageSize),
       },
-      legislatives,
+      data: legislatives,
     };
   }
 
   async destinationRegexSearch(body: GlobalSearchPaginationDto): Promise<any> {
-    const { page = 1, pageSize = 10, sort = -1,name } = body;
- 
+    const { page = 1, pageSize = 10, sort = -1, name } = body;
+
     const usePage: number = body.page < 1 ? 1 : body.page;
     const pagination = await this.miscService.paginate({
       page: usePage,
@@ -218,7 +219,7 @@ export class StaticsService {
       .find({
         name: { $regex },
       })
-      .sort({created_at: sort === - 1 ? -1 : 1})
+      .sort({ created_at: sort === -1 ? -1 : 1 })
       .skip(pagination.offset)
       .limit(pagination.limit);
 
@@ -240,7 +241,7 @@ export class StaticsService {
         total,
         pageSize: Number(pageSize),
       },
-      destinations,
+      data: destinations,
     };
   }
   async addLegislative(body: AddLegislativeDto): Promise<Legislative> {
@@ -638,8 +639,8 @@ export class StaticsService {
 
   async shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
     }
     return array;
   }
