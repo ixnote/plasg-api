@@ -329,6 +329,7 @@ export class ResourceService {
       sub_topic_tag,
       all_topic_tag,
       slug,
+      mdaId,
       ...rest
     } = body;
     const extraQuery: any = {};
@@ -342,6 +343,10 @@ export class ResourceService {
 
     if (body.sub_topic_tag) {
       extraQuery.sub_topic_tag = sub_topic_tag;
+    }
+
+    if (body.mdaId) {
+      extraQuery.mda = mdaId;
     }
 
     if (body.sub_type_tag) {
@@ -363,6 +368,7 @@ export class ResourceService {
     });
     const options: any = await this.miscService.search(rest);
     const query = { ...options, ...extraQuery };
+    console.log("🚀 ~ ResourceService ~ getResources ~ query:", query)
     const resources: Resource[] = await this.resourceModel
       .find(query)
       .skip(pagination.offset)
