@@ -137,15 +137,22 @@ export class NewsService {
     return await newsSection.save();
   }
 
-  async regexSearch(body: GlobalSearchPaginationDto): Promise<any> {
+  async regexArticleSearch(body: GlobalSearchPaginationDto): Promise<any> {
     const { page = 1, pageSize = 10, sort = -1, name } = body;
     const usePage: number = body.page < 1 ? 1 : body.page;
     const pagination = await this.miscService.paginate({
       page: usePage,
       pageSize: body.pageSize,
     });
+    const mda: Mda = await this.mdaService.findByName('News');
     const $regex = new RegExp(body.name, 'i');
+    const excludeMdaId = mda?._id;
     const news: News[] = await this.newsModel
+      .find({
+        headline: { $regex },
+        mda: { $ne: excludeMdaId },
+        is_posted: true,
+      })
       .find({ name: { $regex } })
       .populate('newsSections', 'type value')
       .populate('mda', 'name logo')
@@ -153,6 +160,62 @@ export class NewsService {
       .sort({ created_at: sort == -1 ? -1 : 1 })
       .skip(pagination.offset)
       .limit(pagination.limit);
+
+    const totalNews: News[] = await this.newsModel
+      .find({ name: { $regex } })
+      .populate('newsSections', 'type value')
+      .populate('mda', 'name logo')
+      .populate('tags', 'name type description');
+
+    const total = totalNews.length;
+    const totalPages = Math.ceil(total / pageSize);
+    const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
+    const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
+
+    return {
+      pagination: {
+        currentPage: Number(usePage),
+        totalPages,
+        nextPage,
+        prevPage,
+        total,
+        pageSize: Number(pageSize),
+      },
+      data: news,
+    };
+  }
+
+  async regexNewsSearch(body: GlobalSearchPaginationDto): Promise<any> {
+    const { page = 1, pageSize = 10, sort = -1, name } = body;
+    const usePage: number = body.page < 1 ? 1 : body.page;
+    const pagination = await this.miscService.paginate({
+      page: usePage,
+      pageSize: body.pageSize,
+    });
+    const mda: Mda = await this.mdaService.findByName('News');
+    console.log("🚀 ~ NewsService ~ regexNewsSearch ~ mda:", mda._id)
+   if (!mda)
+      return {
+        pagination: {
+          currentPage: 1,
+          totalPages: 0,
+          nextPage: null,
+          prevPage: null,
+          total: 0,
+          pageSize: Number(pageSize),
+        },
+        data: [],
+      };
+    const $regex = new RegExp(body.name, 'i');
+    const news: News[] = await this.newsModel
+      .find({ headline: { $regex }, mda: mda._id, is_posted: true })
+      .populate('newsSections', 'type value')
+      .populate('mda', 'name logo')
+      .populate('tags', 'name type description')
+      .sort({ created_at: sort == -1 ? -1 : 1 })
+      .skip(pagination.offset)
+      .limit(pagination.limit);
+    console.log("🚀 ~ NewsService ~ regexNewsSearch ~ news:", news)
 
     const totalNews: News[] = await this.newsModel
       .find({ name: { $regex } })

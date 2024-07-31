@@ -98,7 +98,8 @@ export class StaticsService {
 
   async globalSearch(body: GlobalSearchPaginationDto) {
     const mdas: any = await this.mdaService.regexSearch(body);
-    const news: any = await this.newsService.regexSearch(body);
+    const news: any = await this.newsService.regexNewsSearch(body);
+    const articles: any = await this.newsService.regexArticleSearch(body);
     const resources: any = await this.resourceService.regexSearch(body);
     const government = await this.governmentRegexSearch(body);
     const legislatives = await this.legislativeRegexSearch(body);
@@ -110,11 +111,13 @@ export class StaticsService {
       ...government.data,
       ...legislatives.data,
       ...destinations.data,
+      ...articles.data
     ];
     const showAll = await this.shuffleArray(all);
     return {
       mdas,
       news,
+      // articles,
       articles: resources,
       government,
       legislatives,
