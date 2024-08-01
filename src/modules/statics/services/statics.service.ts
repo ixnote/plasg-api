@@ -336,6 +336,7 @@ export class StaticsService {
       })
       findGovernment.governor = new mongoose.Types.ObjectId(body.governor);
       await findGovernment.save();
+      delete body.governor;
     }
     if (body.members && body.members.length > 0) {
       const members = [];
