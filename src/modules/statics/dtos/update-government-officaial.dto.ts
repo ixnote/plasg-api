@@ -5,6 +5,7 @@ import {
     IsDateString,
     IsEmail,
   IsEnum,
+  IsMongoId,
   IsOptional,
   IsString,
 } from 'class-validator'; 
@@ -46,6 +47,11 @@ export class UpdateGovernmentOfficialDto {
   @IsBoolean()
   @IsOptional()
   active: boolean;
+
+  @ApiProperty()
+  @IsMongoId()
+  @IsOptional()
+  governor: string
 
   @ApiProperty()
   @IsOptional()

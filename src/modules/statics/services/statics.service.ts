@@ -111,7 +111,7 @@ export class StaticsService {
       ...government.data,
       ...legislatives.data,
       ...destinations.data,
-      ...articles.data
+      ...articles.data,
     ];
     const showAll = await this.shuffleArray(all);
     return {
@@ -290,9 +290,13 @@ export class StaticsService {
   }
 
   async getActiveGovernment() {
-    const government: Government = await this.governmentModel.findOne({
-      active: true,
-    });
+    const government: Government = await this.governmentModel
+      .findOne({
+        active: true,
+      })
+      .populate('governor')
+      .populate('members')
+      .populate('executives');
     if (!government)
       throw new NotFoundException({
         status: false,
@@ -324,6 +328,15 @@ export class StaticsService {
       }
     }
     const government = new mongoose.Types.ObjectId(param.governmentId);
+    if (body.governor) {
+      const legislative: Legislative = await this.legislativeModel.findById(body.governor)
+      if(!legislative) throw new NotFoundException({
+        status: false,
+        message: "Governor not found"
+      })
+      findGovernment.governor = new mongoose.Types.ObjectId(body.governor);
+      await findGovernment.save();
+    }
     if (body.members && body.members.length > 0) {
       const members = [];
       for (const item of body.members) {
