@@ -3,11 +3,6 @@ import * as mongoose from 'mongoose';
 import { Resource } from '../interfaces/resource.interface';
 import { ResourceDocumentSchema } from './resource-document.schema';
 
-export interface Point {
-  type: string;
-  coordinates: number[];
-}
-
 function transformValue(doc, ret: { [key: string]: any }) {
   delete ret._id;
 }
