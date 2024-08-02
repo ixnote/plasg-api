@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -55,7 +56,7 @@ export class ResourceService {
   }
 
   async regexSearch(body: GlobalSearchPaginationDto): Promise<any> {
-    const { page = 1, pageSize = 10, sort= -1, name } = body;
+    const { page = 1, pageSize = 10, sort = -1, name } = body;
     const usePage: number = body.page < 1 ? 1 : body.page;
     const pagination = await this.miscService.paginate({
       page: usePage,
@@ -68,7 +69,7 @@ export class ResourceService {
       .populate('sub_type_tag', 'name type')
       .populate('main_topic_tag', 'name type')
       .populate('all_topic_tags', 'name type')
-      .sort({created_at: sort === - 1 ? -1 : 1})
+      .sort({ created_at: sort === -1 ? -1 : 1 })
       .skip(pagination.offset)
       .limit(pagination.limit);
 
@@ -174,6 +175,13 @@ export class ResourceService {
         status: false,
         message: "User isn't assigned to any Mda",
       });
+    if (body.document) {
+      if (!body.document.type || !body.document.url)
+        throw new BadRequestException({
+          status: false,
+          message: 'Document type or url not specified',
+        });
+    }
     if (body.main_topic_tag) {
       const findTag: Tag = await this.tagService.findByIdAndType(
         body.main_topic_tag,
@@ -464,7 +472,7 @@ export class ResourceService {
       .exec();
 
     const totalResources: Resource[] = await this.resourceModel
-      .find(query)
+      .find({ ...query, mda: mda.id })
       .sort({ createdAt: -1 })
       .populate('main_type_tag', 'name type')
       .populate('sub_type_tag', 'name type')

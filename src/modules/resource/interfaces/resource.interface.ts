@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import { ResourceDocument } from './resource-document.interface';
 
 export interface Resource extends mongoose.Document {
   name: string;
@@ -7,7 +8,7 @@ export interface Resource extends mongoose.Document {
   image: string;
   mda: mongoose.Types.ObjectId;
   body: string;
-  document: string;
+  document: ResourceDocument;
   description: string;
   slug: string;
   main_type_tag: mongoose.Types.ObjectId;

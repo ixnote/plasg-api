@@ -1,6 +1,7 @@
 import { Schema } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { Resource } from '../interfaces/resource.interface';
+import { ResourceDocumentSchema } from './resource-document.schema';
 
 export interface Point {
   type: string;
@@ -44,7 +45,7 @@ export const ResourceSchema: Schema = new Schema<Resource>(
       required: false,
     },
     document: {
-      type: String,
+      type: ResourceDocumentSchema,
       required: false,
     },
     slug: {
