@@ -29,10 +29,8 @@ import { GlobalSearchPaginationDto } from 'src/modules/statics/dtos/global-searc
 export class MdaService {
   constructor(
     @InjectModel('Mda') private readonly mdaModel: Model<Mda>,
-    private mongooseService: MongooseService,
     private userService: UserService,
     private miscService: MiscClass,
-    private cloudinaryService: CloudinaryService,
   ) {}
 
   async create(body: CreateMdaDto): Promise<Mda> {

@@ -16,6 +16,12 @@ export enum UserRoles {
   MDA = 'mda-admin',
 }
 
+export enum ProjectStatus {
+  COMPLETED = "completed",
+  ONGOING = "ongoing",
+  SUSPENDED = "suspended"
+}
+
 export enum DestinationTypes {
   LANDMARK = 'landmark',
   PARK = 'park',

@@ -14,6 +14,7 @@ import { ResourceModule } from './modules/resource/resource.module';
 import { NewsModule } from './modules/news/news.module';
 import { StaticsModule } from './modules/statics/statics.module';
 import { MailModule } from './modules/mail/mail.module';
+import { ProjectModule } from './modules/project/project.module';
 
 const { MONGO_URI } = env;
 
@@ -38,6 +39,7 @@ const { MONGO_URI } = env;
     NewsModule,
     StaticsModule,
     MailModule,
+    ProjectModule,
   ],
 })
 export class AppModule {}
