@@ -32,6 +32,7 @@ import { GlobalSearchPaginationDto } from '../dtos/global-search.dto';
 import { Government } from '../interfaces/government.interface';
 import { GetGovernmentDto } from '../dtos/get-government.dto';
 import { GetGovernmentsDto } from '../dtos/get-governments.dto';
+import { AddLegislativeToGovernmentDto } from '../dtos/add-legislative-to-government.dto';
 
 @Injectable()
 export class StaticsService {
@@ -140,7 +141,7 @@ export class StaticsService {
     const governments: Legislative[] = await this.legislativeModel
       .find({
         name: { $regex },
-        type: LegislativeTypes.OFFICIAL,
+        type: LegislativeTypes.EXECUTIVE,
       })
       .sort({ created_at: sort === -1 ? -1 : 1 })
       .skip(pagination.offset)
@@ -148,7 +149,7 @@ export class StaticsService {
 
     const totalGovernments: Legislative[] = await this.legislativeModel.find({
       name: { $regex },
-      type: LegislativeTypes.OFFICIAL,
+      type: LegislativeTypes.EXECUTIVE,
     });
 
     const total = totalGovernments.length;
@@ -180,7 +181,7 @@ export class StaticsService {
     const legislatives: Legislative[] = await this.legislativeModel
       .find({
         name: { $regex },
-        type: { $ne: LegislativeTypes.OFFICIAL },
+        type: { $ne: LegislativeTypes.EXECUTIVE },
       })
       .sort({ created_at: sort === -1 ? -1 : 1 })
       .skip(pagination.offset)
@@ -188,7 +189,7 @@ export class StaticsService {
 
     const totalLegislatives: Legislative[] = await this.legislativeModel.find({
       name: { $regex },
-      type: { $ne: LegislativeTypes.OFFICIAL },
+      type: { $ne: LegislativeTypes.EXECUTIVE },
     });
 
     const total = totalLegislatives.length;
@@ -263,7 +264,7 @@ export class StaticsService {
 
   async getCurrentGovernment(): Promise<Legislative> {
     const government: Legislative = await this.legislativeModel.findOne({
-      type: LegislativeTypes.OFFICIAL,
+      type: LegislativeTypes.EXECUTIVE,
       active: true,
     });
     if (!government)
@@ -305,6 +306,24 @@ export class StaticsService {
     return government;
   }
 
+  async addLegislativeToGovernment(
+    body: AddLegislativeToGovernmentDto,
+    param: GetGovernmentDto,
+  ): Promise<Legislative> {
+    const { type } = body;
+    const legislative: Legislative = new this.legislativeModel(body);
+    await legislative.save();
+    const government: Government = await this.getGovernment(param);
+    if (type == LegislativeTypes.CABINET) {
+      government.members.push(legislative.id);
+    }
+    if (type == LegislativeTypes.EXECUTIVE) {
+      government.executives.push(legislative.id);
+    }
+    await government.save();
+    return legislative;
+  }
+
   async updateGovernment(
     param: GetGovernmentDto,
     body: UpdateGovernmentOfficialDto,
@@ -320,7 +339,7 @@ export class StaticsService {
     }
     if (body?.active) {
       const governments: Government[] = await this.governmentModel.find({
-        type: LegislativeTypes.OFFICIAL,
+        type: LegislativeTypes.EXECUTIVE,
       });
       for (const government of governments) {
         government.active = false;
@@ -329,11 +348,14 @@ export class StaticsService {
     }
     const government = new mongoose.Types.ObjectId(param.governmentId);
     if (body.governor) {
-      const legislative: Legislative = await this.legislativeModel.findById(body.governor)
-      if(!legislative) throw new NotFoundException({
-        status: false,
-        message: "Governor not found"
-      })
+      const legislative: Legislative = await this.legislativeModel.findById(
+        body.governor,
+      );
+      if (!legislative)
+        throw new NotFoundException({
+          status: false,
+          message: 'Governor not found',
+        });
       findGovernment.governor = new mongoose.Types.ObjectId(body.governor);
       await findGovernment.save();
       delete body.governor;

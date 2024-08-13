@@ -32,7 +32,7 @@ export enum DestinationTypes {
 
 export enum LegislativeTypes{
   LEGISLATIVE = 'legislative',
-  OFFICIAL = 'official',
+  EXECUTIVE = 'executive',
   CABINET = 'cabinet',
 }
 

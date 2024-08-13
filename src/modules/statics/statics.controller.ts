@@ -33,6 +33,7 @@ import { GlobalSearchPaginationDto } from './dtos/global-search.dto';
 import { Government } from './interfaces/government.interface';
 import { GetGovernmentDto } from './dtos/get-government.dto';
 import { GetGovernmentsDto } from './dtos/get-governments.dto';
+import { AddLegislativeToGovernmentDto } from './dtos/add-legislative-to-government.dto';
 
 @Controller('statics')
 export class StaticsController {
@@ -80,6 +81,22 @@ export class StaticsController {
     const legislative: Legislative = await this.staticsService.addLegislative(
       body,
     );
+    return {
+      status: true,
+      message: 'Legislative added successfully',
+      data: legislative,
+    };
+  }
+
+  @Put('/government/legislatives/:governmentId')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(UserRoles.SUPER)
+  async addLegislativeToGovernment(
+    @Param() param: GetGovernmentDto,
+    @Body() body: AddLegislativeToGovernmentDto,
+  ) {
+    const legislative: Legislative =
+      await this.staticsService.addLegislativeToGovernment(body, param);
     return {
       status: true,
       message: 'Legislative added successfully',
