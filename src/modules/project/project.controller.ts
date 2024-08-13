@@ -14,7 +14,7 @@ import { RolesGuard } from 'src/framework/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { UserRoles } from 'src/common/constants/enum';
 import { AddProjectDto } from './dtos/add-project.dto';
-import { Project } from './interfaces/Project.interface';
+import { Project } from './interfaces/project.interface';
 import { UserGuard } from 'src/framework/guards/user.guard';
 import { User } from '../user/interfaces/user.interface';
 import { GetProjectDto } from './dtos/get-project.dto';

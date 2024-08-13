@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { Project } from '../interfaces/Project.interface';
+import { Project } from '../interfaces/project.interface';
 import { ProjectStatus } from 'src/common/constants/enum';
 
 export interface Point {

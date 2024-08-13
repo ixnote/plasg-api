@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
-import { Project } from '../interfaces/Project.interface';
+import { Project } from '../interfaces/project.interface';
 import { AddProjectDto } from '../dtos/add-project.dto';
 import { MdaService } from 'src/modules/mda/services/mda.service';
 import { MiscClass } from 'src/common/services/misc.service';
