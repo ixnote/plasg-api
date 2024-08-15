@@ -21,7 +21,6 @@ import { GetProjectDto } from './dtos/get-project.dto';
 import { UpdatedProjectDto } from './dtos/update-project.dto';
 import { GetProjectsDto } from './dtos/get-projects.dto';
 import { AuthGuard } from 'src/framework/guards/auth.guard';
-import { query } from 'express';
 
 @Controller('project')
 export class ProjectController {

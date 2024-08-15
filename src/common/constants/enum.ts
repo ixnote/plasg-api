@@ -34,6 +34,7 @@ export enum LegislativeTypes{
   LEGISLATIVE = 'legislative',
   EXECUTIVE = 'executive',
   CABINET = 'cabinet',
+  GOVERNOR = "governor"
 }
 
 export enum ComponentType {

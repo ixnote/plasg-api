@@ -320,6 +320,9 @@ export class StaticsService {
     if (type == LegislativeTypes.EXECUTIVE) {
       government.executives.push(legislative.id);
     }
+    if (type == LegislativeTypes.GOVERNOR) {
+      government.governor = legislative.id;
+    }
     await government.save();
     return legislative;
   }
