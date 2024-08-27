@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Jos Wildlife Park",
+        "description": "Spanning 8 square kilometers, it’s one of Nigeria’s largest zoological parks, offering a captivating experience of nature and wildlife",
+        "type": "landmark",
+        "image": ""
+    },
+    {
+        "name": "Kerang Highlands",
+        "description": "This features volcanic hills and natural mountain springs used for bottled water. The Shere Hills within this area include ome of the highest peaks on the plateau",
+        "type": "landmark",
+        "image": ""
+    },
+    {
+        "name": "Wase Rock",
+        "description": "This masive dome shaped rocky inselberg is found near Wase town in Wase Local Government Area of Plateau State in central Nigeria",
+        "type": "landmark",
+        "image": ""
+    }
+]

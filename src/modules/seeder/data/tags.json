@@ -1,79 +1,130 @@
 [
   {
-    "name": "people",
-    "type": "topic",
-    "sub_tags": []
-  },
-  {
-    "name": "welfare",
-    "type": "topic",
-    "sub_tags": []
-  },
-  {
-    "name": "health",
-    "type": "topic",
-    "sub_tags": []
-  },
-  {
     "name": "governance",
     "type": "topic",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
+    "sub_tags": []
+  },
+  {
+    "name": "business",
+    "type": "topic",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
     "sub_tags": [
       {
         "name": "investments",
+        "title": "Doing Business on The Plateau",
+        "type": "topic",
+        "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
         "sub_tags": []
       },
       {
         "name": "incentives",
+        "title": "Doing Business on The Plateau",
+        "type": "topic",
+        "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
         "sub_tags": []
       },
       {
         "name": "economic policies",
+        "title": "Doing Business on The Plateau",
+        "type": "topic",
+        "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
         "sub_tags": []
       },
       {
         "name": "reports",
+        "title": "Doing Business on The Plateau",
+        "type": "topic",
+        "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
         "sub_tags": []
       },
       {
         "name": "others",
+        "title": "Doing Business on The Plateau",
+        "type": "topic",
+        "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
         "sub_tags": []
       }
     ]
   },
   {
+    "name": "health",
+    "type": "topic",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
+    "sub_tags": []
+  },
+  {
+    "name": "welfare",
+    "type": "topic",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
+    "sub_tags": []
+  },
+  {
+    "name": "tourism",
+    "type": "topic",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
+    "sub_tags": []
+  },
+
+
+
+  {
     "name": "resource",
     "type": "item",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
     "sub_tags": [
       {
         "name": "public notice",
+        "title": "Doing Business on The Plateau",
+        "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
         "sub_tags": []
       },
       {
         "name": "press release",
+        "title": "Doing Business on The Plateau",
+        "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
         "sub_tags": []
       },
       {
         "name": "publication",
+        "title": "Doing Business on The Plateau",
+        "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
         "sub_tags": []
       },
       {
         "name": "guideline",
+        "title": "Doing Business on The Plateau",
+        "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
         "sub_tags": []
       },
       {
         "name": "event",
+        "title": "Doing Business on The Plateau",
+        "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
         "sub_tags": []
       },
       {
         "name": "update",
+        "title": "Doing Business on The Plateau",
+        "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
         "sub_tags": []
       },
       {
         "name": "statement",
+        "title": "Doing Business on The Plateau",
+        "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
         "sub_tags": []
       },
       {
         "name": "article",
+        "title": "Doing Business on The Plateau",
+        "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
         "sub_tags": []
       }
     ]
@@ -81,103 +132,160 @@
   {
     "name": "document",
     "type": "item",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
     "sub_tags": [
       {
         "name": "policy",
+        "title": "Doing Business on The Plateau",
+        "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
         "sub_tags": []
       },
       {
         "name": "record",
+        "title": "Doing Business on The Plateau",
+        "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
         "sub_tags": []
       },
       {
         "name": "report",
-        "sub_tags": []
+        "title": "Doing Business on The Plateau",
+        "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
+         "sub_tags": []
       },
       {
         "name": "form",
+        "title": "Doing Business on The Plateau",
+        "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
         "sub_tags": []
       }
     ]
   },
   {
     "name": "service",
+    "type": "item",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
+    "sub_tags": []
+  },
+
+
+
+
+
+
+
+  
+  {
+    "name": "service",
     "type": "news",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
     "sub_tags": []
   },
   {
     "name": "national",
     "type": "news",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
     "sub_tags": []
   },
   {
     "name": "international",
     "type": "news",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
     "sub_tags": []
   },
   {
     "name": "politics",
     "type": "news",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
     "sub_tags": []
   },
   {
     "name": "regulation",
     "type": "news",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
     "sub_tags": []
   },
   {
     "name": "regulation",
     "type": "news",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
     "sub_tags": []
   },
   {
     "name": "regulation",
     "type": "news",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
     "sub_tags": []
   },
   {
     "name": "business",
     "type": "news",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
     "sub_tags": []
   },
   {
     "name": "finance",
     "type": "news",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
     "sub_tags": []
   },
   {
     "name": "health-care",
     "type": "news",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
     "sub_tags": []
   },
   {
     "name": "technology",
     "type": "news",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
     "sub_tags": []
   },
   {
     "name": "security",
     "type": "news",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
     "sub_tags": []
   },
   {
     "name": "administration",
     "type": "news",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
     "sub_tags": []
   },
   {
     "name": "sports",
     "type": "news",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
     "sub_tags": []
   },
   {
     "name": "entertainment",
     "type": "news",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
     "sub_tags": []
   },
   {
     "name": "finance",
     "type": "news",
+    "title": "Doing Business on The Plateau",
+    "description": "Explore a wealth of information, and support services designed to fuel your success and drive economic prosperity across Plateau State. From policy aimed to ensure ease of doing business to guidelines and downloadable documents, discover everything you need to thrive in the vibrant business landscape of our state.",
     "sub_tags": []
   }
 ]

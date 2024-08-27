@@ -1,6 +1,40 @@
+export enum NewsSectionTypes{
+  HEADING = 'heading',
+  HIGHLIGHT = 'highlight',
+  TEXT = 'text',
+  PARAGRAPH = 'paragraph',
+  VIDEO = 'video',
+  HYPERLINK = 'hyperlink',
+  IMAGE = 'image',
+  BULLET = 'bullet',
+  SUB_HEADING = 'sub_heading',
+  SECTION_TITLE = 'section_title'
+}
+
 export enum UserRoles {
   SUPER = 'super',
   MDA = 'mda-admin',
+}
+
+export enum ProjectStatus {
+  COMPLETED = "completed",
+  ONGOING = "ongoing",
+  SUSPENDED = "suspended"
+}
+
+export enum DestinationTypes {
+  LANDMARK = 'landmark',
+  PARK = 'park',
+  Gallery = 'gallery',
+  STAY = "stay",
+  EAT = "eat"
+}
+
+export enum LegislativeTypes{
+  LEGISLATIVE = 'legislative',
+  EXECUTIVE = 'executive',
+  CABINET = 'cabinet',
+  GOVERNOR = "governor"
 }
 
 export enum ComponentType {

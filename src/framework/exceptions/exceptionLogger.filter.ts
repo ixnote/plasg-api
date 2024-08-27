@@ -25,7 +25,7 @@ export class ExceptionsLoggerFilter extends BaseExceptionFilter {
     }
     userMessage = message?.message
     if (message?.message && Array.isArray(message.message)) {
-      userMessage = JSON.stringify(message?.message)
+      userMessage = JSON.stringify(message?.message) || ""
   } 
 
     const error = new this.errorModel({

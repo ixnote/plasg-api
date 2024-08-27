@@ -6,7 +6,6 @@ import { UserRoles } from 'src/common/constants/enum';
 import { AddTagDto } from './dtos/Add-tag.dto';
 import { Tag } from './interfaces/tag.interface';
 import { AuthGuard } from 'src/framework/guards/auth.guard';
-import { stat } from 'fs';
 
 @Controller('tag')
 export class TagController {
@@ -32,6 +31,26 @@ export class TagController {
         return {
             status: true,
             message: "Topics fetched successfully",
+            data: tags
+        }
+    }
+
+    @Get('/types')
+    async getTypes(){
+        const tags: Tag[] = await this.tagService.getTypeTags()
+        return {
+            status: true,
+            message: "Types fetched successfully",
+            data: tags
+        }
+    }
+
+    @Get('/news')
+    async getNewsTags(){
+        const tags: Tag[] = await this.tagService.getNewsTags()
+        return {
+            status: true,
+            message: "News tags fetched successfully",
             data: tags
         }
     }

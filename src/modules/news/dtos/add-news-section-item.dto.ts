@@ -1,18 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsEnum, IsNumber, IsString } from 'class-validator';
+import { NewsSectionTypes } from 'src/common/constants/enum';
 
 export class AddNewsSectionItemsDto {
-
   @ApiProperty()
   @IsString()
-  @IsOptional()
-  image: string
+  @IsEnum(NewsSectionTypes)
+  type: string;
 
   @ApiProperty()
-  @IsString()
-  @IsOptional()
-  paragraph: string;
+  @IsNumber()
+  position: number;
+
+  @ApiProperty()
+  value: any;
 }

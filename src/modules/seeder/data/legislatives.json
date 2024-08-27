@@ -1,0 +1,65 @@
+[
+    {
+        "name": "Hon. Gabriel Dewan",
+        "role": "Speaker",
+        "title": "",
+        "lga": "",
+        "email": "",
+        "type": "legislative",
+        "image": ""
+    },
+    {
+        "name": "Hon. Timothy Dantong",
+        "role": "Deputy Speaker",
+        "title": "",
+        "lga": "",
+        "email": "",
+        "type": "legislative",
+        "image": ""
+    },
+    {
+        "name": "Hon. Catherine Musa",
+        "role": "Majority Leader",
+        "title": "",
+        "lga": "",
+        "email": "",
+        "type": "legislative",
+        "image": ""
+    }, 
+    {
+        "name": "Hon. Ishaya Pwu",
+        "role": "Majority Leader",
+        "title": "",
+        "lga": "",
+        "email": "",
+        "type": "legislative",
+        "image": ""
+    },
+    {
+        "name": "Hon. Rhoda Sule",
+        "role": "Chief Whip",
+        "title": "",
+        "lga": "",
+        "email": "",
+        "type": "legislative",
+        "image": ""
+    },
+    {
+        "name": "Hon. Nanfe Nannim Langyi",
+        "role": "Deputy Chief Whip",
+        "title": "",
+        "lga": "",
+        "email": "",
+        "type": "legislative",
+        "image": ""
+    },
+    {
+        "name": "Mr Jonathan Doe",
+        "member": "Deputy Chief Whip",
+        "title": "",
+        "lga": "",
+        "email": "",
+        "type": "legislative",
+        "image": ""
+    }
+]

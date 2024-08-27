@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import { UserCode } from './user-code.interface';
 
 export interface User extends mongoose.Document {
   full_name: string;
@@ -10,9 +11,11 @@ export interface User extends mongoose.Document {
   password: string;
   address: string;
   company_logo: string;
+  password_updated: boolean;
   is_suspended: boolean;
   is_deleted: boolean;
-  mdas?: any; 
+  mda: mongoose.Types.ObjectId; 
+  otp: UserCode;
   readonly createdAt: Date;
   updatedAt: Date;
 }

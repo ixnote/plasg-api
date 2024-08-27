@@ -1,4 +1,14 @@
-import { Body, Controller, HttpCode, Post, UseFilters, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  Put,
+  UseFilters,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { ExceptionsLoggerFilter } from 'src/framework/exceptions/exceptionLogger.filter';
 import { AuthService } from './services/auth.service';
@@ -8,6 +18,10 @@ import { RolesGuard } from 'src/framework/guards/roles.guard';
 import { UserRoles } from 'src/common/constants/enum';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { SignInDto } from './dtos/sign-in.dto';
+import { UserGuard } from 'src/framework/guards/user.guard';
+import { ForgotPasswordDto } from './dtos/forgot-password.dto';
+import { ResetPasswordDto } from './dtos/reset-password.dto';
+import { ChangePasswordDto } from './dtos/change-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -29,12 +43,68 @@ export class AuthController {
   @Post('login')
   @HttpCode(200)
   @UseFilters(ExceptionsLoggerFilter)
-  async login(@Body()body: SignInDto){
+  async login(@Body() body: SignInDto) {
     const tokens = await this.authService.signIn(body);
     return {
       status: true,
       message: 'Login successful',
       data: tokens,
+    };
+  }
+
+  @Get('profile')
+  @UseGuards(AuthGuard)
+  @HttpCode(200)
+  @UseFilters(ExceptionsLoggerFilter)
+  async getProfile(@UserGuard() user: User) {
+    const profile: User = await this.authService.getProfile(user);
+    return {
+      status: true,
+      message: 'Get User Profile',
+      data: profile,
+    };
+  }
+
+  @Put('/change-password')
+  @UseGuards(AuthGuard)
+  @UseFilters(ExceptionsLoggerFilter)
+  async changePassword(
+    @Body() body: ChangePasswordDto,
+    @UserGuard() user: User,
+  ) {
+    const message: string = await this.authService.changePassword({
+      user,
+      ...body,
+    });
+    return {
+      status: true,
+      message,
+      data: null,
+    };
+  }
+
+  @Post('/reset/validate')
+  @HttpCode(200)
+  @UseFilters(ExceptionsLoggerFilter)
+  async resetPassword(@Body() body: ResetPasswordDto) {
+    const message: string = await this.authService.resetPassword(body);
+    return {
+      status: true,
+      message,
+      data: null,
+    };
+  }
+
+  @Get('/forgot/:email')
+  @UseFilters(ExceptionsLoggerFilter)
+  async forgotPassword(@Param() param: ForgotPasswordDto) {
+    const message: string = await this.authService.userForgotPassword(
+      param.email,
+    );
+    return {
+      status: true,
+      message,
+      data: null,
     };
   }
 }

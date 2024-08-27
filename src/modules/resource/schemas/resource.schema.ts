@@ -1,11 +1,7 @@
 import { Schema } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { Resource } from '../interfaces/resource.interface';
-
-export interface Point {
-  type: string;
-  coordinates: number[];
-}
+import { ResourceDocumentSchema } from './resource-document.schema';
 
 function transformValue(doc, ret: { [key: string]: any }) {
   delete ret._id;
@@ -17,24 +13,47 @@ export const ResourceSchema: Schema = new Schema<Resource>(
       type: String,
       required: true,
     },
+    title: {
+      type: String,
+      required: false,
+    },
     link: {
       type: String,
-      required: true,
+      required: false,
     },
     mda: {
       type: Schema.Types.ObjectId,
-      ref: 'Resource',
+      ref: 'Mda',
       required: true,
     },
     description: {
       type: String,
       required: true,
     },
+
+    image: {
+      type: String,
+      required: false,
+    },
+    body: {
+      type: String,
+      required: false,
+    },
+    document: {
+      type: ResourceDocumentSchema,
+      required: false,
+    },
+    slug: {
+      type: String,
+      required: false,
+    },
+
     main_type_tag: {
       type: Schema.Types.ObjectId,
       ref: 'Tag',
       required: true,
     },
+
     sub_type_tag: {
       type: Schema.Types.ObjectId,
       ref: 'Tag',
@@ -44,6 +63,11 @@ export const ResourceSchema: Schema = new Schema<Resource>(
       type: Schema.Types.ObjectId,
       ref: 'Tag',
       required: true,
+    },
+    sub_topic_tag: {
+      type: Schema.Types.ObjectId,
+      ref: 'Tag',
+      required: false,
     },
     all_topic_tags: {
       type: [Schema.Types.ObjectId],
@@ -66,4 +90,7 @@ export const ResourceSchema: Schema = new Schema<Resource>(
   },
 );
 
-export const ResourceModel = mongoose.model<Resource>('Resource', ResourceSchema);
+export const ResourceModel = mongoose.model<Resource>(
+  'Resource',
+  ResourceSchema,
+);

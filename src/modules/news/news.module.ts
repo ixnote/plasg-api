@@ -23,6 +23,7 @@ import { TagModule } from '../tag/tag.module';
     // UserModule
   ],
   providers: [NewsService, MiscClass],
-  controllers: [NewsController]
+  controllers: [NewsController],
+  exports: [NewsService]
 })
 export class NewsModule {}

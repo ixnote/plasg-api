@@ -1,32 +1,41 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsArray,
+  IsBoolean,
   IsMongoId,
   IsOptional,
   IsString,
 } from 'class-validator';
-import { AddNewsSectionItemsDto } from './add-news-section-item.dto';
 
 export class UpdateNewsDto {
   @ApiProperty()
-  @IsMongoId()
+  @IsString()
   @IsOptional()
-  newsId: string
+  reference: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  image: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  headline: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  description: string;
+
+  @ApiProperty()
+  @IsBoolean()
+  @IsOptional()
+  is_posted: boolean;
 
   @ApiProperty()
   @IsArray()
   @IsMongoId({ each: true })
   @IsOptional()
   tags: string[];
-
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  header: string;
-
-  @ApiProperty()
-  @IsArray()
-  @IsOptional()
-  items: AddNewsSectionItemsDto[];
-
 }

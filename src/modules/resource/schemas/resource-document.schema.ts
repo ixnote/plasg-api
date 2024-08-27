@@ -1,20 +1,19 @@
 import { Schema } from 'mongoose';
-import * as mongoose from 'mongoose';
-import { NewsItem } from '../interfaces/news-item.interface';
+import { ResourceDocument } from '../interfaces/resource-document.interface';
 
 function transformValue(doc, ret: { [key: string]: any }) {
   delete ret._id;
 }
 
-export const NewsItemSchema: Schema = new Schema<NewsItem>(
+export const ResourceDocumentSchema = new Schema<ResourceDocument>(
   {
-    paragraph: {
+    type: {
       type: String,
-      required: false,
+      required: true,
     },
-    image: {
+    url: {
       type: String,
-      required: false,
+      required: true,
     },
   },
   {
@@ -31,5 +30,3 @@ export const NewsItemSchema: Schema = new Schema<NewsItem>(
     },
   },
 );
-
-export const MdaModel = mongoose.model<NewsItem>('NewsItemSchema', NewsItemSchema);

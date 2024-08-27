@@ -13,6 +13,10 @@ export const TagSchema: Schema = new Schema<Tag>(
       type: String,
       required: true,
     },
+    title: {
+      type: String,
+      required: false,
+    },
     description: {
       type: String,
       default: '',
@@ -22,7 +26,6 @@ export const TagSchema: Schema = new Schema<Tag>(
       type: [Schema.Types.ObjectId],
       ref: 'Tag',
       required: false,
-
     },
     type: {
       type: String,

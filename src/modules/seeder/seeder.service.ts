@@ -4,19 +4,23 @@ import  { Model } from 'mongoose';
 import { User } from '../user/interfaces/user.interface';
 import * as argon2 from 'argon2';
 import * as tagsData from './data/tags.json';
-import * as mdaData from './data/mda.json';
+import * as destinationsData from './data/destinations.json';
+import * as legislativesData from './data/legislatives.json';
 import { UserRoles } from 'src/common/constants/enum';
 import { Tag } from '../tag/interfaces/tag.interface';
 import { TagService } from '../tag/services/tag.service';
-import { Mda } from '../mda/interfaces/mda.interface';
 import { MdaService } from '../mda/services/mda.service';
+import { StaticsService } from 'src/modules/statics/services/statics.service';
+import { Destination } from 'src/modules/statics/interfaces/destination.interface';
+import { Legislative } from 'src/modules/statics/interfaces/legislative.interface';
 
 @Injectable()
 export class SeederService {
   constructor(
     @InjectModel('User') private readonly userModel: Model<User>,
     private tagService: TagService,
-    private mdaService: MdaService
+    private mdaService: MdaService,
+    private staticsService: StaticsService
 ){}
 
 async seed() {
@@ -36,23 +40,42 @@ async seed() {
       await admin.save()
       console.log('Database seeded with admin.');
     }
-    for(const item of mdaData){
-      await this.mdaService.findOneAndUpdate(item)
-    }
+    // for(const item of mdaData){
+    //   await this.mdaService.findOneAndUpdate(item)
+    // }
     const tags = tagsData;
     for (const tag of tags) {
       const newTag: Tag = await this.tagService.findOneAndUpdate(
         tag.name,
         tag.type,
+        tag.title,
+        tag.description
       );
+      let subTags: any[] = []
       for(const item of tag.sub_tags){
         const newSubTag: Tag = await this.tagService.findOneAndUpdate(
           item.name,
           tag.type,
+          tag.title,
+          tag.description,
           newTag.id
         );
-        await this.tagService.updateSubTag(newTag.id,  item.name)
+        subTags.push(newSubTag.id)
+        await this.tagService.updateSubTag(newTag.id, newSubTag.name)
       }
+      newTag.sub_tags = subTags
+      await newTag.save()
+
     }
+
+    const destinations = destinationsData;
+    for (const destination of destinations) {
+      await this.staticsService.updateDestinations(destination)
+    }
+
+    // const legislatives = legislativesData;
+    // for (const legislative of legislatives) {
+    //   await this.staticsService.updateLegislatives(legislative)
+    // }
   }
 }

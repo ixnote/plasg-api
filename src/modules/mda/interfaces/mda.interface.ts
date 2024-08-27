@@ -1,12 +1,23 @@
 import * as mongoose from 'mongoose';
+import { Team } from './team.interface';
+import { Director } from './director.interface';
+import { Contact } from './contact.interface';
+import { About } from './about.interface';
+import { Hero } from './hero.interface';
 
 export interface Mda extends mongoose.Document {
   name: string;
-  contact: string;
-  logo: string;
   admin: mongoose.Types.ObjectId;
   is_suspended: boolean;
   is_deleted: boolean;
+  team: Team[];
+  director: Director;
+  contact: Contact;
+  about: About;
+  hero: Hero,
+  slug: string,
+  abbreviation: string,
+  published: boolean;
   readonly createdAt: Date;
   updatedAt: Date;
 }

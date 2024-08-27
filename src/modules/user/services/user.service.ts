@@ -1,5 +1,5 @@
 import {
-  ForbiddenException,
+  BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -11,12 +11,16 @@ import { UpdateUserDto } from '../dtos/update-user.dto';
 import { MongooseService } from 'src/common/helpers/mongoose.helper';
 import * as argon2 from 'argon2';
 import { UserRoles } from 'src/common/constants/enum';
+import { UpdatePassword } from '../dtos/update-password.dto';
+import { GetUsersDto } from '../dtos/get-users.dto';
+import { MiscClass } from 'src/common/services/misc.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel('User') private readonly userModel: Model<User>,
     private mongooseService: MongooseService,
+    private miscService: MiscClass,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -36,31 +40,86 @@ export class UserService {
     return this.userModel.findById(id);
   }
 
+  async getTotalNumberOfUsers(): Promise<number> {
+    const users: User[] = await this.userModel.find();
+    return users.length;
+  }
+
   async findByEmail(email: string): Promise<User> {
     return this.userModel
       .findOne({ email })
-      .select('-otp -is_deleted -refreshToken')
+      .select('-otp -is_deleted -refreshToken -password')
+      .exec();
+  }
+
+  async findByEmailWithOtp(email: string): Promise<User> {
+    return this.userModel
+      .findOne({ email })
+      .select(' -is_deleted -refreshToken -password')
       .exec();
   }
 
   async findPasswordByEmail(email: string): Promise<User> {
     return this.userModel
       .findOne({ email })
-      .select('password is_confirmed role')
+      .select('password is_confirmed role password_updated')
       .exec();
   }
 
-  async getMdaUsers(): Promise<User[]> {
-    return await this.userModel
-      .find({ role: UserRoles.MDA })
-      .populate('mdas')
-      .exec();
+  async assignMdaToUser(mda: string, user: string) {
+    return await this.userModel.findByIdAndUpdate(
+      user,
+      { mda: mda },
+      { new: true },
+    );
+  }
+
+  async unassignMdaFromUser(user: string) {
+    return await this.userModel.findByIdAndUpdate(
+      user,
+      { mda: null },
+      { new: true },
+    );
+  }
+
+  async getMdaUsers(body: GetUsersDto): Promise<any> {
+    const { page = 1, pageSize = 10, ...rest } = body;
+    const usePage: number = page < 1 ? 1 : page;
+    const pagination = await this.miscService.paginate({
+      page: usePage,
+      pageSize,
+    });
+    const options: any = await this.miscService.search(rest);
+    const usersTotal: User[] = await this.userModel.find(options);
+
+    const totalNewsCount = usersTotal.length;
+    const totalPages = Math.ceil(totalNewsCount / pageSize);
+    const nextPage = Number(page) < totalPages ? Number(page) + 1 : null;
+    const prevPage = Number(page) > 1 ? Number(page) - 1 : null;
+    const users: User[] = await this.userModel
+      .find(options)
+      .populate('mda')
+      .skip(pagination.offset)
+      .limit(pagination.limit)
+      .sort({ createdAt: -1 });
+
+    return {
+      pagination: {
+        currentPage: Number(usePage),
+        totalPages,
+        nextPage,
+        prevPage,
+        totalNews: totalNewsCount,
+        pageSize: Number(pageSize),
+      },
+      users,
+    };
   }
 
   async registerUser(body: CreateUserDto): Promise<User> {
     const user: User = await this.findByEmail(body.email);
     if (user)
-      throw new ForbiddenException({
+      throw new BadRequestException({
         status: false,
         message: 'User already exists',
       });
@@ -84,6 +143,14 @@ export class UserService {
       .findByIdAndUpdate(id, updateUserDto, { new: true })
       .select('-refreshToken -is_confirmed')
       .exec();
+  }
+
+  async updatePassword(body: UpdatePassword, user: User): Promise<void> {
+    const hashedPassword: string = await this.hashData(body.password);
+    await this.userModel.findByIdAndUpdate(user.id, {
+      password: hashedPassword,
+      password_updated: true,
+    });
   }
 
   async updateUser(body: {

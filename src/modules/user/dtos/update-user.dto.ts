@@ -1,10 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsArray,
-  IsBoolean,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsArray, IsBoolean, IsOptional, IsString } from 'class-validator';
 import { UserCode } from '../interfaces/user-code.interface';
 
 export class UpdateUserDto {
@@ -62,6 +57,11 @@ export class UpdateUserDto {
   @IsBoolean()
   @IsOptional()
   is_suspended?: boolean;
+
+  @ApiProperty()
+  @IsBoolean()
+  @IsOptional()
+  password_updated?: boolean;
 
   @ApiProperty()
   @IsOptional()

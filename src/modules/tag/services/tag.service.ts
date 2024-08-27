@@ -21,7 +21,13 @@ export class TagService {
     return this.tagModel.findById(id).populate('sub_tags');
   }
 
-  async getTagByName() {}
+  async findByIdAndType(id: string, type: string): Promise<Tag> {
+    return this.tagModel.findOne({_id: id, type}).populate('sub_tags');
+  }
+
+  async getTagByName(name: string) {
+    return this.tagModel.findOne({name}).populate('sub_tags');
+  }
 
   async getTags() {
     return await this.tagModel.find().populate('sub_tags');
@@ -34,7 +40,29 @@ export class TagService {
       .populate({
         path: 'sub_tags',
         match: { deleted: false },
-        select: 'name type',
+        select: '-deleted -createdAt -updatedAt',
+      });
+  }
+
+  async getNewsTags(): Promise<Tag[]> {
+    return await this.tagModel
+      .find({ type: TagType.NEWS, parent: null, deleted: false })
+      .select('-deleted -createdAt -updatedAt')
+      .populate({
+        path: 'sub_tags',
+        match: { deleted: false },
+        select: '-deleted -createdAt -updatedAt',
+      });
+  }
+
+  async getTypeTags(): Promise<Tag[]> {
+    return await this.tagModel
+      .find({ type: TagType.ITEM, parent: null, deleted: false })
+      .select('-deleted -createdAt -updatedAt')
+      .populate({
+        path: 'sub_tags',
+        match: { deleted: false },
+        select: '-deleted -createdAt -updatedAt',
       });
   }
 
@@ -53,7 +81,7 @@ export class TagService {
     const tag: Tag = await this.createTag(body);
     if (sub_tags.length > 0) {
       for (const item of sub_tags) {
-        const use_tag = await new this.tagModel({
+        const use_tag = new this.tagModel({
           name: item.toLowerCase(),
           type: TagType.TOPIC,
           parent: tag.id,
@@ -61,8 +89,7 @@ export class TagService {
         await use_tag.save();
         put_sub_tags.push(use_tag.id);
       }
-      console.log('🚀 ~ TagService ~ addTag ~ put_sub_tags:', put_sub_tags);
-      tag.sub_tags = put_sub_tags;
+     tag.sub_tags = put_sub_tags;
       await tag.save();
     }
 
@@ -82,13 +109,16 @@ export class TagService {
   async findOneAndUpdate(
     name: string,
     type: string,
+    title: string,
+    description: string,
     parent?: string,
   ): Promise<Tag> {
-    return await this.tagModel.findOneAndUpdate(
-      { name },
-      { name, type, parent },
+    const tag: Tag = await this.tagModel.findOneAndUpdate(
+      { name, type },
+      { name, type, parent, title, description },
       { upsert: true, new: true, runValidators: true },
     );
+    return tag
   }
 
   async findOneUsingRegex(name: string): Promise<Tag> {
