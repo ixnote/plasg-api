@@ -10,10 +10,8 @@ import { UserRoles } from 'src/common/constants/enum';
 import { AuthGuard } from 'src/framework/guards/auth.guard';
 import { SearchResourcesDto } from './dtos/search-resource.dto';
 import { GetResourceDto } from './dtos/get-resource.dto';
-import { query } from 'express';
 import { GetResourcesDto } from './dtos/get-resources.dto';
 import { GetResourcesByNameDto } from './dtos/get-resources-by-name.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateResourceDto } from './dtos/update-resource.dto';
 
 @Controller('resource')
