@@ -1,4 +1,16 @@
-import { Body, Controller, Get, Param, Patch, Post, Put, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Put,
+  Query,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ResourceService } from './services/resource.service';
 import { CreateResourceDto } from './dtos/create-resource.dto';
 import { Resource } from './interfaces/resource.interface';
@@ -41,8 +53,16 @@ export class ResourceController {
   @Patch('/update/:resourceId')
   @UseGuards(AuthGuard)
   @Roles(UserRoles.MDA)
-  async updateResource(@Param() param: {resourceId: string}, @Body() body: UpdateResourceDto, @UserGuard() user: User){
-    const resource: Resource = await this.resourceService.updateResource(param.resourceId, body, user)
+  async updateResource(
+    @Param() param: { resourceId: string },
+    @Body() body: UpdateResourceDto,
+    @UserGuard() user: User,
+  ) {
+    const resource: Resource = await this.resourceService.updateResource(
+      param.resourceId,
+      body,
+      user,
+    );
     return {
       status: true,
       message: 'Resource updated successfully',
@@ -53,8 +73,11 @@ export class ResourceController {
   @Get('/mda')
   @UseGuards(AuthGuard)
   @Roles(UserRoles.MDA)
-  async getResourcesForMda(@Query() query: GetResourcesDto, @UserGuard() user: User){
-    const results = await this.resourceService.getResourcesForMda(query, user)
+  async getResourcesForMda(
+    @Query() query: GetResourcesDto,
+    @UserGuard() user: User,
+  ) {
+    const results = await this.resourceService.getResourcesForMda(query, user);
     return {
       status: true,
       message: 'Resources fetched successfully',
@@ -63,7 +86,10 @@ export class ResourceController {
   }
 
   @Get('/search/:name')
-  async searchResources(@Param() param: {name: string}, @Query() query: SearchResourcesDto) {
+  async searchResources(
+    @Param() param: { name: string },
+    @Query() query: SearchResourcesDto,
+  ) {
     const resources = await this.resourceService.searchResources(param, query);
     return {
       status: true,
@@ -74,7 +100,9 @@ export class ResourceController {
 
   @Get('/single/:resourceId')
   async getResourceById(@Param() param: GetResourceDto) {
-    const resource: Resource = await this.resourceService.getResourceById(param);
+    const resource: Resource = await this.resourceService.getResourceById(
+      param,
+    );
     return {
       status: true,
       message: 'Resource fetched successfully',
@@ -84,17 +112,25 @@ export class ResourceController {
 
   @Get('/all')
   async getResources(@Query() query: GetResourcesDto) {
-    const resources: Resource [] = await this.resourceService.getResources(query)
+    const resources: Resource[] = await this.resourceService.getResources(
+      query,
+    );
     return {
-        status: true,
-        message: 'Resources fetched successfully',
-        data: resources,
-      };
+      status: true,
+      message: 'Resources fetched successfully',
+      data: resources,
+    };
   }
 
   @Get('/category/:name')
-  async getResourcesByCategory(@Param() param: {name: string}, @Query() query: GetResourcesByNameDto){
-    const results = await this.resourceService.getResourcesByCategory(param.name, query)
+  async getResourcesByCategory(
+    @Param() param: { name: string },
+    @Query() query: GetResourcesByNameDto,
+  ) {
+    const results = await this.resourceService.getResourcesByCategory(
+      param.name,
+      query,
+    );
     return {
       status: true,
       message: 'Resources fetched successfully',
@@ -103,8 +139,8 @@ export class ResourceController {
   }
 
   @Get('/home-page')
-  async findLatestResourcesByTag(){
-    const results = await this.resourceService.findLatestResourcesByTag()
+  async findLatestResourcesByTag() {
+    const results = await this.resourceService.findLatestResourcesByTag();
     return {
       status: true,
       message: 'Resources fetched successfully',

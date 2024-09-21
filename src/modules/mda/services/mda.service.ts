@@ -24,11 +24,13 @@ import { GetTeamDto } from '../dtos/get-team.dto';
 import slugify from 'slugify';
 import { GetMdaBySlugDto } from '../dtos/get-mda-by-slug.dto';
 import { GlobalSearchPaginationDto } from 'src/modules/statics/dtos/global-search.dto';
+import { Resource } from 'src/modules/resource/interfaces/resource.interface';
 
 @Injectable()
 export class MdaService {
   constructor(
     @InjectModel('Mda') private readonly mdaModel: Model<Mda>,
+    @InjectModel('Resource') private readonly resourceModel: Model<Resource>,
     private userService: UserService,
     private miscService: MiscClass,
   ) {}
@@ -56,7 +58,7 @@ export class MdaService {
 
   async regexSearch(body: GlobalSearchPaginationDto): Promise<any> {
     const { page = 1, pageSize = 10, sort = -1, name } = body;
-   const usePage: number = body.page < 1 ? 1 : body.page;
+    const usePage: number = body.page < 1 ? 1 : body.page;
     const pagination = await this.miscService.paginate({
       page: usePage,
       pageSize: body.pageSize,
@@ -64,7 +66,7 @@ export class MdaService {
     const $regex = new RegExp(body.name, 'i');
     const mdas: Mda[] = await this.mdaModel
       .find({ name: { $regex } })
-      .sort({created_at: sort == - 1 ? -1 : 1})
+      .sort({ created_at: sort == -1 ? -1 : 1 })
       .skip(pagination.offset)
       .limit(pagination.limit);
 
@@ -137,14 +139,22 @@ export class MdaService {
     return mda;
   }
 
-  async getMdaBySlug(body: GetMdaBySlugDto): Promise<Mda> {
+  async getMdaBySlug(body: GetMdaBySlugDto): Promise<any> {
     const mda: Mda = await this.findBySlug(body.slug);
     if (!mda)
       throw new NotFoundException({
         status: false,
         message: 'Mda not found!',
       });
-    return mda;
+
+    const resources = await this.resourceModel
+      .findById(mda.id)
+      .populate('main_type_tag', 'name type')
+      .populate('sub_type_tag', 'name type')
+      .populate('main_topic_tag', 'name type')
+      .populate('all_topic_tags', 'name type');
+
+    return { ...mda, resources: resources };
   }
 
   async fetchMdas(body: MdaPaginationDto): Promise<any> {
