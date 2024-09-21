@@ -152,7 +152,7 @@ export class MdaService {
         status: false,
         message: 'Mda not found!',
       });
-    const resource = await this.resourceModel
+    const resources = await this.resourceModel
       .find({ mda: mda?.id })
       .sort({ createdAt: -1 })
       .populate('main_type_tag', 'name type')
@@ -160,7 +160,7 @@ export class MdaService {
       .populate('main_topic_tag', 'name type')
       .populate('all_topic_tags', 'name type')
       .exec();
-    return { mda, resource };
+    return { mda, resources };
   }
 
   async fetchMdas(body: MdaPaginationDto): Promise<any> {
