@@ -244,13 +244,19 @@ export class ResourceService {
     });
   }
 
-  async getResourceById(body: GetResourceDto) {
+  async getResourceById(body: GetResourceDto): Promise<Resource> {
     const resource: Resource = await this.findById(body.resourceId);
-    if (!resource)
+
+    if (!resource) {
       throw new NotFoundException({
         status: false,
-        message: 'Ressource not found',
+        message: 'Resource not found',
       });
+    }
+
+    resource.view_count = (resource.view_count || 0) + 1;
+
+    await resource.save();
     return resource;
   }
 
