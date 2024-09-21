@@ -159,6 +159,7 @@ export class MdaService {
       .populate('sub_type_tag', 'name type')
       .populate('main_topic_tag', 'name type')
       .populate('all_topic_tags', 'name type')
+      .populate('mda', 'name slug')
       .exec();
     return { mda, resources };
   }
