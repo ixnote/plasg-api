@@ -119,7 +119,7 @@ export class MdaController {
 
   @Get('/slug/:slug')
   async getMdaBySlug(@Param() param: GetMdaBySlugDto) {
-    const mda: Mda = await this.mdaService.getMdaBySlug(param);
+    const mda = await this.mdaService.getMdaBySlug(param);
     return {
       status: true,
       message: 'Mda fetched successfully',
