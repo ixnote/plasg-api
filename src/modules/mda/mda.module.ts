@@ -18,7 +18,6 @@ import { ResourceSchema } from '../resource/schemas/resource.schema';
       { name: 'Mda', schema: MdaSchema },
       { name: 'User', schema: UserSchema },
       { name: 'Error', schema: ErrorSchema },
-      { name: 'Resource', schema: ResourceSchema },
     ]),
     UserModule,
     CloudinaryModule,
