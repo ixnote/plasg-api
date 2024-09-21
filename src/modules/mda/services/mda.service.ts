@@ -24,11 +24,13 @@ import { GetTeamDto } from '../dtos/get-team.dto';
 import slugify from 'slugify';
 import { GetMdaBySlugDto } from '../dtos/get-mda-by-slug.dto';
 import { GlobalSearchPaginationDto } from 'src/modules/statics/dtos/global-search.dto';
+import { Resource } from 'src/modules/resource/interfaces/resource.interface';
 
 @Injectable()
 export class MdaService {
   constructor(
     @InjectModel('Mda') private readonly mdaModel: Model<Mda>,
+    @InjectModel('Resource') private readonly resourceModel: Model<Resource>,
     private userService: UserService,
     private miscService: MiscClass,
   ) {}
@@ -137,14 +139,28 @@ export class MdaService {
     return mda;
   }
 
-  async getMdaBySlug(body: GetMdaBySlugDto): Promise<Mda> {
+  async getMdaBySlug(body: GetMdaBySlugDto): Promise<any> {
     const mda: Mda = await this.findBySlug(body.slug);
     if (!mda)
       throw new NotFoundException({
         status: false,
         message: 'Mda not found!',
       });
-    return mda;
+
+    if (!mda)
+      throw new NotFoundException({
+        status: false,
+        message: 'Mda not found!',
+      });
+    const resource = await this.resourceModel
+      .find({ mda: mda?.id })
+      .sort({ createdAt: -1 })
+      .populate('main_type_tag', 'name type')
+      .populate('sub_type_tag', 'name type')
+      .populate('main_topic_tag', 'name type')
+      .populate('all_topic_tags', 'name type')
+      .exec();
+    return { mda, resource };
   }
 
   async fetchMdas(body: MdaPaginationDto): Promise<any> {
