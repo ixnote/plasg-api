@@ -49,7 +49,7 @@ export const ResourceSchema: Schema = new Schema<Resource>(
     },
     view_count: {
       type: Number,
-      default: 0
+      default: 0,
     },
     main_type_tag: {
       type: Schema.Types.ObjectId,

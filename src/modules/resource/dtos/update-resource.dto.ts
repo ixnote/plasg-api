@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsMongoId, IsOptional, IsString, IsUrl, ValidateIf } from 'class-validator';
+import {
+  IsArray,
+  IsDateString,
+  IsMongoId,
+  IsOptional,
+  IsString,
+  IsUrl,
+  ValidateIf,
+} from 'class-validator';
 import { ResourceDocumentDto } from './resource-document.dto';
 import { Type } from 'class-transformer';
 
@@ -40,6 +48,11 @@ export class UpdateResourceDto {
   @IsString()
   @IsOptional()
   description: string;
+
+  @ApiProperty()
+  @IsDateString()
+  @IsOptional()
+  createdAt: string;
 
   @ApiProperty()
   @IsMongoId()
