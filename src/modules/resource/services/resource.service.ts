@@ -48,6 +48,7 @@ export class ResourceService {
       .populate('main_type_tag', 'name type')
       .populate('sub_type_tag', 'name type')
       .populate('main_topic_tag', 'name type')
+      .populate('mda', 'name slug about')
       .populate('all_topic_tags', 'name type');
   }
 
