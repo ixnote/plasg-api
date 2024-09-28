@@ -26,33 +26,33 @@ export const MdaSchema: Schema = new Schema<Mda>(
       required: false,
     },
     admin: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: false,
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: false,
     },
     about: {
       type: AboutSchema,
-      required: false
+      required: false,
     },
     team: {
       type: [TeamSchema],
-      required: false
+      required: false,
     },
     contact: {
       type: ContactSchema,
-      required: false
+      required: false,
     },
     director: {
       type: DirectorSchema,
-      required: false
+      required: false,
     },
     hero: {
       type: HeroSchema,
-      required: false
+      required: false,
     },
     published: {
       type: Boolean,
-      default: false
+      default: false,
     },
     is_suspended: {
       type: Boolean,
@@ -62,7 +62,6 @@ export const MdaSchema: Schema = new Schema<Mda>(
       type: Boolean,
       default: false,
     },
-
   },
   {
     timestamps: true,
@@ -78,6 +77,5 @@ export const MdaSchema: Schema = new Schema<Mda>(
     },
   },
 );
-
 
 export const MdaModel = mongoose.model<Mda>('Mda', MdaSchema);
