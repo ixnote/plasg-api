@@ -2,6 +2,7 @@
 /* eslint-disable prefer-const */
 import {
   BadRequestException,
+  Body,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -258,6 +259,8 @@ export class StaticsService {
         status: false,
         message: 'Legislative already exists',
       });
+
+    if(!body.type) body.type = LegislativeTypes.LEGISLATIVE
     const legislative: Legislative = new this.legislativeModel(body);
     return await legislative.save();
   }
