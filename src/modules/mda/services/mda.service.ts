@@ -16,7 +16,7 @@ import { RemoveMdaDto } from '../dtos/remove-mda.dto';
 import { GetMdaDto } from '../dtos/get-mda.dto';
 import { MdaPaginationDto } from '../dtos/mda-pagination.dto';
 import { MiscClass } from 'src/common/services/misc.service';
-import { CloudinaryService } from 'src/common/services/cloudinary/cloudinary.service';
+import { CloudinaryService } from 'src/modules/cloudinary/cloudinary.service';
 import { UpdateMdaDto } from '../dtos/update-mda.dto';
 import { AddTeamMembersDto } from '../dtos/add-team.dto';
 import { Team } from '../interfaces/team.interface';

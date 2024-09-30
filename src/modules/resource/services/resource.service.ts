@@ -19,7 +19,7 @@ import { MiscClass } from 'src/common/services/misc.service';
 import { GetResourceDto } from '../dtos/get-resource.dto';
 import { GetResourcesDto } from '../dtos/get-resources.dto';
 import { TagType } from 'src/common/constants/enum';
-import { CloudinaryService } from 'src/common/services/cloudinary/cloudinary.service';
+import { CloudinaryService } from 'src/modules/cloudinary/cloudinary.service';
 import { UpdateResourceDto } from '../dtos/update-resource.dto';
 import slugify from 'slugify';
 import { GlobalSearchPaginationDto } from 'src/modules/statics/dtos/global-search.dto';

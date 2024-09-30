@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UserSchema } from '../user/schemas/user.schema';
 import { ErrorSchema } from '../error/schemas/error.schema';
 import { MiscClass } from 'src/common/services/misc.service';
-import { CloudinaryModule } from 'src/common/services/cloudinary/cloudinary.module';
+import { CloudinaryModule } from 'src/modules/cloudinary/cloudinary.module';
 import { ResourceSchema } from '../resource/schemas/resource.schema';
 
 @Module({

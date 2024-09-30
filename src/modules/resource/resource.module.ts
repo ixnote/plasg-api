@@ -8,7 +8,7 @@ import { AuthModule } from 'src/modules/auth/auth.module';
 import { UserSchema } from 'src/modules/user/schemas/user.schema';
 import { TagModule } from '../tag/tag.module';
 import { MiscClass } from 'src/common/services/misc.service';
-import { CloudinaryModule } from 'src/common/services/cloudinary/cloudinary.module';
+import { CloudinaryModule } from 'src/modules/cloudinary/cloudinary.module';
 
 @Module({
   imports: [
