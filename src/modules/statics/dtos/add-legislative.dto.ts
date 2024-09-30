@@ -37,5 +37,6 @@ export class AddLegislativeDto {
 
   @ApiProperty()
   @IsEnum(LegislativeTypes)
+  @IsOptional()
   type: string;
 }
