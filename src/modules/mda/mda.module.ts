@@ -9,7 +9,8 @@ import { JwtService } from '@nestjs/jwt';
 import { UserSchema } from '../user/schemas/user.schema';
 import { ErrorSchema } from '../error/schemas/error.schema';
 import { MiscClass } from 'src/common/services/misc.service';
-import { CloudinaryModule } from 'src/common/services/cloudinary/cloudinary.module';
+import { CloudinaryModule } from 'src/modules/cloudinary/cloudinary.module';
+import { ResourceSchema } from '../resource/schemas/resource.schema';
 
 @Module({
   imports: [
@@ -17,12 +18,13 @@ import { CloudinaryModule } from 'src/common/services/cloudinary/cloudinary.modu
       { name: 'Mda', schema: MdaSchema },
       { name: 'User', schema: UserSchema },
       { name: 'Error', schema: ErrorSchema },
+      { name: 'Resource', schema: ResourceSchema },
     ]),
     UserModule,
-    CloudinaryModule
+    CloudinaryModule,
   ],
   providers: [MdaService, MongooseService, JwtService, MiscClass],
   controllers: [MdaController],
-  exports: [MdaService]
+  exports: [MdaService],
 })
 export class MdaModule {}

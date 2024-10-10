@@ -2,6 +2,7 @@
 /* eslint-disable prefer-const */
 import {
   BadRequestException,
+  Body,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -16,7 +17,7 @@ import { AddLegislativeDto } from '../dtos/add-legislative.dto';
 import { GetLegislativeDto } from '../dtos/get-legislative.dto';
 import { GetLegislativesDto } from '../dtos/get-legislatives.dto';
 import { AddDestinationDto } from '../dtos/add-destination.dto';
-import { CloudinaryService } from 'src/common/services/cloudinary/cloudinary.service';
+import { CloudinaryService } from 'src/modules/cloudinary/cloudinary.service';
 import { LegislativeTypes } from 'src/common/constants/enum';
 import { User } from 'src/modules/user/interfaces/user.interface';
 import { UserService } from 'src/modules/user/services/user.service';
@@ -258,6 +259,8 @@ export class StaticsService {
         status: false,
         message: 'Legislative already exists',
       });
+
+    if(!body.type) body.type = LegislativeTypes.LEGISLATIVE
     const legislative: Legislative = new this.legislativeModel(body);
     return await legislative.save();
   }

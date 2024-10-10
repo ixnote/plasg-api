@@ -15,6 +15,7 @@ import { NewsModule } from './modules/news/news.module';
 import { StaticsModule } from './modules/statics/statics.module';
 import { MailModule } from './modules/mail/mail.module';
 import { ProjectModule } from './modules/project/project.module';
+import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 
 const { MONGO_URI } = env;
 
@@ -40,6 +41,7 @@ const { MONGO_URI } = env;
     StaticsModule,
     MailModule,
     ProjectModule,
+    CloudinaryModule
   ],
 })
 export class AppModule {}

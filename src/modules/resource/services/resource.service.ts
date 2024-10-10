@@ -19,7 +19,7 @@ import { MiscClass } from 'src/common/services/misc.service';
 import { GetResourceDto } from '../dtos/get-resource.dto';
 import { GetResourcesDto } from '../dtos/get-resources.dto';
 import { TagType } from 'src/common/constants/enum';
-import { CloudinaryService } from 'src/common/services/cloudinary/cloudinary.service';
+import { CloudinaryService } from 'src/modules/cloudinary/cloudinary.service';
 import { UpdateResourceDto } from '../dtos/update-resource.dto';
 import slugify from 'slugify';
 import { GlobalSearchPaginationDto } from 'src/modules/statics/dtos/global-search.dto';
@@ -48,6 +48,7 @@ export class ResourceService {
       .populate('main_type_tag', 'name type')
       .populate('sub_type_tag', 'name type')
       .populate('main_topic_tag', 'name type')
+      .populate('mda', 'name slug about')
       .populate('all_topic_tags', 'name type');
   }
 
@@ -244,13 +245,19 @@ export class ResourceService {
     });
   }
 
-  async getResourceById(body: GetResourceDto) {
+  async getResourceById(body: GetResourceDto): Promise<Resource> {
     const resource: Resource = await this.findById(body.resourceId);
-    if (!resource)
+
+    if (!resource) {
       throw new NotFoundException({
         status: false,
-        message: 'Ressource not found',
+        message: 'Resource not found',
       });
+    }
+
+    resource.view_count = (resource.view_count || 0) + 1;
+
+    await resource.save();
     return resource;
   }
 

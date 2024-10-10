@@ -16,7 +16,7 @@ import { RemoveMdaDto } from '../dtos/remove-mda.dto';
 import { GetMdaDto } from '../dtos/get-mda.dto';
 import { MdaPaginationDto } from '../dtos/mda-pagination.dto';
 import { MiscClass } from 'src/common/services/misc.service';
-import { CloudinaryService } from 'src/common/services/cloudinary/cloudinary.service';
+import { CloudinaryService } from 'src/modules/cloudinary/cloudinary.service';
 import { UpdateMdaDto } from '../dtos/update-mda.dto';
 import { AddTeamMembersDto } from '../dtos/add-team.dto';
 import { Team } from '../interfaces/team.interface';
@@ -24,11 +24,13 @@ import { GetTeamDto } from '../dtos/get-team.dto';
 import slugify from 'slugify';
 import { GetMdaBySlugDto } from '../dtos/get-mda-by-slug.dto';
 import { GlobalSearchPaginationDto } from 'src/modules/statics/dtos/global-search.dto';
+import { Resource } from 'src/modules/resource/interfaces/resource.interface';
 
 @Injectable()
 export class MdaService {
   constructor(
     @InjectModel('Mda') private readonly mdaModel: Model<Mda>,
+    @InjectModel('Resource') private readonly resourceModel: Model<Resource>,
     private userService: UserService,
     private miscService: MiscClass,
   ) {}
@@ -56,7 +58,7 @@ export class MdaService {
 
   async regexSearch(body: GlobalSearchPaginationDto): Promise<any> {
     const { page = 1, pageSize = 10, sort = -1, name } = body;
-   const usePage: number = body.page < 1 ? 1 : body.page;
+    const usePage: number = body.page < 1 ? 1 : body.page;
     const pagination = await this.miscService.paginate({
       page: usePage,
       pageSize: body.pageSize,
@@ -64,7 +66,7 @@ export class MdaService {
     const $regex = new RegExp(body.name, 'i');
     const mdas: Mda[] = await this.mdaModel
       .find({ name: { $regex } })
-      .sort({created_at: sort == - 1 ? -1 : 1})
+      .sort({ created_at: sort == -1 ? -1 : 1 })
       .skip(pagination.offset)
       .limit(pagination.limit);
 
@@ -137,14 +139,29 @@ export class MdaService {
     return mda;
   }
 
-  async getMdaBySlug(body: GetMdaBySlugDto): Promise<Mda> {
+  async getMdaBySlug(body: GetMdaBySlugDto): Promise<any> {
     const mda: Mda = await this.findBySlug(body.slug);
     if (!mda)
       throw new NotFoundException({
         status: false,
         message: 'Mda not found!',
       });
-    return mda;
+
+    if (!mda)
+      throw new NotFoundException({
+        status: false,
+        message: 'Mda not found!',
+      });
+    const resources = await this.resourceModel
+      .find({ mda: mda?.id })
+      .sort({ createdAt: -1 })
+      .populate('main_type_tag', 'name type')
+      .populate('sub_type_tag', 'name type')
+      .populate('main_topic_tag', 'name type')
+      .populate('all_topic_tags', 'name type')
+      .populate('mda', 'name slug')
+      .exec();
+    return { mda, resources };
   }
 
   async fetchMdas(body: MdaPaginationDto): Promise<any> {

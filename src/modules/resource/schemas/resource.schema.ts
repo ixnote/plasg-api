@@ -47,7 +47,10 @@ export const ResourceSchema: Schema = new Schema<Resource>(
       type: String,
       required: false,
     },
-
+    view_count: {
+      type: Number,
+      default: 0,
+    },
     main_type_tag: {
       type: Schema.Types.ObjectId,
       ref: 'Tag',

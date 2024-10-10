@@ -7,7 +7,7 @@ import { DestinationSchema } from './schemas/destination.schema';
 import { ErrorSchema } from 'src/modules/error/schemas/error.schema';
 import { LegislativeSchema } from './schemas/legislative.schema';
 import { MiscClass } from 'src/common/services/misc.service';
-import { CloudinaryModule } from 'src/common/services/cloudinary/cloudinary.module';
+import { CloudinaryModule } from 'src/modules/cloudinary/cloudinary.module';
 import { AuthModule } from 'src/modules/auth/auth.module';
 import { UserSchema } from 'src/modules/user/schemas/user.schema';
 import { MdaModule } from '../mda/mda.module';

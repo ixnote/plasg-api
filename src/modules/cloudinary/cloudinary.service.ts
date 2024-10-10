@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UploadApiErrorResponse, UploadApiResponse, v2 } from 'cloudinary';
 import toStream = require('buffer-to-stream');
+import { v2 as cloudinary } from 'cloudinary';
 import { throwError } from 'rxjs';
 
 @Injectable()
@@ -26,5 +27,18 @@ export class CloudinaryService {
         resolve(result);
       });
     });
+  }
+
+  async createUploadPreset() {
+    try {
+      const preset = await cloudinary.api.create_upload_preset({
+        name: 'plsg',
+        folder: 'images',
+        allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+      });
+      return preset;
+    } catch (error) {
+      throw new Error('Error creating upload preset');
+    }
   }
 }
