@@ -10,7 +10,6 @@ export class MailService {
 
   async sendLoginEmail(user: User) {
     const { email, full_name } = user;
-    const url = `example.com/auth/confirm?token=${user}`;
 
    this.mailerService.sendMail({
       to: user.email,
@@ -39,6 +38,25 @@ export class MailService {
           email,
           url,
           otp: token,
+        },
+      })
+      .catch((err) => {
+        console.error('Error sending reset password email:', err);
+      });
+  }
+
+  async updatePasswordEmail(user: User, password: string) {
+    const { email, full_name } = user;
+
+    this.mailerService
+      .sendMail({
+        to: user.email,
+        subject: 'Password updated sucessfully',
+        template: './update-password',
+        context: {
+          name: full_name,
+          email,
+          password,
         },
       })
       .catch((err) => {

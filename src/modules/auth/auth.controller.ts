@@ -22,6 +22,7 @@ import { UserGuard } from 'src/framework/guards/user.guard';
 import { ForgotPasswordDto } from './dtos/forgot-password.dto';
 import { ResetPasswordDto } from './dtos/reset-password.dto';
 import { ChangePasswordDto } from './dtos/change-password.dto';
+import { UpdatePasswordDto } from './dtos/update-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -76,6 +77,22 @@ export class AuthController {
       user,
       ...body,
     });
+    return {
+      status: true,
+      message,
+      data: null,
+    };
+  }
+
+  @Put('/update-password')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(UserRoles.SUPER)
+  @UseFilters(ExceptionsLoggerFilter)
+  async updatePassword(
+    @Body() body: UpdatePasswordDto,
+    @UserGuard() user: User,
+  ) {
+    const message: string = await this.authService.updatePasswordForAdmin(body);
     return {
       status: true,
       message,

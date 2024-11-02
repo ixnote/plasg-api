@@ -16,6 +16,7 @@ import * as argon2 from 'argon2';
 import { ResetPasswordDto } from '../dtos/reset-password.dto';
 import { AuthOtpType, TokenTimeout } from '../constants/auth.constants';
 import { MailService } from 'src/modules/mail/mail.service';
+import { UpdatePasswordDto } from '../dtos/update-password.dto';
 
 const { JWT_REFRESH_SECRET, JWT_ACCESS_SECRET } = env;
 
@@ -166,6 +167,24 @@ export class AuthService {
       console.error('Error sending email:', err);
     });
     return 'Please check your email to continue.';
+  }
+
+  async updatePasswordForAdmin(body: UpdatePasswordDto): Promise<string> {
+    const user: User = await this.userService.findByEmailWithOtp(body.email);
+    if (!user)
+      throw new BadRequestException({
+        status: false,
+        message: 'Account does not exist',
+      });
+    const hashedPassword: string = await this.hashData(body?.password);
+    await this.userService.update(user.id, {
+      password: hashedPassword,
+      password_updated: true,
+    });
+    this.mailService.updatePasswordEmail(user, body.password).catch((err) => {
+      console.error('Error sending email:', err);
+    });
+    return 'Password updated successfully.';
   }
 
   async makeOtp(data: {
