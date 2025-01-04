@@ -1,16 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-    IsArray,
-    IsBoolean,
-    IsDateString,
-    IsEmail,
-  IsEnum,
+  IsArray,
+  IsBoolean,
+  IsDateString,
   IsMongoId,
   IsOptional,
   IsString,
-} from 'class-validator'; 
+} from 'class-validator';
 import { AddBiographyDto } from './add-biography.dto';
 import { AddCabinetDto } from './add-cabinet.dto';
+import { Types } from 'mongoose';
 
 export class UpdateGovernmentOfficialDto {
   @ApiProperty()
@@ -51,19 +50,21 @@ export class UpdateGovernmentOfficialDto {
   @ApiProperty()
   @IsMongoId()
   @IsOptional()
-  governor: string
+  governor: string;
 
   @ApiProperty()
   @IsOptional()
   biography: AddBiographyDto;
 
-  @ApiProperty()
+  @ApiProperty({ type: [String] })
   @IsArray()
   @IsOptional()
-  members: AddCabinetDto[];
+  @IsMongoId({ each: true })
+  members: Types.ObjectId[]; 
 
-  @ApiProperty()
+  @ApiProperty({ type: [String] })
   @IsArray()
   @IsOptional()
-  executives: AddCabinetDto[];
+  @IsMongoId({ each: true })
+  executives: Types.ObjectId[]; 
 }

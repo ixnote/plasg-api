@@ -8,8 +8,8 @@ export interface Government extends mongoose.Document {
   end: Date;
   active: boolean;
   governor: mongoose.Types.ObjectId;
-  members: Legislative[];
-  executives: Legislative[];
+  members: mongoose.Types.ObjectId[];
+  executives:  mongoose.Types.ObjectId[];
   is_deleted: boolean;
   readonly createdAt: Date;
   updatedAt: Date;

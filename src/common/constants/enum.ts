@@ -33,6 +33,7 @@ export enum DestinationTypes {
 export enum LegislativeTypes{
   LEGISLATIVE = 'legislative',
   EXECUTIVE = 'executive',
+  JUDICIARY = "judiciary",
   CABINET = 'cabinet',
   GOVERNOR = "governor"
 }

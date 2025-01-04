@@ -260,7 +260,7 @@ export class StaticsService {
         message: 'Legislative already exists',
       });
 
-    if(!body.type) body.type = LegislativeTypes.LEGISLATIVE
+    if (!body.type) body.type = LegislativeTypes.LEGISLATIVE;
     const legislative: Legislative = new this.legislativeModel(body);
     return await legislative.save();
   }
@@ -334,103 +334,61 @@ export class StaticsService {
     param: GetGovernmentDto,
     body: UpdateGovernmentOfficialDto,
   ): Promise<Government> {
-    const findGovernment = await this.governmentModel.findById(
-      param.governmentId,
-    );
-    if (!findGovernment) {
-      throw new NotFoundException({
-        status: true,
-        message: 'Official not found',
-      });
-    }
+    const { members, executives } = body;
+    const findGovernment = await this.getGovernment(param);
+
     if (body?.active) {
-      const governments: Government[] = await this.governmentModel.find({
-        type: LegislativeTypes.EXECUTIVE,
-      });
-      for (const government of governments) {
-        government.active = false;
-        await government.save();
-      }
+      await this.deactivateActiveGovernments();
     }
-    const government = new mongoose.Types.ObjectId(param.governmentId);
+
     if (body.governor) {
-      const legislative: Legislative = await this.legislativeModel.findById(
-        body.governor,
-      );
-      if (!legislative)
-        throw new NotFoundException({
-          status: false,
-          message: 'Governor not found',
-        });
-      findGovernment.governor = new mongoose.Types.ObjectId(body.governor);
-      await findGovernment.save();
+      await this.updateGovernor(findGovernment, body.governor);
       delete body.governor;
     }
-    if (body.members && body.members.length > 0) {
-      const members = [];
-      for (const item of body.members) {
-        let member = await this.legislativeModel.findOne({
-          name: item.name,
-          government,
-          type: LegislativeTypes.CABINET,
-        });
 
-        if (!member) {
-          member = new this.legislativeModel({
-            ...item,
-            government,
-            type: LegislativeTypes.CABINET,
-          });
-          await member.save();
-          members.push(member.id);
-        } else {
-          member = await this.legislativeModel.findOneAndUpdate(
-            { name: member.name, type: LegislativeTypes.CABINET },
-            { ...member },
-            { upsert: true, new: true, runValidators: true },
-          );
-          members.push(member.id);
-        }
-      }
+    if (members?.length) {
       findGovernment.members = members;
-      await findGovernment.save();
-      delete body.members;
     }
 
-    if (body.executives && body.executives.length > 0) {
-      const executives = [];
-      for (const item of body.executives) {
-        let executive = await this.legislativeModel.findOne({
-          name: item.name,
-          type: LegislativeTypes.CABINET,
-          government,
-        });
-        if (!executive) {
-          executive = new this.legislativeModel({
-            ...item,
-            government,
-            type: LegislativeTypes.CABINET,
-          });
-          await executive.save();
-        } else {
-          executive = await this.legislativeModel.findOneAndUpdate(
-            { name: executive.name, type: LegislativeTypes.CABINET },
-            { ...executive },
-            { upsert: true, new: true, runValidators: true },
-          );
-        }
-        executives.push(executive.id);
-      }
+    if (executives?.length) {
       findGovernment.executives = executives;
-      await findGovernment.save();
-      delete body.executives;
     }
+
+    await findGovernment.save();
 
     return await this.governmentModel.findByIdAndUpdate(
       param.governmentId,
       body,
       { new: true },
     );
+  }
+
+  private async deactivateActiveGovernments(): Promise<void> {
+    const governments: Government[] = await this.governmentModel.find({
+      type: LegislativeTypes.EXECUTIVE,
+    });
+
+    for (const government of governments) {
+      government.active = false;
+      await government.save();
+    }
+  }
+
+  private async updateGovernor(
+    findGovernment: Government,
+    governorId: string,
+  ): Promise<void> {
+    const legislative: Legislative = await this.legislativeModel.findById(
+      governorId,
+    );
+    if (!legislative) {
+      throw new NotFoundException({
+        status: false,
+        message: 'Governor not found',
+      });
+    }
+    findGovernment.governor = new mongoose.Types.ObjectId(governorId);
+    await findGovernment.save();
   }
 
   async getGovernment(body: GetGovernmentDto) {
