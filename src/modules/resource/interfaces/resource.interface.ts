@@ -17,7 +17,6 @@ export interface Resource extends mongoose.Document {
   sub_topic_tag: mongoose.Types.ObjectId;
   all_topic_tags: mongoose.Types.ObjectId[];
   view_count: number;
-  date: Date;
   readonly createdAt: Date;
   updatedAt: Date;
 }

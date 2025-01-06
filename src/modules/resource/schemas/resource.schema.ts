@@ -77,9 +77,6 @@ export const ResourceSchema: Schema = new Schema<Resource>(
       ref: 'Tag',
       required: true,
     },
-    date: {
-      type: Date,
-    },
   },
   {
     timestamps: true,
