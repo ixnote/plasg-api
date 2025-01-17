@@ -34,6 +34,7 @@ import { Government } from '../interfaces/government.interface';
 import { GetGovernmentDto } from '../dtos/get-government.dto';
 import { GetGovernmentsDto } from '../dtos/get-governments.dto';
 import { AddLegislativeToGovernmentDto } from '../dtos/add-legislative-to-government.dto';
+import { Biography } from '../interfaces/biography.interface';
 
 @Injectable()
 export class StaticsService {
@@ -334,8 +335,8 @@ export class StaticsService {
     param: GetGovernmentDto,
     body: UpdateGovernmentOfficialDto,
   ): Promise<Government> {
-    const { members, executives } = body;
-    const findGovernment = await this.getGovernment(param);
+    const { members, executives, biography } = body;
+    const findGovernment: Government = await this.getGovernment(param);
 
     if (body?.active) {
       await this.deactivateActiveGovernments();
@@ -354,11 +355,18 @@ export class StaticsService {
       findGovernment.executives = executives;
     }
 
+    if(biography){
+      findGovernment.biography = {
+        title: biography.title || findGovernment.biography.title,
+        description: biography.description || findGovernment.biography.description
+      } as Biography
+    }
+
     await findGovernment.save();
 
     return await this.governmentModel.findByIdAndUpdate(
       param.governmentId,
-      body,
+      {...body},
       { new: true },
     );
   }

@@ -7,7 +7,7 @@ export const BiographySchema = new Schema<Biography>({
     required: true,
   },
   description: {
-    type: [String],
+    type: String,
     required: false,
   },
 });

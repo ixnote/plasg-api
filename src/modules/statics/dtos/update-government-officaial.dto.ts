@@ -8,7 +8,6 @@ import {
   IsString,
 } from 'class-validator';
 import { AddBiographyDto } from './add-biography.dto';
-import { AddCabinetDto } from './add-cabinet.dto';
 import { Types } from 'mongoose';
 
 export class UpdateGovernmentOfficialDto {

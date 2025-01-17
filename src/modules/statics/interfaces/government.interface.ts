@@ -1,9 +1,10 @@
 import * as mongoose from 'mongoose';
-import { Legislative } from './legislative.interface';
+import { Biography } from './biography.interface';
 
 export interface Government extends mongoose.Document {
   name: string;
   image: string;
+  biography: Biography;
   start: Date;
   end: Date;
   active: boolean;

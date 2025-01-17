@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-    IsArray,
   IsOptional,
   IsString,
 } from 'class-validator'; 
@@ -12,8 +11,7 @@ export class AddBiographyDto {
   title: string;
 
   @ApiProperty()
-  @IsArray()
-  @IsString({ each: true })
+  @IsString()
   @IsOptional()
-  description: string[];
+  description: string;
 }
