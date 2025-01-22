@@ -59,12 +59,10 @@ export class UpdateGovernmentOfficialDto {
   @ApiProperty({ type: [String] })
   @IsArray()
   @IsOptional()
-  @IsMongoId({ each: true })
   members: AddCabinetDto[]; 
 
   @ApiProperty({ type: [String] })
   @IsArray()
   @IsOptional()
-  @IsMongoId({ each: true })
   executives: AddCabinetDto[]; 
 }
