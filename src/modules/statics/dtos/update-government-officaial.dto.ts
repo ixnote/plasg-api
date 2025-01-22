@@ -9,6 +9,7 @@ import {
 } from 'class-validator';
 import { AddBiographyDto } from './add-biography.dto';
 import { Types } from 'mongoose';
+import { AddCabinetDto } from './add-cabinet.dto';
 
 export class UpdateGovernmentOfficialDto {
   @ApiProperty()
@@ -59,11 +60,11 @@ export class UpdateGovernmentOfficialDto {
   @IsArray()
   @IsOptional()
   @IsMongoId({ each: true })
-  members: Types.ObjectId[]; 
+  members: AddCabinetDto[]; 
 
   @ApiProperty({ type: [String] })
   @IsArray()
   @IsOptional()
   @IsMongoId({ each: true })
-  executives: Types.ObjectId[]; 
+  executives: AddCabinetDto[]; 
 }
