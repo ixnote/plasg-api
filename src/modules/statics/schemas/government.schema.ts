@@ -2,6 +2,7 @@ import { Schema } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { Government } from '../interfaces/government.interface';
 import { BiographySchema } from './biography.schema';
+import { MemberSchema } from './member.schema';
 
 function transformValue(doc, ret: { [key: string]: any }) {
   delete ret._id;
@@ -35,14 +36,12 @@ export const GovernmentSchema: Schema = new Schema<Government>(
       default: null,
     },
     executives: {
-      type: [Schema.Types.ObjectId],
-      ref: 'Legislative',
+      type: [MemberSchema],
       required: false,
       default: null,
     },
     members: {
-      type: [Schema.Types.ObjectId],
-      ref: 'Legislative',
+      type: [MemberSchema],
       required: false,
       default: null,
     },

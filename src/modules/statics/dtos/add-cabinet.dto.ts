@@ -7,10 +7,6 @@ import {
 } from 'class-validator'; 
 
 export class AddCabinetDto {
-  @ApiProperty()
-    @IsMongoId()
-    id: string;
-
     @ApiProperty()
     @IsString()
     @IsOptional()
