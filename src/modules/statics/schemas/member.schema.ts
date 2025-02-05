@@ -22,7 +22,7 @@ export const MemberSchema = new Schema<Member>(
       email: {
         type: String,
         required: false,
-        match: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,  // Ensuring email validation
+        match: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, 
       },
       type: {
         type: String,
