@@ -3,12 +3,10 @@ import {
   IsArray,
   IsBoolean,
   IsDateString,
-  IsMongoId,
   IsOptional,
   IsString,
 } from 'class-validator';
 import { AddBiographyDto } from './add-biography.dto';
-import { Types } from 'mongoose';
 import { AddCabinetDto } from './add-cabinet.dto';
 
 export class UpdateGovernmentOfficialDto {
@@ -48,9 +46,8 @@ export class UpdateGovernmentOfficialDto {
   active: boolean;
 
   @ApiProperty()
-  @IsMongoId()
   @IsOptional()
-  governor: string;
+  governor: AddCabinetDto;
 
   @ApiProperty()
   @IsOptional()

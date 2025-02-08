@@ -30,8 +30,7 @@ export const GovernmentSchema: Schema = new Schema<Government>(
       type: BiographySchema
     },
     governor: {
-      type: Schema.Types.ObjectId,
-      ref: 'Legislative',
+      type: MemberSchema,
       required: false,
       default: null,
     },

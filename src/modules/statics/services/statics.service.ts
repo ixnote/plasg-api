@@ -356,17 +356,25 @@ export class StaticsService {
       }
     }
     if (body.governor) {
-      const legislative: Legislative = await this.legislativeModel.findById(
-        body.governor,
-      );
-      if (!legislative)
-        throw new NotFoundException({
-          status: false,
-          message: 'Governor not found',
-        });
-      findGovernment.governor = new mongoose.Types.ObjectId(body.governor);
-      await findGovernment.save();
-      delete body.governor;
+
+      findGovernment.governor = {
+        name: body.governor.name,
+        image:  body.governor.image,
+        title:  body.governor.title,
+        role:  body.governor.role,
+        email:  body.governor.email,
+        type: body.governor.type,
+      } as any;
+      // const legislative: Legislative = await this.legislativeModel.findById(
+      //   body.governor,
+      // );
+      // if (!legislative)
+      //   throw new NotFoundException({
+      //     status: false,
+      //     message: 'Governor not found',
+      //   });
+      // findGovernment.governor = new mongoose.Types.ObjectId(body.governor);
+      // await findGovernment.save();
     }
     if (body.members) {
       const allMembers: Member[] = [];
@@ -404,6 +412,7 @@ export class StaticsService {
 
     delete body.members;
     delete body.executives;
+    delete body.governor;
     await findGovernment.save();
 
     return await this.governmentModel.findByIdAndUpdate(
@@ -424,22 +433,22 @@ export class StaticsService {
     }
   }
 
-  private async updateGovernor(
-    findGovernment: Government,
-    governorId: string,
-  ): Promise<void> {
-    const legislative: Legislative = await this.legislativeModel.findById(
-      governorId,
-    );
-    if (!legislative) {
-      throw new NotFoundException({
-        status: false,
-        message: 'Governor not found',
-      });
-    }
-    findGovernment.governor = new mongoose.Types.ObjectId(governorId);
-    await findGovernment.save();
-  }
+  // private async updateGovernor(
+  //   findGovernment: Government,
+  //   governorId: string,
+  // ): Promise<void> {
+  //   const legislative: Legislative = await this.legislativeModel.findById(
+  //     governorId,
+  //   );
+  //   if (!legislative) {
+  //     throw new NotFoundException({
+  //       status: false,
+  //       message: 'Governor not found',
+  //     });
+  //   }
+  //   findGovernment.governor = new mongoose.Types.ObjectId(governorId);
+  //   await findGovernment.save();
+  // }
 
   async getGovernment(body: GetGovernmentDto) {
     const government: Government = await this.governmentModel
