@@ -395,7 +395,7 @@ export class StaticsService {
 
     if (body.executives) {
       const allExecutives: Member[] = [];
-      for (const member of body.members) {
+      for (const member of body.executives) {
         const typeMember: any = {
           name: member.name,
           image: member.image,
