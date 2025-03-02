@@ -38,5 +38,5 @@ export class AddCabinetDto {
     @IsString()
     @IsMongoId()
     @IsOptional()
-    parent: string;
+    parent?: string;
 }

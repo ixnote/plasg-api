@@ -356,26 +356,52 @@ export class StaticsService {
       }
     }
     if (body.governor) {
-
       findGovernment.governor = {
         name: body.governor.name,
-        image:  body.governor.image,
-        title:  body.governor.title,
-        role:  body.governor.role,
-        email:  body.governor.email,
+        image: body.governor.image,
+        title: body.governor.title,
+        role: body.governor.role,
+        email: body.governor.email,
         type: body.governor.type,
       } as any;
-      // const legislative: Legislative = await this.legislativeModel.findById(
-      //   body.governor,
-      // );
-      // if (!legislative)
-      //   throw new NotFoundException({
-      //     status: false,
-      //     message: 'Governor not found',
-      //   });
-      // findGovernment.governor = new mongoose.Types.ObjectId(body.governor);
-      // await findGovernment.save();
     }
+
+    if (body.deputyGovernor) {
+      findGovernment.deputyGovernor = {
+        details: {
+          name: body.deputyGovernor.details.name,
+          image: body.deputyGovernor.details.image,
+          title: body.deputyGovernor.details.title,
+          role: body.deputyGovernor.details.role,
+          email: body.deputyGovernor.details.email,
+          type: body.deputyGovernor.details.type,
+        },
+
+        biography: {
+          title: body.deputyGovernor.biography.title,
+          description: body.deputyGovernor.biography.description,
+        },
+      } as any;
+    }
+
+    if (body.stateSecretary) {
+      findGovernment.deputyGovernor = {
+        details: {
+          name: body.stateSecretary.details.name,
+          image: body.stateSecretary.details.image,
+          title: body.stateSecretary.details.title,
+          role: body.stateSecretary.details.role,
+          email: body.stateSecretary.details.email,
+          type: body.stateSecretary.details.type,
+        },
+
+        biography: {
+          title: body.stateSecretary.biography.title,
+          description: body.stateSecretary.biography.description,
+        },
+      } as any;
+    }
+
     if (body.members) {
       const allMembers: Member[] = [];
       for (const member of body.members) {

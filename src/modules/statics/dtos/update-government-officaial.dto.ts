@@ -53,13 +53,27 @@ export class UpdateGovernmentOfficialDto {
   @IsOptional()
   biography: AddBiographyDto;
 
-  @ApiProperty({ type: [String] })
-  @IsArray()
+  @ApiProperty()
   @IsOptional()
-  members: AddCabinetDto[]; 
+  stateSecretary: {
+    biography: AddBiographyDto;
+    details: AddCabinetDto;
+  };
+
+  @ApiProperty()
+  @IsOptional()
+  deputyGovernor: {
+    biography: AddBiographyDto;
+    details: AddCabinetDto;
+  };
 
   @ApiProperty({ type: [String] })
   @IsArray()
   @IsOptional()
-  executives: AddCabinetDto[]; 
+  members: AddCabinetDto[];
+
+  @ApiProperty({ type: [String] })
+  @IsArray()
+  @IsOptional()
+  executives: AddCabinetDto[];
 }

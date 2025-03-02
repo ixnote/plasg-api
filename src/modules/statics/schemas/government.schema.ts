@@ -8,6 +8,15 @@ function transformValue(doc, ret: { [key: string]: any }) {
   delete ret._id;
 }
 
+const PoliticsSchema = new Schema({
+  biography: {
+    type: BiographySchema
+  },
+  details: {
+    type: MemberSchema,
+  }
+})
+
 export const GovernmentSchema: Schema = new Schema<Government>(
   {
     name: {
@@ -28,6 +37,12 @@ export const GovernmentSchema: Schema = new Schema<Government>(
     },
     biography: {
       type: BiographySchema
+    },
+    deputyGovernor: {
+      type: PoliticsSchema
+    },
+    stateSecretary: {
+      type: PoliticsSchema
     },
     governor: {
       type: MemberSchema,
