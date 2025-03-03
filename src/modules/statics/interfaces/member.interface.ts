@@ -7,6 +7,8 @@ export interface Member extends Document {
   title?: string;
   role?: string;
   email?: string;
+  constituency?: string;
+  party?: string;
   type: string;
   parent?: mongoose.Types.ObjectId;
 }

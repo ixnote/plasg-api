@@ -26,6 +26,16 @@ export class AddCabinetDto {
     @IsString()
     @IsOptional()
     role?: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    constituency?: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    party?: string;
   
     @ApiProperty()
     @IsEmail()

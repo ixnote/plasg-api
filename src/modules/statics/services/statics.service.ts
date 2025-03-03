@@ -385,7 +385,7 @@ export class StaticsService {
     }
 
     if (body.stateSecretary) {
-      findGovernment.deputyGovernor = {
+      findGovernment.stateSecretary = {
         details: {
           name: body.stateSecretary.details.name,
           image: body.stateSecretary.details.image,
@@ -412,6 +412,8 @@ export class StaticsService {
           role: member.role,
           email: member.email,
           type: member.type,
+          constituency: member.constituency,
+          party: member.party,
           parent: new mongoose.Types.ObjectId(member.parent),
         };
         allMembers.push(typeMember);
@@ -429,6 +431,8 @@ export class StaticsService {
           role: member.role,
           email: member.email,
           type: member.type,
+          constituency: member.constituency,
+          party: member.party,
           parent: new mongoose.Types.ObjectId(member.parent),
         };
         allExecutives.push(typeMember);

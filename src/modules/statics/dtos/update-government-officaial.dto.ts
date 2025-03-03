@@ -67,12 +67,12 @@ export class UpdateGovernmentOfficialDto {
     details: AddCabinetDto;
   };
 
-  @ApiProperty({ type: [String] })
+  @ApiProperty()
   @IsArray()
   @IsOptional()
   members: AddCabinetDto[];
 
-  @ApiProperty({ type: [String] })
+  @ApiProperty()
   @IsArray()
   @IsOptional()
   executives: AddCabinetDto[];

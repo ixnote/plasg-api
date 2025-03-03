@@ -28,5 +28,13 @@ export const MemberSchema = new Schema<Member>(
         type: String,
         required: false,
       },
+      constituency: {
+        type: String,
+        required: false,
+      },
+      party: {
+        type: String,
+        required: false,
+      },
     },
   );
