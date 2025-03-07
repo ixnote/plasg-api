@@ -10,5 +10,6 @@ export interface Member extends Document {
   constituency?: string;
   party?: string;
   type: string;
+  cover_image?: string;
   parent?: mongoose.Types.ObjectId;
 }

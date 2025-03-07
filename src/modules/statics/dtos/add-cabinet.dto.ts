@@ -35,6 +35,11 @@ export class AddCabinetDto {
     @ApiProperty()
     @IsString()
     @IsOptional()
+    cover_image?: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
     party?: string;
   
     @ApiProperty()

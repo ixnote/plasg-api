@@ -72,10 +72,6 @@ async seed() {
     for (const destination of destinations) {
       await this.staticsService.updateDestinations(destination)
     }
-
-    // const legislatives = legislativesData;
-    // for (const legislative of legislatives) {
-    //   await this.staticsService.updateLegislatives(legislative)
-    // }
+    
   }
 }

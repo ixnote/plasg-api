@@ -36,5 +36,9 @@ export const MemberSchema = new Schema<Member>(
         type: String,
         required: false,
       },
+      cover_image: {
+        type: String,
+        required: false,
+      },
     },
   );

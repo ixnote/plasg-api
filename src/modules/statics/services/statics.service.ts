@@ -375,6 +375,7 @@ export class StaticsService {
           role: body.deputyGovernor.details.role,
           email: body.deputyGovernor.details.email,
           type: body.deputyGovernor.details.type,
+          cover_image: body.deputyGovernor.details.cover_image
         },
 
         biography: {
@@ -393,6 +394,7 @@ export class StaticsService {
           role: body.stateSecretary.details.role,
           email: body.stateSecretary.details.email,
           type: body.stateSecretary.details.type,
+          cover_image: body.stateSecretary.details.cover_image
         },
 
         biography: {
