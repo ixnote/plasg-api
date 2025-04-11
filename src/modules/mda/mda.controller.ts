@@ -31,6 +31,7 @@ import { UpdateMdaDto } from './dtos/update-mda.dto';
 import { AddTeamMembersDto } from './dtos/add-team.dto';
 import { GetTeamDto } from './dtos/get-team.dto';
 import { GetMdaBySlugDto } from './dtos/get-mda-by-slug.dto';
+import { SendEmailForContact } from './dtos/send-email-for-contact.dto';
 
 @Controller('mda')
 export class MdaController {
@@ -150,5 +151,10 @@ export class MdaController {
       message: 'Mda updated successfully',
       data: mda,
     };
+  }
+
+  @Post('/contact-us')
+  async sendEmailForContact(@Body() body: SendEmailForContact){
+    return await this.mdaService.sendEmailForContact(body.mdaId, body)
   }
 }

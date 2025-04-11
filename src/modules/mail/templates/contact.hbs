@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>New Contact Message</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        color: #333;
+        line-height: 1.6;
+        padding: 20px;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        border: 1px solid #eee;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+      }
+      .heading {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 15px;
+      }
+      .label {
+        font-weight: bold;
+      }
+      .footer {
+        margin-top: 30px;
+        font-size: 14px;
+        color: #777;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <p>Hi {{mdaName}},</p>
+
+      <p>
+        You’ve received a new message from the <strong>Contact Us</strong> form
+        on your website.
+      </p>
+
+      <div class="heading">🧾 Submission Details:</div>
+
+      <p><span class="label">Name:</span> {{name}}</p>
+      <p><span class="label">Email:</span> {{email}}</p>
+      {{#if phone}}
+        <p><span class="label">Phone:</span> {{phone}}</p>
+      {{/if}}
+      <p><span class="label">Subject:</span> {{subject}}</p>
+
+      <p><span class="label">Message:</span></p>
+      <p>{{message}}</p>
+
+      <p class="footer">Submitted On: {{date}}</p>
+
+      <p class="footer">Best regards </p>
+    </div>
+  </body>
+</html>

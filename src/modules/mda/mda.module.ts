@@ -11,6 +11,7 @@ import { ErrorSchema } from '../error/schemas/error.schema';
 import { MiscClass } from 'src/common/services/misc.service';
 import { CloudinaryModule } from 'src/modules/cloudinary/cloudinary.module';
 import { ResourceSchema } from '../resource/schemas/resource.schema';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ResourceSchema } from '../resource/schemas/resource.schema';
     ]),
     UserModule,
     CloudinaryModule,
+    MailModule
   ],
   providers: [MdaService, MongooseService, JwtService, MiscClass],
   controllers: [MdaController],

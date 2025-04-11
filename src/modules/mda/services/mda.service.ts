@@ -25,12 +25,15 @@ import slugify from 'slugify';
 import { GetMdaBySlugDto } from '../dtos/get-mda-by-slug.dto';
 import { GlobalSearchPaginationDto } from 'src/modules/statics/dtos/global-search.dto';
 import { Resource } from 'src/modules/resource/interfaces/resource.interface';
+import { SendEmailForContact } from '../dtos/send-email-for-contact.dto';
+import { MailService } from 'src/modules/mail/mail.service';
 
 @Injectable()
 export class MdaService {
   constructor(
     @InjectModel('Mda') private readonly mdaModel: Model<Mda>,
     @InjectModel('Resource') private readonly resourceModel: Model<Resource>,
+    private mailService: MailService,
     private userService: UserService,
     private miscService: MiscClass,
   ) {}
@@ -54,6 +57,15 @@ export class MdaService {
 
   async findByName(name: string): Promise<Mda> {
     return this.mdaModel.findOne({ name }).exec();
+  }
+
+  async findAndValidateMdaById(id: string): Promise<Mda> {
+    const mda: Mda = await this.mdaModel.findById(id);
+    if(!mda) throw new NotFoundException({
+      status: false,
+      message: "Mda not found"
+    })
+    return mda;
   }
 
   async regexSearch(body: GlobalSearchPaginationDto): Promise<any> {
@@ -318,5 +330,14 @@ export class MdaService {
       });
     mda.team = mda.team.filter((teamMember) => teamMember.name !== param.name);
     return await mda.save();
+  }
+
+  async sendEmailForContact(mdaId: string, body: SendEmailForContact){
+    const mda: Mda = await this.findAndValidateMdaById(mdaId);
+    await this.mailService.sendContactUsEmail(body, mda)
+    return {
+      status: true,
+      message: "Message sent successfully"
+    }
   }
 }
