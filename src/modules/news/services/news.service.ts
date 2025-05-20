@@ -368,7 +368,7 @@ export class NewsService {
 
     delete rest.tag;
     const options: any = await this.miscService.search(rest);
-    const newsTotal: News[] = await this.newsModel.find(options);
+    const newsTotal: News[] = await this.newsModel.find({...options, mda: param.mda});
 
     if (tag) {
       const tag: Tag = await this.tagService.findById(body.tag);
